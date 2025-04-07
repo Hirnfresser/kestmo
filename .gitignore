@@ -1,0 +1,4 @@
+local/
+.streamlit/secrets.toml
+app_data/
+.DS_Store
