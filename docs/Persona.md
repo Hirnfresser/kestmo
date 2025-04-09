@@ -1,6 +1,7 @@
 # Persona
 <img src="fotos/Persona_Bild.png" alt="Foto der Persona (mit KI erstellt)" width="50%">
 
+<p style="text-align: left;"><em>(mit KI erstellt)</em></p>
 
 ### Beschreibung der Person:
 **Name**: Jutta Siegel  
