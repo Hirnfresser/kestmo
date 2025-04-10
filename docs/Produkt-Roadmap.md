@@ -3,7 +3,8 @@
 ## 0️⃣ leere App (v.01)
 
 ## 1️⃣ MVP (v1.0)
-- Notenerfassung & -berechnung 
+- Notenberechnung 
+- Notenerfassung
 
 ## 2️⃣ Datenspeicherung (v2.0+)
 - Benutzerregistrierung & Login
