@@ -1,19 +1,24 @@
 # Produkt-Roadmap 
 
-## 🎯 MVP (v0.1)
-- Benutzerregistrierung & Login
-- Dashboard mit Übersicht
+## 0️⃣ leere App (v.01)
+
+## 1️⃣ MVP (v1.0)
 - Notenerfassung & -berechnung 
 
-## ➕ Erweiterung (v0.2)
-- Wunschnotenrechner
+## 2️⃣ Datenspeicherung (v2.0+)
+- Benutzerregistrierung & Login
+- Dashboard mit Übersicht
 - Notenverlauf
 
-## ✨ Zukunft (v1.0+)
+## 3️⃣ Feature (v3.0+)
+- Wunschnotenrechner
+
+## 4️⃣ Zukunft (v4.0+)
+- Design
 - Dark Mode
 - Export der Noten als Pdf
 
 ## 🔢 Feature-Priorisierung
 - Must-Have: Login, Notenerfassung und -berechnung
 - Should-Have: Wunschnotenrecher
-- Could-Have: Dark Mode
+- Could-Have: Dark Mode, Pdf-Export
