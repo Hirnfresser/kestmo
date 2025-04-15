@@ -26,7 +26,82 @@ if semester == 'Herbstsemester 1':
         with col2:
             st.markdown('**ECTS**')
             st.write('XX')
+        
         st.subheader('Gesundheitsdaten')
+        st.markdown('**Notendurchschnitt & ECTS**')
+
+        if 'pruefungen_gesundheitsdaten' not in st.session_state:
+            st.session_state.pruefungen_gesundheitsdaten = pd.DataFrame(columns=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
+
+        with st.form(key='form_gesundheitsdaten'):
+            col1, col2, col3 =st.columns([2, 2, 2])
+            
+            with col1:
+                name = st.text_input('Prüfung')
+            with col2:
+                datum = st.date_input('Datum')
+            with col3:
+                gewichtung = st.number_input('Gewichtung in Prozent', min_value=0.0, max_value=100.0, step=1.0)
+            
+            col4, col5 = st.columns([2, 2])
+
+            with col4:
+                note = st.number_input('Note', min_value=1.0, max_value=6.0, step=0.05) 
+
+            with col5:
+                submit_button = st.form_submit_button(label='Prüfung hinzufügen')
+            
+            if submit_button:
+                new_row = pd.DataFrame({
+                    'Prüfung': [name], 
+                    'Datum': [datum], 
+                    'Gewichtung': [gewichtung], 
+                    'Note': [note]})
+                st.session_state.pruefungen_gesundheitsdaten = pd.concat([st.session_state.pruefungen_gesundheitsdaten, new_row], ignore_index=True)
+                st.success('Prüfung erfolgreich hinzugefügt!')
+        
+        if len(st.session_state.pruefungen_gesundheitsdaten) > 0:
+            st.markdown('**Erfasste Prüfungen**')
+            data = st.session_state.pruefungen_gesundheitsdaten[['Prüfung', 'Datum', 'Gewichtung', 'Note']]
+               # Tabelle mit einem Löschen-Button für jede Zeile
+            for idx, row in data.iterrows():
+                col1, col2, col3, col4, col5 = st.columns([2, 2, 2, 2, 5])
+        
+                with col1:
+                    st.write(row['Prüfung'])
+                with col2:
+                    st.write(row['Datum'])
+                with col3:
+                    st.write(f"{row['Gewichtung']} %")
+                with col4:
+                    st.write(row['Note'])
+                with col5:
+            # Löschen-Button für jede Zeile
+                    if st.button(f'{row["Prüfung"]} löschen', key=f"delete_{idx}"):
+                # Lösche die Zeile basierend auf dem Index
+                        st.session_state.pruefungen_gesundheitsdaten = st.session_state.pruefungen_gesundheitsdaten.drop(idx)
+                        st.success(f'Prüfung {row["Prüfung"]} erfolgreich gelöscht!')
+                        st.rerun()
+            
+        
+            gesamt_gewichtung = st.session_state.pruefungen_gesundheitsdaten['Gewichtung'].sum()
+            if 0 < gesamt_gewichtung < 100:
+                gewichtete_note = (
+                    st.session_state.pruefungen_gesundheitsdaten['Note'] * 
+                    st.session_state.pruefungen_gesundheitsdaten['Gewichtung']).sum() / gesamt_gewichtung
+                st.markdown(f'**Gewichtete Gesamtnote:** {gewichtete_note:.2f}')
+
+            elif gesamt_gewichtung > 100:
+                st.warning('Die Gesamtgewichtung überschreitet 100%. Bitte überprüfen Sie die Eingaben.')
+            
+            elif gesamt_gewichtung < 0:
+                st.warning('Die Gesamtgewichtung beträgt 0%. Bitte überprüfen Sie die Eingaben.')
+
+        else:
+            st.info('Noch keine Prüfungen eingetragen. Bitte eine Prüfung hinzufügen.')
+    
+
+
         st.subheader('Hämatologie und Hämostaseologie 1')
         st.subheader('Medizinische Mikrobiologie 1')
         st.subheader('Systemerkrankungen')
