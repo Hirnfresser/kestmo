@@ -1,4 +1,5 @@
-import fsspec, posixpath
+import fsspec
+import posixpath
 import streamlit as st
 import pandas as pd
 from functions.data_handler import DataHandler
