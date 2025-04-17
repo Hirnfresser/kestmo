@@ -8,3 +8,6 @@ Diese App wurde von folgenden Personen entwickelt:
 - Alessia Molignini (moligale@students.zhaw.ch)   
 - Noëlle Keel (keelnoe1@students.zhaw.ch)   
 - Sara Stettler (stettsar@students.zhaw.ch)   
+
+App-URL:
+https://kestmo.streamlit.app/
