@@ -74,11 +74,12 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
     st.subheader(f'{fach_name}')
 
     ects = ects_dict.get(fach_name)
-    gewichtete_note = 0.0
+    if 'gewichtete_note' not in st.session_state:
+        st.session_state['gewichtete_note'] = 0.0
 
     gesamt_gewichtung = st.session_state[session_state_key]['Gewichtung'].sum()
     if 0 < gesamt_gewichtung < 100:
-        gewichtete_note = (
+        st.session_state['gewichtete_note'] = (
             st.session_state[session_state_key]['Note'] * 
             st.session_state[session_state_key]['Gewichtung']).sum() / gesamt_gewichtung
     elif gesamt_gewichtung > 100:
@@ -92,12 +93,12 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
         data = st.session_state[session_state_key][spalten]
         data['Datum'] = pd.to_datetime(data['Datum']).dt.strftime('%d.%m.%Y')
         data['Note'] = data['Note'].map(lambda x: f"{x:.2f}")
-        farbe = 'green' if gewichtete_note >= 4 else 'red'
+        farbe = 'green' if st.session_state['gewichtete_note'] >= 4 else 'red'
 
         col1, col2, col3 = st.columns([2, 1, 1])
         with col1:
             st.markdown("**Notendurchschnitt des Moduls**")
-            st.markdown(f"**Ø** <span style='color:{farbe}'>{gewichtete_note:.2f}</span>", unsafe_allow_html=True)
+            st.markdown(f"**Ø** <span style='color:{farbe}'>{st.session_state['gewichtete_note']:.2f}</span>", unsafe_allow_html=True)
         with col2:
             st.markdown("**erreichte ECTS**")
             st.write(ects)
