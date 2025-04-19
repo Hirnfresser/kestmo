@@ -51,8 +51,8 @@ modulgruppen = {
         'ects': 12,
         'faecher': {
             'Hämatologie und Hämostaseologie 2': {'key': 'pruefungen_hähä2', 'ects': ects_dict['Hämatologie und Hämostaseologie 2']},
-            'Histologie und Zytologie 1': {'key': 'pruefungen_hiz1', 'ects': ects_dict['Histologie und Zytologie 1']},
-            'Klinische Chemie und Immunologie 1': {'key': 'pruefungen_klim1', 'ects': ects_dict['Klinische Chemie und Immunologie 1']},
+            'Histologie und Zytologie 1': {'key': 'pruefungen_histo1', 'ects': ects_dict['Histologie und Zytologie 1']},
+            'Klinische Chemie und Immunologie 1': {'key': 'pruefungen_kcl1', 'ects': ects_dict['Klinische Chemie und Immunologie 1']},
             'Medizinische Mikrobiologie 2': {'key': 'pruefungen_memi2', 'ects': ects_dict['Medizinische Mikrobiologie 2']}}},
     'Wissenschaftliche Grundlagen 2': {
         'ects': 17,
@@ -60,10 +60,10 @@ modulgruppen = {
             'Biologie 2': {'key': 'pruefungen_bio2', 'ects': ects_dict['Biologie 2']},
             'Chemie 2': {'key': 'pruefungen_che2', 'ects': ects_dict['Chemie 2']},
             'Informatik 2': {'key': 'pruefungen_inf2', 'ects': ects_dict['Informatik 2']},
-            'Mathematik 2': {'key': 'pruefungen_mat2', 'ects': ects_dict['Mathematik 2']}}},
+            'Mathematik 2': {'key': 'pruefungen_mat2', 'ects': ects_dict['Mathematik 2']},
             'Physik': {'key': 'pruefungen_phy', 'ects': ects_dict['Physik']},
             'Englisch 2': {'key': 'pruefungen_eng2', 'ects': ects_dict['Englisch 2']},
-            'Gesellschaftlicher Kontext und Sprache 2': {'key': 'pruefungen_gks2', 'ects': ects_dict['Gesellschaftlicher Kontext und Sprache 2']}}
+            'Gesellschaftlicher Kontext und Sprache 2': {'key': 'pruefungen_gks2', 'ects': ects_dict['Gesellschaftlicher Kontext und Sprache 2']}}}}
 
 
 def manage_pruefungen(fach_name, session_state_key, spalten):
@@ -74,14 +74,18 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
     st.subheader(f'{fach_name}')
 
     ects = ects_dict.get(fach_name)
-    if 'gewichtete_note' not in st.session_state:
-        st.session_state['gewichtete_note'] = 0.0
+    gewichtete_note_key = f'{session_state_key}_gewichtete_note'
+    if gewichtete_note_key not in st.session_state:
+        st.session_state[gewichtete_note_key] = 0.0
 
-    gesamt_gewichtung = st.session_state[session_state_key]['Gewichtung'].sum()
-    if 0 < gesamt_gewichtung < 100:
-        st.session_state['gewichtete_note'] = (
-            st.session_state[session_state_key]['Note'] * 
-            st.session_state[session_state_key]['Gewichtung']).sum() / gesamt_gewichtung
+    df_gewichtete_note = st.session_state[session_state_key]
+    df_gewichtete_note['Note'] = pd.to_numeric(df_gewichtete_note['Note'], errors='coerce')
+    df_gewichtete_note['Gewichtung'] = pd.to_numeric(df_gewichtete_note['Gewichtung'], errors='coerce')
+
+    gesamt_gewichtung = df_gewichtete_note['Gewichtung'].sum()
+    if 0 < gesamt_gewichtung <= 100:
+        st.session_state[gewichtete_note_key] = (df_gewichtete_note['Note'] * 
+                                                 df_gewichtete_note['Gewichtung']).sum() / gesamt_gewichtung
     elif gesamt_gewichtung > 100:
         st.warning('Die Gesamtgewichtung überschreitet 100%. Bitte überprüfen Sie die Eingaben.')        
     elif gesamt_gewichtung < 0:
@@ -93,12 +97,12 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
         data = st.session_state[session_state_key][spalten]
         data['Datum'] = pd.to_datetime(data['Datum']).dt.strftime('%d.%m.%Y')
         data['Note'] = data['Note'].map(lambda x: f"{x:.2f}")
-        farbe = 'green' if st.session_state['gewichtete_note'] >= 4 else 'red'
+        farbe = 'green' if st.session_state[gewichtete_note_key] >= 4 else 'red'
 
         col1, col2, col3 = st.columns([2, 1, 1])
         with col1:
             st.markdown("**Notendurchschnitt des Moduls**")
-            st.markdown(f"**Ø** <span style='color:{farbe}'>{st.session_state['gewichtete_note']:.2f}</span>", unsafe_allow_html=True)
+            st.markdown(f"**Ø** <span style='color:{farbe}'>{st.session_state[gewichtete_note_key]:.2f}</span>", unsafe_allow_html=True)
         with col2:
             st.markdown("**erreichte ECTS**")
             st.write(ects)
