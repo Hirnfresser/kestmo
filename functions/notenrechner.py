@@ -312,10 +312,11 @@ def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
             st.markdown(f"**Ø** <span style='color:{farbe}'>{schnitt_modulgruppe:.2f}</span>", unsafe_allow_html=True)
         with col2:
             st.markdown("**erreichte ECTS**")
-            st.write(erreichte_ects)
+            ects_farbe = 'green' if erreichte_ects > 0 else 'red'
+            st.markdown(f"<span style='color:{ects_farbe}'><strong>{erreichte_ects}</strong></span>", unsafe_allow_html=True)
         with col3:
             st.markdown("**maximale ECTS**")
-            st.write(max_ects)
+            st.markdown(f"<span style='color:black'>{max_ects}</strong></span>", unsafe_allow_html=True)
     else:
         st.markdown(f'## {modulgruppe_name}')
         col1, col2 = st.columns(2)
