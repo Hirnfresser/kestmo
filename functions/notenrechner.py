@@ -25,10 +25,41 @@ ects_dict = {
     'Mathematik 2': 3,
     'Physik': 2,
     'Englisch 2': 2,
-    'Gesellschaftlicher Kontext und Sprache 2': 2}
+    'Gesellschaftlicher Kontext und Sprache 2': 2,
+    
+    'Klinische Chemie und Immunologie 2': 2,
+    'Histologie und Zytologie 2': 2,
+    'Immunhämatologie und Transfusionsmedizin 1': 2,
+    'Herz-Kreislauf- und respiratorische Erkrankungen': 3,
+    'Neoplasien und hämatologische Erkrankungen': 3,
+    'Selbst- und patientennahe Diagnostik': 3,
+    'Hygiene und Epidemiologie': 2,
+    
+    'Immunhämatologie und Transfusionsmedizin 2': 2,
+    'Medizinische Genetik 1': 2,
+    'Bewegungsapparat und neurologische Erkrankungen': 3,
+    'Endokrinologie, Stoffwechselerkrankungen': 3,
+    
+    'Medizinische Genetik 2': 2,
+    'Urogenitale und gastrointestinale Erkrankungen': 3,
+    'Entwicklungsstörungen und vererbbare Erkrankungen': 3,
+    'Projekt-, Change- und Risikomanagement 1': 4,
+    'Kommunikation 1': 4,
+    'Evidenzbasiertes Handeln': 2,
+    'Entwicklungen, Trends, Unternehmertum': 2,
+    'Gesundheitsförderung und Prävention': 2,
+    'Projektarbeit': 6,
+    'Forschungsmethoden 1': 2,
+    
+    'Klinische Pharmakologie und personalisierte Medizin': 4,
+    'Gesundheitssystem und Digital Health': 2,
+    'Projekt-, Change- und Risikomanagement 2': 2,
+    'Forschungsmethoden 2': 2,
+    'Kommunikation 2': 2,
+    'Bachelorarbeit': 15}
 
 modulgruppen = {
-    'Basiswissen 1': {
+    'Basiswissen Biomedizinische Labordiagnostik 1': {
         'ects': 10,
         'faecher': {
             'Gesundheitsdaten': {'key': 'pruefungen_geda', 'ects': ects_dict['Gesundheitsdaten']},
@@ -47,7 +78,8 @@ modulgruppen = {
         'faecher': {
             'Englisch 1': {'key': 'pruefungen_eng1', 'ects': ects_dict['Englisch 1']},
             'Gesellschaftlicher Kontext und Sprache 1': {'key': 'pruefungen_gks1', 'ects': ects_dict['Gesellschaftlicher Kontext und Sprache 1']}}},
-    'Basiswissen 2': {
+
+    'Basiswissen Biomedizinische Labordiagnostik 2': {
         'ects': 12,
         'faecher': {
             'Hämatologie und Hämostaseologie 2': {'key': 'pruefungen_hähä2', 'ects': ects_dict['Hämatologie und Hämostaseologie 2']},
@@ -63,16 +95,80 @@ modulgruppen = {
             'Mathematik 2': {'key': 'pruefungen_mat2', 'ects': ects_dict['Mathematik 2']},
             'Physik': {'key': 'pruefungen_phy', 'ects': ects_dict['Physik']},
             'Englisch 2': {'key': 'pruefungen_eng2', 'ects': ects_dict['Englisch 2']},
-            'Gesellschaftlicher Kontext und Sprache 2': {'key': 'pruefungen_gks2', 'ects': ects_dict['Gesellschaftlicher Kontext und Sprache 2']}}}}
+            'Gesellschaftlicher Kontext und Sprache 2': {'key': 'pruefungen_gks2', 'ects': ects_dict['Gesellschaftlicher Kontext und Sprache 2']}}},
+            
+    'Analyseprozesse und Labordiagnostik 1':{
+        'ects': 6,
+        'faecher': {
+            'Klinische Chemie und Immunologie 2': {'key': 'pruefungen_kcl2', 'ects': ects_dict['Klinische Chemie und Immunologie 2']},
+            'Histologie und Zytologie 2': {'key': 'pruefungen_histo2', 'ects': ects_dict['Histologie und Zytologie 2']},
+            'Immunhämatologie und Transfusionsmedizin 1': {'key': 'pruefungen_iht1', 'ects': ects_dict['Immunhämatologie und Transfusionsmedizin 1']}}},
+    'Analyseprozesse und Labordiagnostik 2':{
+        'ects': 11,
+        'faecher': {
+            'Herz-Kreislauf- und respiratorische Erkrankungen': {'key': 'pruefungen_hkr', 'ects': ects_dict['Herz-Kreislauf- und respiratorische Erkrankungen']},
+            'Neoplasien und hämatologische Erkrankungen': {'key': 'pruefungen_neopla', 'ects': ects_dict['Neoplasien und hämatologische Erkrankungen']},
+            'Selbst- und patientennahe Diagnostik': {'key': 'pruefungen_spd', 'ects': ects_dict['Selbst- und patientennahe Diagnostik']},
+            'Hygiene und Epidemiologie': {'key': 'pruefungen_hyep', 'ects': ects_dict['Hygiene und Epidemiologie']}}},
+    
+    'Analyseprozesse und Labordiagnostik 3':{
+        'ects': 10,
+        'faecher': {
+            'Immunhämatologie und Transfusionsmedizin 2': {'key': 'pruefungen_iht2', 'ects': ects_dict['Immunhämatologie und Transfusionsmedizin 2']},
+            'Medizinische Genetik 1': {'key': 'pruefungen_gen1', 'ects': ects_dict['Medizinische Genetik 1']},
+            'Bewegungsapparat und neurologische Erkrankungen': {'key': 'pruefungen_bene', 'ects': ects_dict['Bewegungsapparat und neurologische Erkrankungen']},
+            'Endokrinologie, Stoffwechselerkrankungen': {'key': 'pruefungen_endo', 'ects': ects_dict['Endokrinologie, Stoffwechselerkrankungen']}}},
+
+    'Analyseprozesse und Labordiagnostik 4':{
+        'ects': 7,
+        'faecher': {
+            'Medizinische Genetik 2': {'key': 'pruefungen_gen2', 'ects': ects_dict['Medizinische Genetik 2']},
+            'Urogenitale und gastrointestinale Erkrankungen': {'key': 'pruefungen_uro', 'ects': ects_dict['Urogenitale und gastrointestinale Erkrankungen']},
+            'Entwicklungsstörungen und vererbbare Erkrankungen': {'key': 'pruefungen_entw', 'ects': ects_dict['Entwicklungsstörungen und vererbbare Erkrankungen']}}},                                                  
+    'Kommunikation und Management 1': {
+        'ects': 14,
+        'faecher': {
+            'Projekt-, Change- und Risikomanagement 1': {'key': 'pruefungen_pcr1', 'ects': ects_dict['Projekt-, Change- und Risikomanagement 1']},
+            'Kommunikation 1': {'key': 'pruefungen_kom1', 'ects': ects_dict['Kommunikation 1']},
+            'Evidenzbasiertes Handeln': {'key': 'pruefungen_ebh', 'ects': ects_dict['Evidenzbasiertes Handeln']},
+            'Entwicklungen, Trends, Unternehmertum': {'key': 'pruefungen_etu', 'ects': ects_dict['Entwicklungen, Trends, Unternehmertum']},
+            'Gesundheitsförderung und Prävention': {'key': 'pruefungen_gepr', 'ects': ects_dict['Gesundheitsförderung und Prävention']}}},
+    'Angewandte Forschung': {
+        'ects': 8,
+        'faecher': {
+            'Projektarbeit': {'key': 'pruefungen_proj', 'ects': ects_dict['Projektarbeit']},
+            'Forschungsmethoden 1': {'key': 'pruefungen_fors1', 'ects': ects_dict['Forschungsmethoden 1']}}},
+    'Gesellschaft, Kultur und Gesundheit':{},
+
+    'Gesundheitssystem':{
+        'ects': 6,
+        'faecher': {
+            'Klinische Pharmakologie und personalisierte Medizin': {'key': 'pruefungen_pharma', 'ects': ects_dict['Klinische Pharmakologie und personalisierte Medizin']},
+            'Gesundheitssystem und Digital Health': {'key': 'pruefungen_gedh', 'ects': ects_dict['Gesundheitssystem und Digital Health']}}},
+    'Kommunikation und Management 2': {
+        'ects': 6,
+        'faecher': {
+            'Projekt-, Change- und Risikomanagement 2': {'key': 'pruefungen_pcr2', 'ects': ects_dict['Projekt-, Change- und Risikomanagement 2']},
+            'Forschungsmethoden 2': {'key': 'pruefungen_fors2', 'ects': ects_dict['Forschungsmethoden 2']}}}}
+
 
 grundlagenpraktika = {
     'Grundlagenpraktikum 1': {
         'ects': 3},
     'Grundlagenpraktikum 2': {
-        'ects': 3}}
+        'ects': 3},
+    'Externes Praktikum Fachbereich A': {
+        'ects': 11},
+    'Externes Praktikum Fachbereich B': {
+        'ects': 11},
+    'Externes Praktikum Fachbereich C': {
+        'ects': 9},
+    'Praxisreflexion und interprofessionelles Handeln':{
+        'ects': 2}}
+
+
 
 def manage_pruefungen(fach_name, session_state_key, spalten):
-    # Initialisiere das Fach, falls noch nicht vorhanden
     if session_state_key not in st.session_state:
         st.session_state[session_state_key] = pd.DataFrame(columns=spalten)
 
@@ -152,7 +248,6 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
             st.write(ects)
         st.info('Noch keine Prüfungen eingetragen. Bitte eine Prüfung hinzufügen.')
 
-    # Formular zum Hinzufügen einer neuen Prüfung
     with st.form(key=f'form_{session_state_key}'):
         col1, col2, col3, col4 = st.columns([1.2, 0.8, 1, 0.8])
         with col1:
@@ -241,4 +336,4 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         erreichte_ects = grundlagenpraktikum["ects"]
         st.success(f"{grundlagenpraktika_name} bestanden (+{erreichte_ects} ECTS)")
     else:
-        st.error(f"{grundlagenpraktika_name} nicht bestanden (0 ECTS)")
+        st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
