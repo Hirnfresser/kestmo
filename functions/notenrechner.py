@@ -194,8 +194,8 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
 
 
     # Anzeigen der Prüfungsdaten
-    if len(st.session_state[session_state_key]) > 0:
-        data = st.session_state[session_state_key][spalten]
+    if not df_gewichtete_note.empty:
+        data = df_gewichtete_note.copy()
         data['Datum'] = pd.to_datetime(data['Datum']).dt.strftime('%d.%m.%Y')
         data['Note'] = data['Note'].map(lambda x: f"{x:.2f}")
         farbe = 'green' if st.session_state[gewichtete_note_key] >= 4 else 'red'
@@ -206,10 +206,13 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
             st.markdown(f"**Ø** <span style='color:{farbe}'>{st.session_state[gewichtete_note_key]:.2f}</span>", unsafe_allow_html=True)
         with col2:
             st.markdown("**erreichte ECTS**")
-            st.write(ects)
+            erreichte_ects = ects if st.session_state[gewichtete_note_key] >= 4 else 0
+            ects_farbe = 'green' if erreichte_ects > 0 else 'red'
+            st.markdown(f"<span style='color:{ects_farbe}'><strong>{erreichte_ects}</strong></span>", unsafe_allow_html=True)
         with col3:
             st.markdown("**maximale ECTS**")
-            st.write(ects)
+            st.markdown(f"<span style='color:black'>{ects}</strong></span>", unsafe_allow_html=True)
+
 
 
         col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 2, 5])
