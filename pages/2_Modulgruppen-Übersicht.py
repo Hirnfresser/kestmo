@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from functions.notenrechner import manage_pruefungen
 from functions.notenrechner import schnitt_modulgruppe
 from functions.notenrechner import modulgruppen
+from functions.notenrechner import grundlagenpraktikum
+from functions.notenrechner import grundlagenpraktika
 
 st.title('Modulgruppen-Übersicht')
 
@@ -83,14 +85,8 @@ if semester == 'Herbstsemester 1':
 
 
     with tab4:
-        st.header('Grundlagenpraktikum 1')
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown('**Notendurchschnitt der Modulgruppe**')
-            st.write('XX.X')
-        with col2:
-            st.markdown('**ECTS**')
-            st.write('3')
+        grundlagenpraktikum(grundlagenpraktika, 'Grundlagenpraktikum 1')
+
 
 elif semester == 'Frühlingssemester 1':
     tab1, tab2, tab3 = st.tabs(['Basiswissen 2', 'Wissenschaftliche Grundlagen 2', 'Grundlagenpraktikum 2'])

@@ -65,6 +65,11 @@ modulgruppen = {
             'Englisch 2': {'key': 'pruefungen_eng2', 'ects': ects_dict['Englisch 2']},
             'Gesellschaftlicher Kontext und Sprache 2': {'key': 'pruefungen_gks2', 'ects': ects_dict['Gesellschaftlicher Kontext und Sprache 2']}}}}
 
+grundlagenpraktika = {
+    'Grundlagenpraktikum 1': {
+        'ects': 3},
+    'Grundlagenpraktikum 2': {
+        'ects': 3}}
 
 def manage_pruefungen(fach_name, session_state_key, spalten):
     # Initialisiere das Fach, falls noch nicht vorhanden
@@ -221,3 +226,19 @@ def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
         with col2:
             st.write(max_ects)
         st.info("Noch keine gültigen Noten vorhanden.")
+
+
+def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
+    grundlagenpraktikum = grundlagenpraktika.get(grundlagenpraktika_name)
+    if not grundlagenpraktikum:
+        st.error(f"Modulgruppe '{grundlagenpraktika_name}' nicht gefunden.")
+        return
+
+    st.subheader(grundlagenpraktika_name)
+    status = st.radio('**Bestanden?**',["Ja", "Nein"], key=f'{grundlagenpraktika_name}_status')
+
+    if status == "Ja":
+        erreichte_ects = grundlagenpraktikum["ects"]
+        st.success(f"{grundlagenpraktika_name} bestanden (+{erreichte_ects} ECTS)")
+    else:
+        st.error(f"{grundlagenpraktika_name} nicht bestanden (0 ECTS)")
