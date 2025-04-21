@@ -366,7 +366,7 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
 
 
-def trennlinie_dünn(farbe="#888", hoehe="1px", abstand="20px"):
+def trennlinie_duenn(farbe="#888", hoehe="1px", abstand="20px"):
     st.markdown(
         f"""
         <div style='margin:{abstand} 0;'>

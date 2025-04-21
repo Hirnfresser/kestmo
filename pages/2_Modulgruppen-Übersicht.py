@@ -7,7 +7,7 @@ from functions.notenrechner import schnitt_modulgruppe
 from functions.notenrechner import modulgruppen
 from functions.notenrechner import grundlagenpraktikum
 from functions.notenrechner import grundlagenpraktika
-from functions.notenrechner import trennlinie_dünn
+from functions.notenrechner import trennlinie_duenn
 from functions.notenrechner import trennlinie_stark
 
 st.title('Modulgruppen-Übersicht')
@@ -40,21 +40,21 @@ if semester == 'Herbstsemester 1':
             session_state_key='pruefungen_geda',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
   
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Hämatologie und Hämostaseologie 1',
             session_state_key='pruefungen_hähä1',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
 
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Medizinische Mikrobiologie 1',
             session_state_key='pruefungen_memi1',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
 
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Systemerkrankungen',
@@ -72,21 +72,21 @@ if semester == 'Herbstsemester 1':
             session_state_key='pruefungen_bio1',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()   
+        trennlinie_duenn()   
 
         manage_pruefungen(
             fach_name='Chemie 1',
             session_state_key='pruefungen_che1',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Informatik 1',
             session_state_key='pruefungen_inf1',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Mathematik 1',
@@ -104,7 +104,7 @@ if semester == 'Herbstsemester 1':
             session_state_key='pruefungen_eng1',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
 
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Gesellschaftlicher Kontext und Sprache 1',
@@ -130,21 +130,21 @@ elif semester == 'Frühlingssemester 1':
             session_state_key='pruefungen_hähä2',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Histologie und Zytologie 1',
             session_state_key='pruefungen_histo1',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Klinische Chemie und Immunologie 1',
             session_state_key='pruefungen_kci1',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
 
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Medizinische Mikrobiologie 2',
@@ -163,42 +163,42 @@ elif semester == 'Frühlingssemester 1':
             session_state_key='pruefungen_bio2',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Chemie 2',
             session_state_key='pruefungen_che2',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Informatik 2',
             session_state_key='pruefungen_inf2',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Mathematik 2',
             session_state_key='pruefungen_mat2',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
 
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Physik',
             session_state_key='pruefungen_phy',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
     
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Englisch 2',
             session_state_key='pruefungen_eng2',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Gesellschaftlicher Kontext und Sprache 2',
@@ -222,14 +222,14 @@ if semester == 'Herbstsemester 2':
             session_state_key='pruefungen_kci2',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
   
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Histologie und Zytologie 2',
             session_state_key='pruefungen_histo2',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
 
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Immunhämatologie und Transfusionsmedizin 1',
@@ -247,21 +247,21 @@ if semester == 'Herbstsemester 2':
             session_state_key='pruefungen_hkr',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Neoplasien und hämatologische Erkrankungen',
             session_state_key='pruefungen_neopla',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Selbst- und patientennahe Diagnostik',
             session_state_key='pruefungen_spd',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Hygiene und Epidemiologie',
@@ -286,21 +286,21 @@ if semester == 'Frühlingssemester 2':
             session_state_key='pruefungen_iht2',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
   
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Medizinische Genetik 1',
             session_state_key='pruefungen_gen1',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Bewegungsapparat und neurologische Erkrankungen',
             session_state_key='pruefungen_bene',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Endokrinologie, Stoffwechselerkrankungen',
@@ -326,14 +326,14 @@ if semester == 'Herbstsemester 3':
             session_state_key='pruefungen_gen2',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Urogenitale und gastrointestinale Erkrankugnen',
             session_state_key='pruefungen_uro',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Entwicklungsstörungen und vererbbare Erkrankungen',
@@ -350,28 +350,28 @@ if semester == 'Herbstsemester 3':
             session_state_key='pruefungen_pcr1',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()    
+        trennlinie_duenn()    
 
         manage_pruefungen(
             fach_name='Kommunikation 1',
             session_state_key='pruefungen_kom1',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Evidenzbasiertes Handeln',
             session_state_key='pruefungen_ebh',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Entwicklungen, Trends, Unternehmertum',
             session_state_key='pruefungen_etu',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Gesundheitsförderung und Prävention',
@@ -388,7 +388,7 @@ if semester == 'Herbstsemester 3':
             session_state_key='pruefungen_proj',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Forschungsmethoden 1',
@@ -412,7 +412,7 @@ if semester == 'Frühlingssemester 3':
             session_state_key='pruefungen_pharma',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Gesundheitssystem und Digital Health',
@@ -429,14 +429,14 @@ if semester == 'Frühlingssemester 3':
             session_state_key='pruefungen_pcr2',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Forschungsmethoden 2',
             session_state_key='pruefungen_fors2',
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
 
-        trennlinie_dünn()
+        trennlinie_duenn()
 
         manage_pruefungen(
             fach_name='Kommunikation 2',
