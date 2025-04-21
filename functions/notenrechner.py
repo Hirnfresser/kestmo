@@ -238,7 +238,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
             with col4:
                 st.write(row['Note'])
             with col5:
-                if st.button(f'{row["Prüfung"]} löschen', key=f"delete_{row['Prüfung']}_{idx}"):
+                if st.button(f'{row["Prüfung"]} löschen', key=f"delete_{session_state_key}_{idx}"):
                     # Lösche die Zeile basierend auf dem Index
                     st.session_state[session_state_key] = st.session_state[session_state_key].drop(idx)
                     st.success(f'Prüfung {row["Prüfung"]} erfolgreich gelöscht!')
