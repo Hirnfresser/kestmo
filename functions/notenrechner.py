@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 from typing import List, Dict
+import time
 
 ects_dict = {
     'Gesundheitsdaten': 2,
@@ -184,13 +185,11 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
     df_gewichtete_note['Gewichtung'] = pd.to_numeric(df_gewichtete_note['Gewichtung'], errors='coerce')
 
     gesamt_gewichtung = df_gewichtete_note['Gewichtung'].sum()
+    if gesamt_gewichtung > 100:
+        st.warning('Die Gesamtgewichtung überschreitet 100%. Bitte die Eingaben überprüfen.')
     if 0 < gesamt_gewichtung <= 100:
         st.session_state[gewichtete_note_key] = (df_gewichtete_note['Note'] * 
                                                  df_gewichtete_note['Gewichtung']).sum() / gesamt_gewichtung
-    elif gesamt_gewichtung > 100:
-        st.warning('Die Gesamtgewichtung überschreitet 100%. Bitte überprüfen Sie die Eingaben.')        
-    elif gesamt_gewichtung < 0:
-        st.warning('Die Gesamtgewichtung beträgt 0%. Bitte überprüfen Sie die Eingaben.')
 
 
     # Anzeigen der Prüfungsdaten
@@ -212,7 +211,6 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
         with col3:
             st.markdown("**maximale ECTS**")
             st.markdown(f"<span style='color:black'>{ects}</strong></span>", unsafe_allow_html=True)
-
 
 
         col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 2, 5])
@@ -241,7 +239,6 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                 if st.button(f'{row["Prüfung"]} löschen', key=f"delete_{session_state_key}_{idx}"):
                     # Lösche die Zeile basierend auf dem Index
                     st.session_state[session_state_key] = st.session_state[session_state_key].drop(idx)
-                    st.success(f'Prüfung {row["Prüfung"]} erfolgreich gelöscht!')
                     st.rerun()
     else:
         col1, col2 = st.columns(2)
@@ -254,26 +251,52 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
     with st.form(key=f'form_{session_state_key}'):
         col1, col2, col3, col4 = st.columns([1.2, 0.8, 1, 0.8])
         with col1:
-            name = st.text_input('Prüfung')
+            name = st.text_input('Prüfungsname')
         with col2:
             datum = st.date_input('Datum')
         with col3:
-            gewichtung = st.number_input('Gewichtung in Prozent', min_value=0.0, max_value=100.0, step=1.0)
+            gewichtung = st.number_input('Gewichtung in Prozent', min_value=1.0, max_value=100.0, step=1.0)
         with col4:
             note = st.number_input('Note', min_value=1.0, max_value=6.0, step=0.05)
 
         submit_button = st.form_submit_button('Prüfung hinzufügen')
 
         if submit_button:
-            new_row = pd.DataFrame({
-                'Prüfung': [name], 
-                'Datum': [datum], 
-                'Gewichtung': [gewichtung], 
-                'Note': [note]})
-            st.session_state[session_state_key] = pd.concat([st.session_state[session_state_key], new_row], ignore_index=True)
-            st.success('Prüfung erfolgreich hinzugefügt!')
-            st.rerun()
+            fehler = []
+            if not name.strip():
+                fehler.append('Bitte einen Namen für die Prüfung eingeben.')
+            neue_gesamt_gewichtung = df_gewichtete_note['Gewichtung'].sum() + gewichtung
+            if neue_gesamt_gewichtung > 100:
+                fehler.append('Die Gesamtgewichtung der Prüfungen darf 100% nicht überschreiten.')
+            if gewichtung <= 0:
+                fehler.append('Die Gewichtung muss größer als 0 sein.')
+            if gewichtung > 100:
+                fehler.append('Die Gewichtung darf nicht grösser als 100 sein.')
+            if note < 1 or note > 6:
+                fehler.append('Die Note muss zwischen 1.0 und 6.0 liegen.')
+            
+            if fehler:
+                for msg in fehler:
+                    st.error(msg)
+            else:
+                new_row = pd.DataFrame({
+                    'Prüfung': [name], 
+                    'Datum': [datum], 
+                    'Gewichtung': [gewichtung], 
+                    'Note': [note]})
+                st.session_state[session_state_key] = pd.concat([st.session_state[session_state_key], new_row], ignore_index=True)
 
+                st.session_state[f'{session_state_key}_erfolgreich_hinzugefuegt'] = True
+                st.rerun()
+                        
+        flag_key = f'{session_state_key}_erfolgreich_hinzugefuegt'
+        if flag_key in st.session_state and st.session_state[flag_key]:
+            platzhalter = st.empty()
+            platzhalter.success('Prüfung erfolgreich hinzugefügt!')                
+            time.sleep(3)
+            platzhalter.empty()   
+            del st.session_state[flag_key]
+                
 
 
 def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
@@ -341,3 +364,22 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         st.success(f"{grundlagenpraktika_name} bestanden (+{erreichte_ects} ECTS)")
     else:
         st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
+
+
+def trennlinie_dünn(farbe="#888", hoehe="1px", abstand="20px"):
+    st.markdown(
+        f"""
+        <div style='margin:{abstand} 0;'>
+            <hr style='height:{hoehe}; border:none; background-color:{farbe};'>
+        </div>
+        """,
+        unsafe_allow_html=True)
+    
+def trennlinie_stark(farbe="#888", hoehe="3px", abstand="30px"):
+    st.markdown(
+        f"""
+        <div style='margin:{abstand} 0;'>
+            <hr style='height:{hoehe}; border:none; background-color:{farbe}; border-radius:2px;'>
+        </div>
+        """,
+        unsafe_allow_html=True)
