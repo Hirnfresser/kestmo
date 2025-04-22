@@ -396,8 +396,8 @@ if semester == 'Herbstsemester 3':
             spalten=['Prüfung', 'Datum', 'Gewichtung', 'Note'])
         
     with tab4:
-        st.header('Gesellschaft, Kultur und Gesundheit')
-        st.markdown('*Module noch nicht bekannt!*')
+        grundlagenpraktikum(grundlagenpraktika, 'Gesellschaft, Kultur und Gesundheit')
+        st.markdown('*Einzelne Module nicht bekannt!*')
         
 if semester == 'Frühlingssemester 3':
     tab1, tab2, tab3 = st.tabs(['Gesundheitssystem', 'Kommunikation und Management 2', 'Bachelorarbeit'])

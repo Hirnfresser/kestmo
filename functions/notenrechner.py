@@ -139,7 +139,8 @@ modulgruppen = {
         'faecher': {
             'Projektarbeit': {'key': 'pruefungen_proj', 'ects': ects_dict['Projektarbeit']},
             'Forschungsmethoden 1': {'key': 'pruefungen_fors1', 'ects': ects_dict['Forschungsmethoden 1']}}},
-    'Gesellschaft, Kultur und Gesundheit':{},
+    'Gesellschaft, Kultur und Gesundheit':{
+        'ects': 3},
 
     'Gesundheitssystem':{
         'ects': 6,
@@ -165,7 +166,10 @@ grundlagenpraktika = {
     'Externes Praktikum Fachbereich C': {
         'ects': 9},
     'Praxisreflexion und interprofessionelles Handeln':{
-        'ects': 2}}
+        'ects': 2},
+        
+    'Gesellschaft, Kultur und Gesundheit': {
+        'ects': 3}}
 
 
 
