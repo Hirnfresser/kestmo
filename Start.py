@@ -1,11 +1,6 @@
 import pandas as pd
 from functions.data_manager import DataManager
 from functions.login_manager import LoginManager
-
-# Platz für Login
-
-###
-
 import streamlit as st
 
 st.title("Notenrechner - kestmo")

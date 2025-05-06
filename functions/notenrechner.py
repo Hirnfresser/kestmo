@@ -60,7 +60,7 @@ ects_dict = {
     'Bachelorarbeit': 15}
 
 modulgruppen = {
-    'Basiswissen Biomedizinische Labordiagnostik 1': {
+    'Basiswissen BMLD 1': {
         'ects': 10,
         'faecher': {
             'Gesundheitsdaten': {'key': 'pruefungen_geda', 'ects': ects_dict['Gesundheitsdaten']},
@@ -80,7 +80,7 @@ modulgruppen = {
             'Englisch 1': {'key': 'pruefungen_eng1', 'ects': ects_dict['Englisch 1']},
             'Gesellschaftlicher Kontext und Sprache 1': {'key': 'pruefungen_gks1', 'ects': ects_dict['Gesellschaftlicher Kontext und Sprache 1']}}},
 
-    'Basiswissen Biomedizinische Labordiagnostik 2': {
+    'Basiswissen BMLD 2': {
         'ects': 12,
         'faecher': {
             'Hämatologie und Hämostaseologie 2': {'key': 'pruefungen_hähä2', 'ects': ects_dict['Hämatologie und Hämostaseologie 2']},

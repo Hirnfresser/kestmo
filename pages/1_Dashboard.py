@@ -1,9 +1,13 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+
+
+# ====== Start Login Block ======
+from functions.login_manager import LoginManager
+LoginManager().go_to_login('pages/Login.py') 
+# ====== End Login Block ======
 
 st.title('Dashboard')
+
 
 semesters = ['Herbstsemester 1', 'Frühlingssemester 1',
              'Herbstsemester 2', 'Frühlingssemester 2', 

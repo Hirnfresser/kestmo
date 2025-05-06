@@ -10,6 +10,11 @@ from functions.notenrechner import grundlagenpraktika
 from functions.notenrechner import trennlinie_duenn
 from functions.notenrechner import trennlinie_stark
 
+# ====== Start Login Block ======
+from functions.login_manager import LoginManager
+LoginManager().go_to_login('pages/Login.py') 
+# ====== End Login Block ======
+
 st.title('Modulgruppen-Übersicht')
 
 semesters = ['Herbstsemester 1', 'Frühlingssemester 1', 
@@ -28,10 +33,10 @@ if semester != st.session_state.semester:
 
 
 if semester == 'Herbstsemester 1':
-    tab1, tab2, tab3, tab4 = st.tabs(['Basiswissen 1', 'Wissenschaftliche Grundlagen 1', 'Sprache', 'Grundlagenpraktikum 1'])
+    tab1, tab2, tab3, tab4 = st.tabs(['Basiswissen BMLD 1', 'Wissenschaftliche Grundlagen 1', 'Sprache', 'Grundlagenpraktikum 1'])
 
     with tab1:
-        schnitt_modulgruppe(modulgruppen, 'Basiswissen Biomedizinische Labordiagnostik 1' )
+        schnitt_modulgruppe(modulgruppen, 'Basiswissen BMLD 1' )
         
         trennlinie_stark()
 
@@ -118,10 +123,10 @@ if semester == 'Herbstsemester 1':
 
 
 elif semester == 'Frühlingssemester 1':
-    tab1, tab2, tab3 = st.tabs(['Basiswissen 2', 'Wissenschaftliche Grundlagen 2', 'Grundlagenpraktikum 2'])
+    tab1, tab2, tab3 = st.tabs(['Basiswissen BMLD 2', 'Wissenschaftliche Grundlagen 2', 'Grundlagenpraktikum 2'])
 
     with tab1:
-        schnitt_modulgruppe(modulgruppen, 'Basiswissen Biomedizinische Labordiagnostik 2' )
+        schnitt_modulgruppe(modulgruppen, 'Basiswissen BMLD 2' )
         
         trennlinie_stark()
 
