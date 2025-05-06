@@ -1,8 +1,7 @@
-import fsspec
-import posixpath
+import fsspec, posixpath
 import streamlit as st
 import pandas as pd
-from functions.data_handler import DataHandler
+from utils.data_handler import DataHandler
 
 class DataManager:
     """

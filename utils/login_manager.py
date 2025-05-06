@@ -1,7 +1,7 @@
 import secrets
 import streamlit as st
 import streamlit_authenticator as stauth
-from functions.data_manager import DataManager
+from utils.data_manager import DataManager
 
 
 class LoginManager:

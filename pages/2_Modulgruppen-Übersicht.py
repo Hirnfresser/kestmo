@@ -11,7 +11,7 @@ from functions.notenrechner import trennlinie_duenn
 from functions.notenrechner import trennlinie_stark
 
 # ====== Start Login Block ======
-from functions.login_manager import LoginManager
+from utils.login_manager import LoginManager
 LoginManager().go_to_login('pages/Login.py') 
 # ====== End Login Block ======
 
