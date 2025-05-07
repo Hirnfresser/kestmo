@@ -376,7 +376,11 @@ def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
         # Initialisieren Sie den Schlüssel im st.session_state, falls er nicht existiert
         session_state_key = f"{user_key_prefix}_{modulgruppe_name}_schnitt"
         if session_state_key not in st.session_state:
-            st.session_state[session_state_key] = {"schnitt": schnitt_modulgruppe, "ects": erreichte_ects}
+            # Speichern Sie die Daten als DataFrame
+            st.session_state[session_state_key] = pd.DataFrame([{
+                "schnitt": schnitt_modulgruppe,
+                "ects": erreichte_ects
+            }])
 
         # Speichere den aktuellen Stand der Modulgruppe
         data_manager.append_record(
@@ -410,31 +414,34 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
 
     # Initialisieren Sie den Schlüssel im st.session_state, falls er nicht existiert
     if user_key not in st.session_state:
-        st.session_state[user_key] = {"status": "Nein", "ects": 0}
+        st.session_state[user_key] = pd.DataFrame([{
+            "status": "Nein",
+            "ects": 0
+        }])
 
     # Status speichern (Bestanden/Nicht bestanden)
     status = st.radio(
         '**Bestanden?**',
         ["Ja", "Nein"],
         key=f'{user_key}_status',
-        index=0 if st.session_state[user_key]["status"] == "Nein" else 1
+        index=0 if st.session_state[user_key].iloc[0]["status"] == "Nein" else 1
     )
 
     # Aktualisiere den Status und die erreichten ECTS
     if status == "Ja":
-        st.session_state[user_key]["status"] = "Ja"
-        st.session_state[user_key]["ects"] = grundlagenpraktikum["ects"]
+        st.session_state[user_key].iloc[0]["status"] = "Ja"
+        st.session_state[user_key].iloc[0]["ects"] = grundlagenpraktikum["ects"]
         st.success(f"{grundlagenpraktika_name} bestanden (+{grundlagenpraktikum['ects']} ECTS)")
     else:
-        st.session_state[user_key]["status"] = "Nein"
-        st.session_state[user_key]["ects"] = 0
+        st.session_state[user_key].iloc[0]["status"] = "Nein"
+        st.session_state[user_key].iloc[0]["ects"] = 0
         st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
 
     # Initialisieren Sie den Schlüssel im DataManager, falls er nicht registriert ist
     if not data_manager.is_registered(user_key):
         data_manager.register_user_data(
             session_state_key=user_key,
-            file_name=f"{user_key}.json",
+            file_name=f"{user_key}.csv",
             initial_value=st.session_state[user_key]
         )
 
