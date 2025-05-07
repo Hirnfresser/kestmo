@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import time
 import pandas as pd
+from utils.data_manager import DataManager
 
 
 ects_dict = {
@@ -297,7 +298,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                     'Note': [note]})
                 st.session_state[user_key] = pd.concat([st.session_state[user_key], new_row], ignore_index=True)
                 st.success('Prüfung erfolgreich hinzugefügt!')
-
+                
                 st.session_state[f'{session_state_key}_erfolgreich_hinzugefuegt'] = True
                 st.rerun()
                         
@@ -378,6 +379,8 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
     # Nutzerspezifischer Schlüssel
     user_key = f"{st.session_state['username']}_grundlagenpraktikum_{grundlagenpraktika_name}"
 
+    storage_key = f"{user_key}_liste"
+
     grundlagenpraktikum = grundlagenpraktika.get(grundlagenpraktika_name)
     if not grundlagenpraktikum:
         st.error(f"Grundlagenpraktikum '{grundlagenpraktika_name}' nicht gefunden.")
@@ -389,6 +392,9 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
     if user_key not in st.session_state:
         st.session_state[user_key] = {"status": "Nein", "ects": 0}
 
+    if storage_key not in st.session_state:
+        st.session_state[storage_key] = []
+
     status = st.radio(
         '**Bestanden?**',
         ["Ja", "Nein"],
@@ -396,11 +402,12 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         index=0 if st.session_state[user_key]["status"] == "Nein" else 1
     )
 
-    # Aktualisiere den Status und die erreichten ECTS
     if status == "Ja":
         st.session_state[user_key]["status"] = "Ja"
         st.session_state[user_key]["ects"] = grundlagenpraktikum["ects"]
         st.success(f"{grundlagenpraktika_name} bestanden (+{grundlagenpraktikum['ects']} ECTS)")
+    
+
     else:
         st.session_state[user_key]["status"] = "Nein"
         st.session_state[user_key]["ects"] = 0
