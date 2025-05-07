@@ -5,7 +5,7 @@ import streamlit as st
 
 st.title('Hier folgt das Loginfenster')
 
-data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Institution/kestmo_APP")  # switch drive 
+data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Institution/kestmo_App")  # switch drive 
 
 # Überprüfen, ob ein Benutzer eingeloggt ist
 if st.session_state.get("username"):
