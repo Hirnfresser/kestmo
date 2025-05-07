@@ -261,7 +261,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                     # Lösche die Zeile basierend auf dem Index
                     st.session_state[user_key] = st.session_state[user_key].drop(idx)
                     # Speichere die aktualisierten Daten
-                    data_manager.save_data(user_key)
+                    data_manager.save_data(session_state_key=user_key)
                     st.rerun()
     else:
         col1, col2 = st.columns(2)
