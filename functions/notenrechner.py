@@ -250,11 +250,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten, data_manager):
                     # Lösche die Zeile basierend auf dem Index
                     st.session_state[user_key] = st.session_state[user_key].drop(idx)
                     # Speichere die aktualisierten Daten
-                    data_manager.save_user_data(
-                        session_state_key=user_key,
-                        file_name=f"{user_key}.csv",
-                        data=st.session_state[user_key]
-                    )
+                    data_manager.save_data(user_key)
                     st.rerun()
     else:
         col1, col2 = st.columns(2)
@@ -296,18 +292,13 @@ def manage_pruefungen(fach_name, session_state_key, spalten, data_manager):
                 for msg in fehler:
                     st.error(msg)
             else:
-                new_row = pd.DataFrame({
-                    'Prüfung': [name], 
-                    'Datum': [datum], 
-                    'Gewichtung': [gewichtung], 
-                    'Note': [note]})
-                st.session_state[user_key] = pd.concat([st.session_state[user_key], new_row], ignore_index=True)
-                # Speichere die aktualisierten Daten
-                data_manager.save_user_data(
-                    session_state_key=user_key,
-                    file_name=f"{user_key}.csv",
-                    data=st.session_state[user_key]
-                )
+                new_row = {
+                    'Prüfung': name, 
+                    'Datum': datum, 
+                    'Gewichtung': gewichtung, 
+                    'Note': note
+                }
+                data_manager.append_record(user_key, new_row)
                 st.success('Prüfung erfolgreich hinzugefügt!')
                 st.rerun()
                         
@@ -372,10 +363,9 @@ def schnitt_modulgruppe(modulgruppen, modulgruppe_name, data_manager):
             st.markdown(f"<span style='color:black'>{max_ects}</strong></span>", unsafe_allow_html=True)
 
         # Speichere den aktuellen Stand der Modulgruppe
-        data_manager.save_user_data(
+        data_manager.append_record(
             session_state_key=f"{user_key_prefix}_{modulgruppe_name}_schnitt",
-            file_name=f"{user_key_prefix}_{modulgruppe_name}_schnitt.csv",
-            data={"schnitt": schnitt_modulgruppe, "ects": erreichte_ects}
+            record_dict={"schnitt": schnitt_modulgruppe, "ects": erreichte_ects}
         )
     else:
         st.markdown(f'## {modulgruppe_name}')
@@ -424,10 +414,9 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name, data_manage
         st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
 
     # Speichere den aktuellen Status des Grundlagenpraktikums
-    data_manager.save_user_data(
+    data_manager.append_record(
         session_state_key=user_key,
-        file_name=f"{user_key}.csv",
-        data=st.session_state[user_key]
+        record_dict=st.session_state[user_key]
     )
 
 
