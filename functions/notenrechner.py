@@ -373,9 +373,14 @@ def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
             st.markdown("**maximale ECTS**")
             st.markdown(f"<span style='color:black'>{max_ects}</strong></span>", unsafe_allow_html=True)
 
+        # Initialisieren Sie den Schlüssel im st.session_state, falls er nicht existiert
+        session_state_key = f"{user_key_prefix}_{modulgruppe_name}_schnitt"
+        if session_state_key not in st.session_state:
+            st.session_state[session_state_key] = {"schnitt": schnitt_modulgruppe, "ects": erreichte_ects}
+
         # Speichere den aktuellen Stand der Modulgruppe
         data_manager.append_record(
-            session_state_key=f"{user_key_prefix}_{modulgruppe_name}_schnitt",
+            session_state_key=session_state_key,
             record_dict={"schnitt": schnitt_modulgruppe, "ects": erreichte_ects}
         )
     else:
@@ -403,10 +408,11 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
 
     st.subheader(grundlagenpraktika_name)
 
-    # Status speichern (Bestanden/Nicht bestanden)
+    # Initialisieren Sie den Schlüssel im st.session_state, falls er nicht existiert
     if user_key not in st.session_state:
         st.session_state[user_key] = {"status": "Nein", "ects": 0}
 
+    # Status speichern (Bestanden/Nicht bestanden)
     status = st.radio(
         '**Bestanden?**',
         ["Ja", "Nein"],
@@ -423,6 +429,14 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         st.session_state[user_key]["status"] = "Nein"
         st.session_state[user_key]["ects"] = 0
         st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
+
+    # Initialisieren Sie den Schlüssel im DataManager, falls er nicht registriert ist
+    if not data_manager.is_registered(user_key):
+        data_manager.register_user_data(
+            session_state_key=user_key,
+            file_name=f"{user_key}.json",
+            initial_value=st.session_state[user_key]
+        )
 
     # Speichere den aktuellen Status des Grundlagenpraktikums
     data_manager.append_record(
