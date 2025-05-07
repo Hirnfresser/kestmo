@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime
-from typing import List, Dict
 import time
+import pandas as pd
+
 
 ects_dict = {
     'Gesundheitsdaten': 2,
