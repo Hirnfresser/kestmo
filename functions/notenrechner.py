@@ -174,17 +174,24 @@ grundlagenpraktika = {
 
 
 def manage_pruefungen(fach_name, session_state_key, spalten):
-    if session_state_key not in st.session_state:
-        st.session_state[session_state_key] = pd.DataFrame(columns=spalten)
+    if "username" not in st.session_state:
+        st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
+        return
+
+    # Nutzerspezifischer Schlüssel
+    user_key = f"{st.session_state['username']}_{session_state_key}"
+
+    if user_key not in st.session_state:
+        st.session_state[user_key] = pd.DataFrame(columns=spalten)
 
     st.subheader(f'{fach_name}')
 
     ects = ects_dict.get(fach_name)
-    gewichtete_note_key = f'{session_state_key}_gewichtete_note'
+    gewichtete_note_key = f'{user_key}_gewichtete_note'
     if gewichtete_note_key not in st.session_state:
         st.session_state[gewichtete_note_key] = 0.0
 
-    df_gewichtete_note = st.session_state[session_state_key]
+    df_gewichtete_note = st.session_state[user_key]
     df_gewichtete_note['Note'] = pd.to_numeric(df_gewichtete_note['Note'], errors='coerce')
     df_gewichtete_note['Gewichtung'] = pd.to_numeric(df_gewichtete_note['Gewichtung'], errors='coerce')
 
@@ -240,9 +247,9 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
             with col4:
                 st.write(row['Note'])
             with col5:
-                if st.button(f'{row["Prüfung"]} löschen', key=f"delete_{session_state_key}_{idx}"):
+                if st.button(f'{row["Prüfung"]} löschen', key=f"delete_{user_key}_{idx}"):
                     # Lösche die Zeile basierend auf dem Index
-                    st.session_state[session_state_key] = st.session_state[session_state_key].drop(idx)
+                    st.session_state[user_key] = st.session_state[user_key].drop(idx)
                     st.rerun()
     else:
         col1, col2 = st.columns(2)
@@ -252,7 +259,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
             st.write(ects)
         st.info('Noch keine Prüfungen eingetragen. Bitte eine Prüfung hinzufügen.')
 
-    with st.form(key=f'form_{session_state_key}'):
+    with st.form(key=f'form_{user_key}'):
         col1, col2, col3, col4 = st.columns([1.2, 0.8, 1, 0.8])
         with col1:
             name = st.text_input('Prüfungsname')
@@ -288,7 +295,8 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                     'Datum': [datum], 
                     'Gewichtung': [gewichtung], 
                     'Note': [note]})
-                st.session_state[session_state_key] = pd.concat([st.session_state[session_state_key], new_row], ignore_index=True)
+                st.session_state[user_key] = pd.concat([st.session_state[user_key], new_row], ignore_index=True)
+                st.success('Prüfung erfolgreich hinzugefügt!')
 
                 st.session_state[f'{session_state_key}_erfolgreich_hinzugefuegt'] = True
                 st.rerun()
@@ -304,19 +312,27 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
 
 
 def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
+    if "username" not in st.session_state:
+        st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
+        return
+
+    # Nutzerspezifischer Präfix
+    user_key_prefix = st.session_state["username"]
+
     gruppe = modulgruppen.get(modulgruppe_name)
     if not gruppe:
         st.error(f"Modulgruppe '{modulgruppe_name}' nicht gefunden.")
         return
 
-    faecher = gruppe ['faecher']
+    faecher = gruppe['faecher']
     max_ects = gruppe['ects']
 
     gesamt_note = 0
     gesamt_ects = 0
 
     for fachname, infos in faecher.items():
-        key = infos['key']
+        # Nutzerspezifischer Schlüssel für das Fach
+        key = f"{user_key_prefix}_{infos['key']}"
         ects = infos['ects']
 
         if key in st.session_state and not st.session_state[key].empty:
@@ -355,18 +371,39 @@ def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
 
 
 def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
+    if "username" not in st.session_state:
+        st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
+        return
+
+    # Nutzerspezifischer Schlüssel
+    user_key = f"{st.session_state['username']}_grundlagenpraktikum_{grundlagenpraktika_name}"
+
     grundlagenpraktikum = grundlagenpraktika.get(grundlagenpraktika_name)
     if not grundlagenpraktikum:
-        st.error(f"Modulgruppe '{grundlagenpraktika_name}' nicht gefunden.")
+        st.error(f"Grundlagenpraktikum '{grundlagenpraktika_name}' nicht gefunden.")
         return
 
     st.subheader(grundlagenpraktika_name)
-    status = st.radio('**Bestanden?**',["Ja", "Nein"], key=f'{grundlagenpraktika_name}_status')
 
+    # Status speichern (Bestanden/Nicht bestanden)
+    if user_key not in st.session_state:
+        st.session_state[user_key] = {"status": "Nein", "ects": 0}
+
+    status = st.radio(
+        '**Bestanden?**',
+        ["Ja", "Nein"],
+        key=f'{user_key}_status',
+        index=0 if st.session_state[user_key]["status"] == "Nein" else 1
+    )
+
+    # Aktualisiere den Status und die erreichten ECTS
     if status == "Ja":
-        erreichte_ects = grundlagenpraktikum["ects"]
-        st.success(f"{grundlagenpraktika_name} bestanden (+{erreichte_ects} ECTS)")
+        st.session_state[user_key]["status"] = "Ja"
+        st.session_state[user_key]["ects"] = grundlagenpraktikum["ects"]
+        st.success(f"{grundlagenpraktika_name} bestanden (+{grundlagenpraktikum['ects']} ECTS)")
     else:
+        st.session_state[user_key]["status"] = "Nein"
+        st.session_state[user_key]["ects"] = 0
         st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
 
 
