@@ -190,6 +190,13 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
     if user_key not in st.session_state:
         st.session_state[user_key] = pd.DataFrame(columns=spalten)
 
+    if not data_manager.is_registered(user_key):
+        data_manager.register_user_data(
+            session_state_key=user_key,
+            file_name=f"{user_key}.csv",
+            initial_value=st.session_state[user_key]
+        )
+        
     data_manager.save_data(session_state_key=user_key)
 
     st.subheader(f'{fach_name}')
