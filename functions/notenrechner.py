@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import time
 import pandas as pd
+from utils.data_manager import DataManager
 
 
 ects_dict = {
@@ -173,7 +174,7 @@ grundlagenpraktika = {
 
 
 
-def manage_pruefungen(fach_name, session_state_key, spalten):
+def manage_pruefungen(fach_name, session_state_key, spalten, data_manager):
     if "username" not in st.session_state:
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
@@ -187,7 +188,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
     st.subheader(f'{fach_name}')
 
     ects = ects_dict.get(fach_name)
-    gewichtete_note_key = f'{user_key}_gewichtete_note'
+    gewichtete_note_key = f"{user_key}_gewichtete_note"
     if gewichtete_note_key not in st.session_state:
         st.session_state[gewichtete_note_key] = 0.0
 
@@ -201,7 +202,6 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
     if 0 < gesamt_gewichtung <= 100:
         st.session_state[gewichtete_note_key] = (df_gewichtete_note['Note'] * 
                                                  df_gewichtete_note['Gewichtung']).sum() / gesamt_gewichtung
-
 
     # Anzeigen der Prüfungsdaten
     if not df_gewichtete_note.empty:
@@ -222,7 +222,6 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
         with col3:
             st.markdown("**maximale ECTS**")
             st.markdown(f"<span style='color:black'>{ects}</strong></span>", unsafe_allow_html=True)
-
 
         col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 2, 5])
         with col1:
@@ -250,6 +249,12 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                 if st.button(f'{row["Prüfung"]} löschen', key=f"delete_{user_key}_{idx}"):
                     # Lösche die Zeile basierend auf dem Index
                     st.session_state[user_key] = st.session_state[user_key].drop(idx)
+                    # Speichere die aktualisierten Daten
+                    data_manager.save_user_data(
+                        session_state_key=user_key,
+                        file_name=f"{user_key}.csv",
+                        data=st.session_state[user_key]
+                    )
                     st.rerun()
     else:
         col1, col2 = st.columns(2)
@@ -259,6 +264,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
             st.write(ects)
         st.info('Noch keine Prüfungen eingetragen. Bitte eine Prüfung hinzufügen.')
 
+    # Formular für neue Prüfungen
     with st.form(key=f'form_{user_key}'):
         col1, col2, col3, col4 = st.columns([1.2, 0.8, 1, 0.8])
         with col1:
@@ -296,9 +302,13 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                     'Gewichtung': [gewichtung], 
                     'Note': [note]})
                 st.session_state[user_key] = pd.concat([st.session_state[user_key], new_row], ignore_index=True)
+                # Speichere die aktualisierten Daten
+                data_manager.save_user_data(
+                    session_state_key=user_key,
+                    file_name=f"{user_key}.csv",
+                    data=st.session_state[user_key]
+                )
                 st.success('Prüfung erfolgreich hinzugefügt!')
-
-                st.session_state[f'{session_state_key}_erfolgreich_hinzugefuegt'] = True
                 st.rerun()
                         
         flag_key = f'{session_state_key}_erfolgreich_hinzugefuegt'
@@ -311,7 +321,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                 
 
 
-def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
+def schnitt_modulgruppe(modulgruppen, modulgruppe_name, data_manager):
     if "username" not in st.session_state:
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
@@ -360,6 +370,13 @@ def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
         with col3:
             st.markdown("**maximale ECTS**")
             st.markdown(f"<span style='color:black'>{max_ects}</strong></span>", unsafe_allow_html=True)
+
+        # Speichere den aktuellen Stand der Modulgruppe
+        data_manager.save_user_data(
+            session_state_key=f"{user_key_prefix}_{modulgruppe_name}_schnitt",
+            file_name=f"{user_key_prefix}_{modulgruppe_name}_schnitt.csv",
+            data={"schnitt": schnitt_modulgruppe, "ects": erreichte_ects}
+        )
     else:
         st.markdown(f'## {modulgruppe_name}')
         col1, col2 = st.columns(2)
@@ -370,7 +387,7 @@ def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
         st.info("Noch keine gültigen Noten vorhanden.")
 
 
-def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
+def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name, data_manager):
     if "username" not in st.session_state:
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
@@ -405,6 +422,13 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         st.session_state[user_key]["status"] = "Nein"
         st.session_state[user_key]["ects"] = 0
         st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
+
+    # Speichere den aktuellen Status des Grundlagenpraktikums
+    data_manager.save_user_data(
+        session_state_key=user_key,
+        file_name=f"{user_key}.csv",
+        data=st.session_state[user_key]
+    )
 
 
 def trennlinie_duenn(farbe="#888", hoehe="1px", abstand="20px"):
