@@ -95,19 +95,6 @@ class DataManager:
         else:
             raise ValueError(f"AppManager: Invalid filesystem protocol: {protocol}")
 
-    def is_registered(self, session_state_key):
-        return session_state_key in self.user_data_registry
-
-    def register_user_data(self, session_state_key, file_name, initial_value):
-        if session_state_key not in self.user_data_registry:
-            self.user_data_registry[session_state_key] = {
-                "file_name": file_name,
-                "data": initial_value
-            }
-            if session_state_key not in st.session_state:
-                st.session_state[session_state_key] = initial_value
-
-                
     def _get_data_handler(self, subfolder: str = None):
         """
         Creates a DataHandler instance for the specified subfolder.

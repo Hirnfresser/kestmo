@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import time
 import pandas as pd
-from utils.data_manager import DataManager
 
 
 ects_dict = {
@@ -173,11 +172,6 @@ grundlagenpraktika = {
         'ects': 3}}
 
 
-from utils.data_manager import DataManager
-
-# Globale Initialisierung des DataManager
-data_manager = DataManager(fs_protocol="webdav", fs_root_folder="path/to/switchdrive")
-
 
 def manage_pruefungen(fach_name, session_state_key, spalten):
     if "username" not in st.session_state:
@@ -190,19 +184,10 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
     if user_key not in st.session_state:
         st.session_state[user_key] = pd.DataFrame(columns=spalten)
 
-    if not data_manager.is_registered(user_key):
-        data_manager.register_user_data(
-            session_state_key=user_key,
-            file_name=f"{user_key}.csv",
-            initial_value=st.session_state[user_key]
-        )
-        
-    data_manager.save_data(session_state_key=user_key)
-
     st.subheader(f'{fach_name}')
 
     ects = ects_dict.get(fach_name)
-    gewichtete_note_key = f"{user_key}_gewichtete_note"
+    gewichtete_note_key = f'{user_key}_gewichtete_note'
     if gewichtete_note_key not in st.session_state:
         st.session_state[gewichtete_note_key] = 0.0
 
@@ -216,6 +201,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
     if 0 < gesamt_gewichtung <= 100:
         st.session_state[gewichtete_note_key] = (df_gewichtete_note['Note'] * 
                                                  df_gewichtete_note['Gewichtung']).sum() / gesamt_gewichtung
+
 
     # Anzeigen der Prüfungsdaten
     if not df_gewichtete_note.empty:
@@ -236,6 +222,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
         with col3:
             st.markdown("**maximale ECTS**")
             st.markdown(f"<span style='color:black'>{ects}</strong></span>", unsafe_allow_html=True)
+
 
         col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 2, 5])
         with col1:
@@ -263,8 +250,6 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                 if st.button(f'{row["Prüfung"]} löschen', key=f"delete_{user_key}_{idx}"):
                     # Lösche die Zeile basierend auf dem Index
                     st.session_state[user_key] = st.session_state[user_key].drop(idx)
-                    # Speichere die aktualisierten Daten
-                    data_manager.save_data(user_key)
                     st.rerun()
     else:
         col1, col2 = st.columns(2)
@@ -274,7 +259,6 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
             st.write(ects)
         st.info('Noch keine Prüfungen eingetragen. Bitte eine Prüfung hinzufügen.')
 
-    # Formular für neue Prüfungen
     with st.form(key=f'form_{user_key}'):
         col1, col2, col3, col4 = st.columns([1.2, 0.8, 1, 0.8])
         with col1:
@@ -306,14 +290,15 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                 for msg in fehler:
                     st.error(msg)
             else:
-                new_row = {
-                    'Prüfung': name, 
-                    'Datum': datum, 
-                    'Gewichtung': gewichtung, 
-                    'Note': note
-                }
-                data_manager.append_record(user_key, new_row)
+                new_row = pd.DataFrame({
+                    'Prüfung': [name], 
+                    'Datum': [datum], 
+                    'Gewichtung': [gewichtung], 
+                    'Note': [note]})
+                st.session_state[user_key] = pd.concat([st.session_state[user_key], new_row], ignore_index=True)
                 st.success('Prüfung erfolgreich hinzugefügt!')
+
+                st.session_state[f'{session_state_key}_erfolgreich_hinzugefuegt'] = True
                 st.rerun()
                         
         flag_key = f'{session_state_key}_erfolgreich_hinzugefuegt'
@@ -375,21 +360,6 @@ def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
         with col3:
             st.markdown("**maximale ECTS**")
             st.markdown(f"<span style='color:black'>{max_ects}</strong></span>", unsafe_allow_html=True)
-
-        # Initialisieren Sie den Schlüssel im st.session_state, falls er nicht existiert
-        session_state_key = f"{user_key_prefix}_{modulgruppe_name}_schnitt"
-        if session_state_key not in st.session_state:
-            # Speichern Sie die Daten als DataFrame
-            st.session_state[session_state_key] = pd.DataFrame([{
-                "schnitt": schnitt_modulgruppe,
-                "ects": erreichte_ects
-            }])
-
-        # Speichere den aktuellen Stand der Modulgruppe
-        data_manager.append_record(
-            session_state_key=session_state_key,
-            record_dict={"schnitt": schnitt_modulgruppe, "ects": erreichte_ects}
-        )
     else:
         st.markdown(f'## {modulgruppe_name}')
         col1, col2 = st.columns(2)
@@ -415,44 +385,26 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
 
     st.subheader(grundlagenpraktika_name)
 
-    # Initialisieren Sie den Schlüssel im st.session_state, falls er nicht existiert
-    if user_key not in st.session_state:
-        st.session_state[user_key] = pd.DataFrame([{
-            "status": "Nein",
-            "ects": 0
-        }])
-
     # Status speichern (Bestanden/Nicht bestanden)
+    if user_key not in st.session_state:
+        st.session_state[user_key] = {"status": "Nein", "ects": 0}
+
     status = st.radio(
         '**Bestanden?**',
         ["Ja", "Nein"],
         key=f'{user_key}_status',
-        index=0 if st.session_state[user_key].iloc[0]["status"] == "Nein" else 1
+        index=0 if st.session_state[user_key]["status"] == "Nein" else 1
     )
 
     # Aktualisiere den Status und die erreichten ECTS
     if status == "Ja":
-        st.session_state[user_key].iloc[0]["status"] = "Ja"
-        st.session_state[user_key].iloc[0]["ects"] = grundlagenpraktikum["ects"]
+        st.session_state[user_key]["status"] = "Ja"
+        st.session_state[user_key]["ects"] = grundlagenpraktikum["ects"]
         st.success(f"{grundlagenpraktika_name} bestanden (+{grundlagenpraktikum['ects']} ECTS)")
     else:
-        st.session_state[user_key].iloc[0]["status"] = "Nein"
-        st.session_state[user_key].iloc[0]["ects"] = 0
+        st.session_state[user_key]["status"] = "Nein"
+        st.session_state[user_key]["ects"] = 0
         st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
-
-    # Initialisieren Sie den Schlüssel im DataManager, falls er nicht registriert ist
-    if not data_manager.is_registered(user_key):
-        data_manager.register_user_data(
-            session_state_key=user_key,
-            file_name=f"{user_key}.csv",
-            initial_value=st.session_state[user_key]
-        )
-
-    # Speichere den aktuellen Status des Grundlagenpraktikums
-    data_manager.append_record(
-        session_state_key=user_key,
-        record_dict=st.session_state[user_key]
-    )
 
 
 def trennlinie_duenn(farbe="#888", hoehe="1px", abstand="20px"):
