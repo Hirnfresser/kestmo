@@ -122,68 +122,16 @@ class LoginManager:
             Das Passwort muss 8-20 Zeichen lang sein und mindestens einen Großbuchstaben, 
             einen Kleinbuchstaben, eine Ziffer und ein Sonderzeichen aus @$!%*?& enthalten.
             """)
-
-            # Benutzerdefiniertes Registrierungsformular
-            with st.form("register_form"):
-                username = st.text_input("Benutzername")
-                email = st.text_input("E-Mail")
-                name = st.text_input("Vollständiger Name")
-                password = st.text_input("Passwort", type="password")
-                confirm_password = st.text_input("Passwort bestätigen", type="password")
-                submit_button = st.form_submit_button("Registrieren")
-
-            if submit_button:
-                # Überprüfen, ob die Passwörter übereinstimmen
-                if password != confirm_password:
-                    st.error("Die Passwörter stimmen nicht überein.")
-                    return
-
-                # Überprüfen, ob das Passwort die Anforderungen erfüllt
-                if not self._validate_password(password):
-                    st.error("Das Passwort erfüllt nicht die Anforderungen.")
-                    return
-
-                # Benutzer registrieren
+            res = self.authenticator.register_user()
+            if res[1] is not None:
+                st.success(f"Benutzer {res[1]} erfolgreich registriert.")
                 try:
-                    self.auth_credentials["usernames"][username] = {
-                        "email": email,
-                        "name": name,
-                        "password": stauth.Hasher([password]).generate()[0],
-                    }
                     self._save_auth_credentials()
-                    st.success(f"Benutzer {username} erfolgreich registriert.")
+                    st.success("Anmeldedaten erfolgreich gespeichert.")
                 except Exception as e:
-                    st.error(f"Fehler bei der Registrierung: {e}")
-
+                    st.error(f"Fehler beim Speichern der Anmeldedaten: {e}")
             if stop:
                 st.stop()
-
-    def _validate_password(self, password):
-        """
-        Überprüft, ob das Passwort die Anforderungen erfüllt.
-
-        Anforderungen:
-        - 8-20 Zeichen lang
-        - Mindestens ein Großbuchstabe
-        - Mindestens ein Kleinbuchstabe
-        - Mindestens eine Ziffer
-        - Mindestens ein Sonderzeichen aus @$!%*?&
-
-        Rückgabe:
-            bool: True, wenn das Passwort gültig ist, sonst False.
-        """
-        import re
-        if len(password) < 8 or len(password) > 20:
-            return False
-        if not re.search(r"[A-Z]", password):
-            return False
-        if not re.search(r"[a-z]", password):
-            return False
-        if not re.search(r"\d", password):
-            return False
-        if not re.search(r"[@$!%*?&]", password):
-            return False
-        return True
 
     def go_to_login(self, login_page_py_file):
         """
