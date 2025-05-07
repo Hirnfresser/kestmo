@@ -16,6 +16,10 @@ LoginManager().go_to_login('pages/Login.py')
 
 st.title('Modulgruppen-Übersicht')
 
+st.sidebar.page_link('Start.py', label='Startseite')
+st.sidebar.page_link('pages/1_Dashboard.py', label='Dashboard')
+st.sidebar.page_link('pages/2_Modulgruppen-Übersicht.py', label='Modulgruppen-Übersicht')
+
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Institution/kestmo_App")  # switch drive 
 data_manager.load_user_data(
         session_state_key='data_df', 
