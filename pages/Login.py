@@ -16,8 +16,6 @@ if st.session_state.get("username"):
         initial_value=pd.DataFrame(),
         parse_dates=['timestamp']
     )
-else:
-    pass
 
 # initialize the login manager
 login_manager = LoginManager(data_manager)
