@@ -190,11 +190,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
     if user_key not in st.session_state:
         st.session_state[user_key] = pd.DataFrame(columns=spalten)
 
-    data_manager.save_data(
-        session_state_key=user_key,
-        file_name=f"{user_key}.csv",
-        initial_value=pd.DataFrame(columns=["Prüfung", "Datum", "Gewichtung", "Note"])
-    )
+    data_manager.save_data(session_state_key=user_key)
 
     st.subheader(f'{fach_name}')
 
@@ -261,7 +257,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                     # Lösche die Zeile basierend auf dem Index
                     st.session_state[user_key] = st.session_state[user_key].drop(idx)
                     # Speichere die aktualisierten Daten
-                    data_manager.save_data(session_state_key=user_key)
+                    data_manager.save_data(user_key)
                     st.rerun()
     else:
         col1, col2 = st.columns(2)
