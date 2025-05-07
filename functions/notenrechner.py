@@ -190,7 +190,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
     if user_key not in st.session_state:
         st.session_state[user_key] = pd.DataFrame(columns=spalten)
 
-    data_manager.register_user_data(
+    data_manager.save_data(
         session_state_key=user_key,
         file_name=f"{user_key}.csv",
         initial_value=pd.DataFrame(columns=["Prüfung", "Datum", "Gewichtung", "Note"])
