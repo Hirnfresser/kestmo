@@ -173,8 +173,13 @@ grundlagenpraktika = {
         'ects': 3}}
 
 
+from utils.data_manager import DataManager
 
-def manage_pruefungen(fach_name, session_state_key, spalten, data_manager):
+# Globale Initialisierung des DataManager
+data_manager = DataManager(fs_protocol="webdav", fs_root_folder="path/to/switchdrive")
+
+
+def manage_pruefungen(fach_name, session_state_key, spalten):
     if "username" not in st.session_state:
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
@@ -312,7 +317,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten, data_manager):
                 
 
 
-def schnitt_modulgruppe(modulgruppen, modulgruppe_name, data_manager):
+def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
     if "username" not in st.session_state:
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
@@ -377,7 +382,7 @@ def schnitt_modulgruppe(modulgruppen, modulgruppe_name, data_manager):
         st.info("Noch keine gültigen Noten vorhanden.")
 
 
-def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name, data_manager):
+def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
     if "username" not in st.session_state:
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
