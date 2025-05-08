@@ -28,14 +28,6 @@ st.sidebar.page_link('Start.py', label='Startseite')
 st.sidebar.page_link('pages/1_Dashboard.py', label='Dashboard')
 st.sidebar.page_link('pages/2_Modulgruppen-Uebersicht.py', label='Modulgruppen-Uebersicht')
 
-data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Institution/kestmo_App")  # switch drive 
-data_manager.load_user_data(
-        session_state_key='data_df', 
-        file_name='data.csv', 
-        initial_value=pd.DataFrame(),
-        parse_dates=['timestamp']
-    )
-
 semesters = ['Herbstsemester 1', 'Fruehlingssemester 1',
              'Herbstsemester 2', 'Fruehlingssemester 2', 
              'Herbstsemester 3', 'Fruehlingssemester 3']
