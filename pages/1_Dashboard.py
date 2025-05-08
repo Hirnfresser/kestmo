@@ -1,6 +1,4 @@
 import streamlit as st
-from utils.data_manager import DataManager
-import pandas as pd
 
 # ====== Start Login Block ======
 from utils.login_manager import LoginManager
@@ -8,21 +6,6 @@ LoginManager().go_to_login('pages/Login.py')
 # ====== End Login Block ======
 
 st.title('Dashboard')
-
-data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Institution/kestmo_App")  # switch drive 
-
-# load the data from the persistent storage into the session state
-data_manager.load_user_data(
-    session_state_key='Pruefungen', 
-    file_name='Pruefungen.csv', 
-    initial_value=pd.DataFrame(),
-    parse_dates=['timestamp'])
-
-data_manager.load_user_data(
-    session_state_key='Grundlagenprakikum_Ja_Nein',
-    file_name='Grundlagenpraktikum_Ja_Nein.csv',
-    initial_value=pd.DataFrame(),
-    parse_dates=['timestamp'])
 
 st.sidebar.page_link('Start.py', label='Startseite')
 st.sidebar.page_link('pages/1_Dashboard.py', label='Dashboard')

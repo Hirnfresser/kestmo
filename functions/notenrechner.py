@@ -334,29 +334,15 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
 
                 st.rerun()
 
-         # **Verwaltung der Erfolgsmeldungen**
-        added_flag_key = f'{session_state_key}_added'
-        deleted_flag_key = f'{session_state_key}_deleted'
-
-        # Wenn eine Pruefung hinzugefuegt wurde, zeige eine Erfolgsmeldung
-        if added_flag_key in st.session_state and st.session_state[added_flag_key]:
-            st.success('Pruefung erfolgreich hinzugefuegt!')
-            del st.session_state[added_flag_key]
-
-        # Wenn eine Pruefung gelöscht wurde, zeige eine Erfolgsmeldung
-        if deleted_flag_key in st.session_state and st.session_state[deleted_flag_key]:
-            st.success('Pruefung erfolgreich gelöscht!')
-            del st.session_state[deleted_flag_key]
-
+                    
+            flag_key = f'{session_state_key}_erfolgreich_hinzugefuegt'
         
-        flag_key = f'{session_state_key}_erfolgreich_hinzugefuegt'
-        
-        if flag_key in st.session_state and st.session_state[flag_key]:
-            platzhalter = st.empty()
-            platzhalter.success('Pruefung erfolgreich hinzugefuegt!')                
-            time.sleep(3)
-            platzhalter.empty()   
-            del st.session_state[flag_key]
+            if flag_key in st.session_state and st.session_state[flag_key]:
+                platzhalter = st.empty()
+                platzhalter.success('Pruefung erfolgreich hinzugefuegt!')                
+                time.sleep(3)
+                platzhalter.empty()   
+                del st.session_state[flag_key]
                 
 
 
