@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 from utils.helpers import nav_page
 
-st.title('Hier folgt das Loginfenster')
+st.title('Login & Registrierung')
 
 st.sidebar.page_link('Start.py', label='Startseite')
 st.sidebar.page_link('pages/1_Dashboard.py', label='Dashboard')

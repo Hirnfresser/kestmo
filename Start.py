@@ -1,7 +1,4 @@
 import streamlit as st
-from utils.data_manager import DataManager
-from utils.login_manager import LoginManager
-import pandas as pd
 
 st.title("Notenrechner - kestmo")
 st.sidebar.page_link('Start.py', label='Startseite')
@@ -22,5 +19,3 @@ st.write('''Diese App wurde von folgenden Studierenden der ZHAW LSFM entwickelt:
 - **Noëlle Keel**
 - **Sara Stettler**
 ''')
-
-
