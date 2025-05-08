@@ -180,7 +180,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
 
-    # Nutzerspezifischer Schlüssel
+    # Nutzerspezifischer Schluessel
     user_key = f"{st.session_state['username']}_{session_state_key}"
 
     if user_key not in st.session_state:
@@ -188,7 +188,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
 
     # Initialisierung (nur wenn noch nicht geladen)
     if "Pruefungen" not in st.session_state:
-        st.session_state["Pruefungen"] = pd.DataFrame(columns=["Prüfung", "Datum", "Gewichtung", "Note"])
+        st.session_state["Pruefungen"] = pd.DataFrame(columns=["Pruefung", "Datum", "Gewichtung", "Note"])
 
 
     st.subheader(f'{fach_name}')
@@ -204,13 +204,13 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
 
     gesamt_gewichtung = df_gewichtete_note['Gewichtung'].sum()
     if gesamt_gewichtung > 100:
-        st.warning('Die Gesamtgewichtung überschreitet 100%. Bitte die Eingaben überprüfen.')
+        st.warning('Die Gesamtgewichtung ueberschreitet 100%. Bitte die Eingaben ueberpruefen.')
     if 0 < gesamt_gewichtung <= 100:
         st.session_state[gewichtete_note_key] = (df_gewichtete_note['Note'] * 
                                                  df_gewichtete_note['Gewichtung']).sum() / gesamt_gewichtung
 
 
-    # Anzeigen der Prüfungsdaten
+    # Anzeigen der Pruefungsdaten
     if not df_gewichtete_note.empty:
         data = df_gewichtete_note.copy()
         data['Datum'] = pd.to_datetime(data['Datum']).dt.strftime('%d.%m.%Y')
@@ -233,7 +233,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
 
         col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 2, 5])
         with col1:
-            st.markdown("**Prüfung**")
+            st.markdown("**Pruefung**")
         with col2:
             st.markdown("**Datum**")
         with col3:
@@ -241,12 +241,12 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
         with col4:
             st.markdown("**Note**")
 
-        # Tabelle mit einem Löschen-Button für jede Zeile
+        # Tabelle mit einem Löschen-Button fuer jede Zeile
         for idx, row in data.iterrows():
             col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 2, 5])
 
         with col1:
-            st.write(row['Prüfung'])
+            st.write(row['Pruefung'])
         with col2:
             st.write(row['Datum'])
         with col3:
@@ -254,8 +254,8 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
         with col4:
             st.write(row['Note'])
         with col5:
-            if st.button(f'{row["Prüfung"]} löschen', key=f"delete_{user_key}_{idx}"):
-                # Zeile aus Session-DataFrame löschen und Index zurücksetzen
+            if st.button(f'{row["Pruefung"]} löschen', key=f"delete_{user_key}_{idx}"):
+                # Zeile aus Session-DataFrame löschen und Index zuruecksetzen
                 st.session_state[user_key] = st.session_state[user_key].drop(row.name).reset_index(drop=True)
 
                 # Auch die Zeile aus dem globalen DataFrame löschen
@@ -264,7 +264,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                 # Speichern
                 data_manager.save_data("Pruefungen")
 
-                # **Hinzufügen von einem Flag für das erfolgreiche Löschen**
+                # **Hinzufuegen von einem Flag fuer das erfolgreiche Löschen**
                 st.session_state[f'{session_state_key}_deleted'] = True
                 st.rerun()
 
@@ -274,12 +274,12 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
             st.write('**Maximale ECTS des Moduls**')
         with col2:
             st.write(ects)
-        st.info('Noch keine Prüfungen eingetragen. Bitte eine Prüfung hinzufügen.')
+        st.info('Noch keine Pruefungen eingetragen. Bitte eine Pruefung hinzufuegen.')
 
     with st.form(key=f'form_{user_key}'):
         col1, col2, col3, col4 = st.columns([1.2, 0.8, 1, 0.8])
         with col1:
-            name = st.text_input('Prüfungsname')
+            name = st.text_input('Pruefungsname')
         with col2:
             datum = st.date_input('Datum')
         with col3:
@@ -287,15 +287,15 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
         with col4:
             note = st.number_input('Note', min_value=1.0, max_value=6.0, step=0.05)
 
-        submit_button = st.form_submit_button('Prüfung hinzufügen')
+        submit_button = st.form_submit_button('Pruefung hinzufuegen')
 
         if submit_button:
             fehler = []
             if not name.strip():
-                fehler.append('Bitte einen Namen für die Prüfung eingeben.')
+                fehler.append('Bitte einen Namen fuer die Pruefung eingeben.')
             neue_gesamt_gewichtung = df_gewichtete_note['Gewichtung'].sum() + gewichtung
             if neue_gesamt_gewichtung > 100:
-                fehler.append('Die Gesamtgewichtung der Prüfungen darf 100% nicht überschreiten.')
+                fehler.append('Die Gesamtgewichtung der Pruefungen darf 100% nicht ueberschreiten.')
             if gewichtung <= 0:
                 fehler.append('Die Gewichtung muss größer als 0 sein.')
             if gewichtung > 100:
@@ -308,7 +308,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                     st.error(msg)
             else:
                 new_row = pd.DataFrame({
-                    'Prüfung': [name], 
+                    'Pruefung': [name], 
                     'Datum': [datum], 
                     'Gewichtung': [gewichtung], 
                     'Note': [note]})
@@ -316,7 +316,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                 st.session_state[user_key] = pd.concat([st.session_state[user_key], new_row], ignore_index=True)
                 result_dict = {
                     "username": st.session_state["username"],
-                    "Prüfung": name,
+                    "Pruefung": name,
                     "Datum": datum,
                     "Gewichtung": gewichtung,
                     "Note": note,
@@ -324,12 +324,12 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
         
                 # Sicherstellen, dass "Pruefungen" existiert, bevor wir Daten anhängen
                 if "Pruefungen" not in st.session_state:
-                    st.session_state["Pruefungen"] = pd.DataFrame(columns=["Prüfung", "Datum", "Gewichtung", "Note"])
+                    st.session_state["Pruefungen"] = pd.DataFrame(columns=["Pruefung", "Datum", "Gewichtung", "Note"])
                 
 
                 data_manager.append_record(session_state_key='Pruefungen', record_dict=result_dict)
                 
-                # **Hinzufügen eines Flags für erfolgreiches Hinzufügen**
+                # **Hinzufuegen eines Flags fuer erfolgreiches Hinzufuegen**
                 st.session_state[f'{session_state_key}_added'] = True
 
                 st.rerun()
@@ -338,14 +338,14 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
         added_flag_key = f'{session_state_key}_added'
         deleted_flag_key = f'{session_state_key}_deleted'
 
-        # Wenn eine Prüfung hinzugefügt wurde, zeige eine Erfolgsmeldung
+        # Wenn eine Pruefung hinzugefuegt wurde, zeige eine Erfolgsmeldung
         if added_flag_key in st.session_state and st.session_state[added_flag_key]:
-            st.success('Prüfung erfolgreich hinzugefügt!')
+            st.success('Pruefung erfolgreich hinzugefuegt!')
             del st.session_state[added_flag_key]
 
-        # Wenn eine Prüfung gelöscht wurde, zeige eine Erfolgsmeldung
+        # Wenn eine Pruefung gelöscht wurde, zeige eine Erfolgsmeldung
         if deleted_flag_key in st.session_state and st.session_state[deleted_flag_key]:
-            st.success('Prüfung erfolgreich gelöscht!')
+            st.success('Pruefung erfolgreich gelöscht!')
             del st.session_state[deleted_flag_key]
 
         
@@ -353,7 +353,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
         
         if flag_key in st.session_state and st.session_state[flag_key]:
             platzhalter = st.empty()
-            platzhalter.success('Prüfung erfolgreich hinzugefügt!')                
+            platzhalter.success('Pruefung erfolgreich hinzugefuegt!')                
             time.sleep(3)
             platzhalter.empty()   
             del st.session_state[flag_key]
@@ -380,7 +380,7 @@ def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
     gesamt_ects = 0
 
     for fachname, infos in faecher.items():
-        # Nutzerspezifischer Schlüssel für das Fach
+        # Nutzerspezifischer Schluessel fuer das Fach
         key = f"{user_key_prefix}_{infos['key']}"
         ects = infos['ects']
 
@@ -416,7 +416,7 @@ def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
             st.write('**Maximale ECTS der Modulgruppe**')
         with col2:
             st.write(max_ects)
-        st.info("Noch keine gültigen Noten vorhanden.")
+        st.info("Noch keine gueltigen Noten vorhanden.")
 
 
 def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
@@ -424,7 +424,7 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
 
-    # Nutzerspezifischer Schlüssel
+    # Nutzerspezifischer Schluessel
     user_key = f"{st.session_state['username']}_grundlagenpraktikum_{grundlagenpraktika_name}"
 
 
