@@ -3,7 +3,7 @@ import streamlit as st
 st.title("Notenrechner - kestmo")
 st.sidebar.page_link('Start.py', label='Startseite')
 st.sidebar.page_link('pages/1_Dashboard.py', label='Dashboard')
-st.sidebar.page_link('pages/2_Modulgruppen-Übersicht.py', label='Modulgruppen-Übersicht')
+st.sidebar.page_link('pages/2_Modulgruppen-Uebersicht.py', label='Modulgruppen-Uebersicht')
 
 st.markdown('''Die clevere Noten-App für BMLD-Studierende!
 Behalte jederzeit den Überblick über deine Leistungen: Der Notenrechner zeigt dir alle bisherigen Noten, berechnet deinen aktuellen Gesamtschnitt sowie die Durchschnittswerte je Modulgruppe – natürlich inklusive ECTS-Gewichtung.
