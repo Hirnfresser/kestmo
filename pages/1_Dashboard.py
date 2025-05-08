@@ -11,7 +11,7 @@ st.title('Dashboard')
 
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Institution/kestmo_App")  # switch drive 
 
-    # load the data from the persistent storage into the session state
+# load the data from the persistent storage into the session state
 data_manager.load_user_data(
     session_state_key='Pruefungen', 
     file_name='Pruefungen.csv', 

@@ -266,6 +266,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
 
                 # **Hinzufügen von einem Flag für das erfolgreiche Löschen**
                 st.session_state[f'{session_state_key}_deleted'] = True
+                st.rerun()
 
     else:
         col1, col2 = st.columns(2)
@@ -331,6 +332,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                 # **Hinzufügen eines Flags für erfolgreiches Hinzufügen**
                 st.session_state[f'{session_state_key}_added'] = True
 
+                st.rerun()
 
          # **Verwaltung der Erfolgsmeldungen**
         added_flag_key = f'{session_state_key}_added'
