@@ -85,7 +85,7 @@ class LoginManager:
             register_title: Der Titel des Registrierungs-Tabs.
         """
         if st.session_state.get("authentication_status") is True:
-            self.authenticator.logout()
+            return True
         else:
             login_tab, register_tab = st.tabs((login_title, register_title))
             with login_tab:

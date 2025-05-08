@@ -172,6 +172,7 @@ grundlagenpraktika = {
     'Gesellschaft, Kultur und Gesundheit': {
         'ects': 3}}
 
+data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Institution/kestmo_App")
 
 
 def manage_pruefungen(fach_name, session_state_key, spalten):
@@ -184,6 +185,11 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
 
     if user_key not in st.session_state:
         st.session_state[user_key] = pd.DataFrame(columns=spalten)
+
+    # Initialisierung (nur wenn noch nicht geladen)
+    if "Pruefungen" not in st.session_state:
+        st.session_state["Pruefungen"] = pd.DataFrame(columns=["Prüfung", "Datum", "Gewichtung", "Note"])
+
 
     st.subheader(f'{fach_name}')
 
@@ -239,19 +245,28 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
         for idx, row in data.iterrows():
             col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 2, 5])
 
-            with col1:
-                st.write(row['Prüfung'])
-            with col2:
-                st.write(row['Datum'])
-            with col3:
-                st.write(f"{row['Gewichtung']} %")
-            with col4:
-                st.write(row['Note'])
-            with col5:
-                if st.button(f'{row["Prüfung"]} löschen', key=f"delete_{user_key}_{idx}"):
-                    # Lösche die Zeile basierend auf dem Index
-                    st.session_state[user_key] = st.session_state[user_key].drop(idx)
-                    st.rerun()
+        with col1:
+            st.write(row['Prüfung'])
+        with col2:
+            st.write(row['Datum'])
+        with col3:
+            st.write(f"{row['Gewichtung']} %")
+        with col4:
+            st.write(row['Note'])
+        with col5:
+            if st.button(f'{row["Prüfung"]} löschen', key=f"delete_{user_key}_{idx}"):
+                # Zeile aus Session-DataFrame löschen und Index zurücksetzen
+                st.session_state[user_key] = st.session_state[user_key].drop(row.name).reset_index(drop=True)
+
+                # Auch die Zeile aus dem globalen DataFrame löschen
+                st.session_state["Pruefungen"] = st.session_state["Pruefungen"].drop(row.name).reset_index(drop=True)
+
+                # Speichern
+                data_manager.save_data("Pruefungen")
+
+                # **Hinzufügen von einem Flag für das erfolgreiche Löschen**
+                st.session_state[f'{session_state_key}_deleted'] = True
+
     else:
         col1, col2 = st.columns(2)
         with col1:
@@ -296,13 +311,44 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                     'Datum': [datum], 
                     'Gewichtung': [gewichtung], 
                     'Note': [note]})
-                st.session_state[user_key] = pd.concat([st.session_state[user_key], new_row], ignore_index=True)
-                st.success('Prüfung erfolgreich hinzugefügt!')
                 
-                st.session_state[f'{session_state_key}_erfolgreich_hinzugefuegt'] = True
-                st.rerun()
-                        
+                st.session_state[user_key] = pd.concat([st.session_state[user_key], new_row], ignore_index=True)
+                result_dict = {
+                    "username": st.session_state["username"],
+                    "Prüfung": name,
+                    "Datum": datum,
+                    "Gewichtung": gewichtung,
+                    "Note": note,
+                    "timestamp": pd.Timestamp.now()}
+        
+                # Sicherstellen, dass "Pruefungen" existiert, bevor wir Daten anhängen
+                if "Pruefungen" not in st.session_state:
+                    st.session_state["Pruefungen"] = pd.DataFrame(columns=["Prüfung", "Datum", "Gewichtung", "Note"])
+                
+
+                data_manager.append_record(session_state_key='Pruefungen', record_dict=result_dict)
+                
+                # **Hinzufügen eines Flags für erfolgreiches Hinzufügen**
+                st.session_state[f'{session_state_key}_added'] = True
+
+
+         # **Verwaltung der Erfolgsmeldungen**
+        added_flag_key = f'{session_state_key}_added'
+        deleted_flag_key = f'{session_state_key}_deleted'
+
+        # Wenn eine Prüfung hinzugefügt wurde, zeige eine Erfolgsmeldung
+        if added_flag_key in st.session_state and st.session_state[added_flag_key]:
+            st.success('Prüfung erfolgreich hinzugefügt!')
+            del st.session_state[added_flag_key]
+
+        # Wenn eine Prüfung gelöscht wurde, zeige eine Erfolgsmeldung
+        if deleted_flag_key in st.session_state and st.session_state[deleted_flag_key]:
+            st.success('Prüfung erfolgreich gelöscht!')
+            del st.session_state[deleted_flag_key]
+
+        
         flag_key = f'{session_state_key}_erfolgreich_hinzugefuegt'
+        
         if flag_key in st.session_state and st.session_state[flag_key]:
             platzhalter = st.empty()
             platzhalter.success('Prüfung erfolgreich hinzugefügt!')                
@@ -379,7 +425,6 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
     # Nutzerspezifischer Schlüssel
     user_key = f"{st.session_state['username']}_grundlagenpraktikum_{grundlagenpraktika_name}"
 
-    storage_key = f"{user_key}_liste"
 
     grundlagenpraktikum = grundlagenpraktika.get(grundlagenpraktika_name)
     if not grundlagenpraktikum:
@@ -392,9 +437,6 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
     if user_key not in st.session_state:
         st.session_state[user_key] = {"status": "Nein", "ects": 0}
 
-    if storage_key not in st.session_state:
-        st.session_state[storage_key] = []
-
     status = st.radio(
         '**Bestanden?**',
         ["Ja", "Nein"],
@@ -406,12 +448,15 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         st.session_state[user_key]["status"] = "Ja"
         st.session_state[user_key]["ects"] = grundlagenpraktikum["ects"]
         st.success(f"{grundlagenpraktika_name} bestanden (+{grundlagenpraktikum['ects']} ECTS)")
+        
+    
     
 
     else:
         st.session_state[user_key]["status"] = "Nein"
         st.session_state[user_key]["ects"] = 0
         st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
+
 
 
 def trennlinie_duenn(farbe="#888", hoehe="1px", abstand="20px"):
