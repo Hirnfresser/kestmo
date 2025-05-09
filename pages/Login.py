@@ -6,9 +6,10 @@ from utils.helpers import nav_page
 
 st.title('Login & Registrierung')
 
-st.sidebar.button('Startseite', on_click=lambda: st.experimental_set_query_params(page="Start"))
-st.sidebar.button('Dashboard', on_click=lambda: st.experimental_set_query_params(page="1_Dashboard"))
-st.sidebar.button('Modulgruppen-Uebersicht', on_click=lambda: st.experimental_set_query_params(page="2_Modulgruppen-Uebersicht"))
+st.sidebar.page_link('Start.py', label='Startseite')
+st.sidebar.page_link('pages/1_Dashboard.py', label='Dashboard')
+st.sidebar.page_link('pages/2_Modulgruppen-Übersicht.py', label='Modulgruppen-Übersicht')
+
 
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Institution/kestmo_App")  # Switchdrive
 
