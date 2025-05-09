@@ -1,5 +1,5 @@
 #ganzer .secrets Ordner wird ignoriert
-.streamlit/
+.streamlit/secrets.toml
 
 
 # Byte-compiled / optimized / DLL files
