@@ -242,7 +242,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
             st.markdown("**Note**")
 
         # Tabelle mit einem Löschen-Button fuer jede Zeile
-        for idx, row in data.iterrows():
+        for idx, row in data.itemrows():
             col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 2, 5])
 
         with col1:
