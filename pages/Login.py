@@ -19,16 +19,6 @@ login_manager = LoginManager(data_manager)
 if login_manager.login_register():  # Login erfolgreich
     st.success("Login erfolgreich! Daten werden geladen...")
 
-    # Nutzerspezifische Daten laden
-    # pruefungen_key = "Pruefungen"
-    # praktika_key = "Grundlagenpraktika"
-
-    # Initialisierung der Daten im session_state, falls nicht vorhanden
-    # if pruefungen_key not in st.session_state:
-      #  st.session_state[pruefungen_key] = pd.DataFrame(columns=["Prüfung", "Datum", "Gewichtung", "Note"])
-    # if praktika_key not in st.session_state:
-      #  st.session_state[praktika_key] = pd.DataFrame(columns=["Grundlagenpraktikum", "Status", "ECTS", "timestamp"])
-
     # Daten aus Dateien laden, falls sie existieren
     try:
         data_manager.load_user_data(
