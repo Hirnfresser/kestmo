@@ -186,11 +186,6 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
     if user_key not in st.session_state:
         st.session_state[user_key] = pd.DataFrame(columns=spalten)
 
-    # Initialisierung (nur wenn noch nicht geladen)
-    if "Pruefungen" not in st.session_state:
-        st.session_state["Pruefungen"] = pd.DataFrame(columns=["Pruefung", "Datum", "Gewichtung", "Note"])
-
-
     st.subheader(f'{fach_name}')
 
     ects = ects_dict.get(fach_name)
@@ -275,7 +270,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
             st.write('**Maximale ECTS des Moduls**')
         with col2:
             st.write(ects)
-        st.info('Noch keine Pr&uuml;fungen eingetragen. Bitte eine Pruefung hinzufuegen.')
+        st.info('Noch keine Pruefungen eingetragen. Bitte eine Pruefung hinzufuegen.')
 
     with st.form(key=f'form_{user_key}'):
         col1, col2, col3, col4 = st.columns([1.2, 0.8, 1, 0.8])
