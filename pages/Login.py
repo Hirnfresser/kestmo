@@ -20,8 +20,8 @@ if login_manager.login_register():  # Login erfolgreich
     st.success("Login erfolgreich! Daten werden geladen...")
 
     # Nutzerspezifische Daten laden
-    pruefungen_key = "Pruefungen"
-    praktika_key = "Grundlagenpraktika"
+    # pruefungen_key = "Pruefungen"
+    # praktika_key = "Grundlagenpraktika"
 
     # Initialisierung der Daten im session_state, falls nicht vorhanden
     # if pruefungen_key not in st.session_state:
@@ -32,7 +32,7 @@ if login_manager.login_register():  # Login erfolgreich
     # Daten aus Dateien laden, falls sie existieren
     try:
         data_manager.load_user_data(
-            session_state_key=pruefungen_key,
+            session_state_key="Pruefungen",
             file_name="Pruefungen.csv",
             initial_value=pd.DataFrame()
         )
@@ -41,7 +41,7 @@ if login_manager.login_register():  # Login erfolgreich
 
     try:
         data_manager.load_user_data(
-            session_state_key=praktika_key,
+            session_state_key="Grundlagenpraktika",
             file_name="Grundlagenpraktika.csv",
             initial_value=pd.DataFrame()
         )
@@ -49,4 +49,4 @@ if login_manager.login_register():  # Login erfolgreich
         st.warning("Die Datei 'Grundlagenpraktika.csv' wurde nicht gefunden. Es wird ein leerer DataFrame verwendet.")
 
     # Weiterleitung zur Dashboard-Seite
-    nav_page('Dashboard')
+    #nav_page('Dashboard')

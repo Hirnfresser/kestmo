@@ -241,32 +241,33 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
         with col4:
             st.markdown("**Note**")
 
+
         # Tabelle mit einem Löschen-Button fuer jede Zeile
-        for idx, row in data.itemrows():
+        for idx, row in data.iterrows():
             col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 2, 5])
 
-        with col1:
-            st.write(row['Pruefung'])
-        with col2:
-            st.write(row['Datum'])
-        with col3:
-            st.write(f"{row['Gewichtung']} %")
-        with col4:
-            st.write(row['Note'])
-        with col5:
-            if st.button(f'{row["Pruefung"]} löschen', key=f"delete_{user_key}_{idx}"):
+            with col1:
+                st.write(row["Pruefung"])
+            with col2:
+                st.write(row["Datum"])
+            with col3:
+                st.write(f"{row['Gewichtung']} %")
+            with col4:
+                st.write(row['Note'])
+            with col5:
+                if st.button(f'{row["Pruefung"]} löschen', key=f"delete_{user_key}_{idx}"):
                 # Zeile aus Session-DataFrame löschen und Index zuruecksetzen
-                st.session_state[user_key] = st.session_state[user_key].drop(row.name).reset_index(drop=True)
+                    st.session_state[user_key] = st.session_state[user_key].drop(row.name).reset_index(drop=True)
 
                 # Auch die Zeile aus dem globalen DataFrame löschen
-                st.session_state["Pruefungen"] = st.session_state["Pruefungen"].drop(row.name).reset_index(drop=True)
+                    st.session_state["Pruefungen"] = st.session_state["Pruefungen"].drop(row.name).reset_index(drop=True)
 
                 # Speichern
-                data_manager.save_data("Pruefungen")
+                    data_manager.save_data("Pruefungen")
 
                 # **Hinzufuegen von einem Flag fuer das erfolgreiche Löschen**
-                st.session_state[f'{session_state_key}_deleted'] = True
-                st.rerun()
+                    st.session_state[f'{session_state_key}_deleted'] = True
+                    st.rerun()
 
     else:
         col1, col2 = st.columns(2)
@@ -274,7 +275,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
             st.write('**Maximale ECTS des Moduls**')
         with col2:
             st.write(ects)
-        st.info('Noch keine Pruefungen eingetragen. Bitte eine Pruefung hinzufuegen.')
+        st.info('Noch keine Pr&uuml;fungen eingetragen. Bitte eine Pruefung hinzufuegen.')
 
     with st.form(key=f'form_{user_key}'):
         col1, col2, col3, col4 = st.columns([1.2, 0.8, 1, 0.8])
