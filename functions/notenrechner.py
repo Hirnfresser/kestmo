@@ -308,19 +308,23 @@ def manage_pruefungen(fach_name, session_state_key, spalten):
                     st.error(msg)
             else:
                 new_row = pd.DataFrame({
+                    'username': [st.session_state["username"]],
                     'Pruefung': [name], 
                     'Datum': [datum], 
                     'Gewichtung': [gewichtung], 
-                    'Note': [note]})
+                    'Note': [note],
+                    'timestamp': [pd.Timestamp.now()]})
                 
                 st.session_state[user_key] = pd.concat([st.session_state[user_key], new_row], ignore_index=True)
+                
                 result_dict = {
                     "username": st.session_state["username"],
                     "Pruefung": name,
                     "Datum": datum,
                     "Gewichtung": gewichtung,
                     "Note": note,
-                    "timestamp": pd.Timestamp.now()}
+                    "timestamp": pd.Timestamp.now()
+                    }
         
                 # Sicherstellen, dass "Pruefungen" existiert, bevor wir Daten anhängen
                 if "Pruefungen" not in st.session_state:
