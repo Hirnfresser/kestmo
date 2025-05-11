@@ -24,17 +24,17 @@ if login_manager.login_register():  # Login erfolgreich
     praktika_key = "Grundlagenpraktika"
 
     # Initialisierung der Daten im session_state, falls nicht vorhanden
-    if pruefungen_key not in st.session_state:
-        st.session_state[pruefungen_key] = pd.DataFrame(columns=["Prüfung", "Datum", "Gewichtung", "Note"])
-    if praktika_key not in st.session_state:
-        st.session_state[praktika_key] = pd.DataFrame(columns=["Grundlagenpraktikum", "Status", "ECTS", "timestamp"])
+    # if pruefungen_key not in st.session_state:
+      #  st.session_state[pruefungen_key] = pd.DataFrame(columns=["Prüfung", "Datum", "Gewichtung", "Note"])
+    # if praktika_key not in st.session_state:
+      #  st.session_state[praktika_key] = pd.DataFrame(columns=["Grundlagenpraktikum", "Status", "ECTS", "timestamp"])
 
     # Daten aus Dateien laden, falls sie existieren
     try:
         data_manager.load_user_data(
             session_state_key=pruefungen_key,
             file_name="Pruefungen.csv",
-            initial_value=st.session_state[pruefungen_key]
+            initial_value=pd.DataFrame()
         )
     except FileNotFoundError:
         st.warning("Die Datei 'Pruefungen.csv' wurde nicht gefunden. Es wird ein leerer DataFrame verwendet.")
@@ -43,7 +43,7 @@ if login_manager.login_register():  # Login erfolgreich
         data_manager.load_user_data(
             session_state_key=praktika_key,
             file_name="Grundlagenpraktika.csv",
-            initial_value=st.session_state[praktika_key]
+            initial_value=pd.DataFrame()
         )
     except FileNotFoundError:
         st.warning("Die Datei 'Grundlagenpraktika.csv' wurde nicht gefunden. Es wird ein leerer DataFrame verwendet.")
