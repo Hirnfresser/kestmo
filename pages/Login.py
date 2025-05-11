@@ -29,14 +29,14 @@ if login_manager.login_register():  # Login erfolgreich
     except FileNotFoundError:
         st.warning("Die Datei 'Pruefungen.csv' wurde nicht gefunden. Es wird ein leerer DataFrame verwendet.")
 
-    try:
-        data_manager.load_user_data(
-            session_state_key="Grundlagenpraktika",
-            file_name="Grundlagenpraktika.csv",
-            initial_value=pd.DataFrame()
-        )
-    except FileNotFoundError:
-        st.warning("Die Datei 'Grundlagenpraktika.csv' wurde nicht gefunden. Es wird ein leerer DataFrame verwendet.")
+    #try:
+     #   data_manager.load_user_data(
+      #      session_state_key="Grundlagenpraktika",
+       #     file_name="Grundlagenpraktika.csv",
+        #    initial_value=pd.DataFrame()
+        #)
+    #except FileNotFoundError:
+    #    st.warning("Die Datei 'Grundlagenpraktika.csv' wurde nicht gefunden. Es wird ein leerer DataFrame verwendet.")
 
     # Weiterleitung zur Dashboard-Seite
     nav_page('Dashboard')
