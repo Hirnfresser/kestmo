@@ -39,4 +39,5 @@ if login_manager.login_register():  # Login erfolgreich
     #    st.warning("Die Datei 'Grundlagenpraktika.csv' wurde nicht gefunden. Es wird ein leerer DataFrame verwendet.")
 
     # Weiterleitung zur Dashboard-Seite
+    st.dataframe(st.session_state.Pruefungen)
     nav_page('Dashboard')
