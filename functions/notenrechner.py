@@ -155,7 +155,7 @@ modulgruppen = {
             'Forschungsmethoden 2': {'key': 'pruefungen_fors2', 'ects': ects_dict['Forschungsmethoden 2']}}}}
 
 
-grundlagenpraktika = {
+grundlagenpraktika_dict = {
     'Grundlagenpraktikum 1': {
         'ects': 3},
     'Grundlagenpraktikum 2': {
@@ -184,11 +184,10 @@ def manage_pruefungen(fach_name, session_state_key, spalten
 
     ects = ects_dict.get(fach_name)
     df_pruefungen = st.session_state["Pruefungen"]
-    #pruefungen_fach = df_pruefungen[df_pruefungen['Pruefung'] == fach_name]
 
     # Anzeigen der Pruefungsdaten
     if not df_pruefungen.empty:
-        data = df_pruefungen
+        data = df_pruefungen[df_pruefungen['Modul'] == fach_name]
         #farbe = 'green' if st.session_state[gewichtete_note_key] >= 4 else 'red'
 
         #col1, col2, col3 = st.columns([2, 1, 1])
@@ -229,7 +228,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten
                 st.write(row['Note'])
             with col5:
                if st.button(f'{row["Pruefung"]} löschen', key=f"delete_{df_pruefungen}_{idx}"):
-                ####df_pruefungen ist allgemein! Muss Fachspezifischen Schlüssel haben!!
+###########df_pruefungen ist allgemein! Muss Fachspezifischen Schlüssel haben!!
 
                 #Zeile aus Session-DataFrame löschen und Index zuruecksetzen
                     st.session_state["Pruefungen"] = st.session_state["Pruefungen"].drop(row.name).reset_index(drop=True)
@@ -264,8 +263,12 @@ def manage_pruefungen(fach_name, session_state_key, spalten
             fehler = []
             if not name.strip():
                 fehler.append('Bitte einen Namen fuer die Pruefung eingeben.')
-            neue_gesamt_gewichtung = df_pruefungen['Gewichtung'].sum() + gewichtung
-            if neue_gesamt_gewichtung > 100:
+            # Überprüfen, ob die Spalte "Gewichtung" existiert und der DataFrame nicht leer ist
+            if "Gewichtung" in df_pruefungen.columns and not df_pruefungen.empty:
+                gesamt_gewichtung = data['Gewichtung'].sum() + gewichtung
+            else:
+                gesamt_gewichtung = gewichtung # Nur die neue Gewichtung verwenden, wenn keine Daten vorhanden sind
+            if gesamt_gewichtung > 100:
                 fehler.append('Die Gesamtgewichtung der Pruefungen darf 100% nicht ueberschreiten.')
             if gewichtung <= 0:
                 fehler.append('Die Gewichtung muss größer als 0 sein.')
@@ -280,6 +283,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten
             else:
                 result_dict = {
                     "username": st.session_state["username"],
+                    "Modul": fach_name,
                     "Pruefung": name,
                     "Datum": datum,
                     "Gewichtung": gewichtung,
@@ -369,38 +373,72 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
 
-    # Nutzerspezifischer Schluessel
-    user_key = f"{st.session_state['username']}_grundlagenpraktikum_{grundlagenpraktika_name}"
-
-
-    grundlagenpraktikum = grundlagenpraktika.get(grundlagenpraktika_name)
-    if not grundlagenpraktikum:
-        st.error(f"Grundlagenpraktikum '{grundlagenpraktika_name}' nicht gefunden.")
-        return
+    ects = grundlagenpraktika_dict.get(grundlagenpraktika_name)   # Holen der ECTS aus dem 'grundlagenpraktika_dict'
+    df_grundlagenpraktika = st.session_state["Grundlagenpraktika"] # vollständiger DataFrame
 
     st.subheader(grundlagenpraktika_name)
-
-    # Status speichern (Bestanden/Nicht bestanden)
-    if user_key not in st.session_state:
-        st.session_state[user_key] = {"status": "Nein", "ects": 0}
-
-    status = st.radio(
-        '**Bestanden?**',
-        ["Ja", "Nein"],
-        key=f'{user_key}_status',
-        index=0 if st.session_state[user_key]["status"] == "Nein" else 1
-    )
-
-    if status == "Ja":
-        st.session_state[user_key]["status"] = "Ja"
-        st.session_state[user_key]["ects"] = grundlagenpraktikum["ects"]
-        st.success(f"{grundlagenpraktika_name} bestanden (+{grundlagenpraktikum['ects']} ECTS)")
-        
     
-    else:
-        st.session_state[user_key]["status"] = "Nein"
-        st.session_state[user_key]["ects"] = 0
-        st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
+    if not df_grundlagenpraktika.empty:
+         
+         # Filtere den DataFrame für das angegebene Praktikum
+        df_grundlagenpraktika = df_grundlagenpraktika[df_grundlagenpraktika['Modul'] == grundlagenpraktika_name] # Gefilterter DataFrame für das angegebene Praktikum
+        
+        # Der passende Eintrag (aktuelle Status und Index)
+        aktueller_status = df_grundlagenpraktika.iloc[0]['Status']
+        index = df_grundlagenpraktika.index[0]
+
+        # Funktion, die beim Ändern des Radio-Status ausgeführt wird
+        def update_status():
+            neuer_status = st.session_state.get('status', aktueller_status)  # aktueller Status aus Session State
+            timestamp = pd.Timestamp.now()
+
+            # Überschreibe den bestehenden Eintrag im DataFrame im Session-State
+            st.session_state["Grundlagenpraktika"].loc[index, 'Status'] = neuer_status
+            st.session_state["Grundlagenpraktika"].loc[index, 'timestamp'] = timestamp
+            
+            # Änderungen im CSV-File speichern
+            data_manager.save_data(session_state_key="Grundlagenpraktika")
+
+    
+        # Radio-Box mit vorausgewähltem aktuellem Status, mit on-change-Callback
+        status = st.radio(
+            '**Bestanden?**',
+            ["Ja", "Nein"],
+            index=0 if aktueller_status == "Ja" else 1,
+            on_change = update_status # Wird automatisch aufgerufen, wenn der Wert sich ändert
+        )
+    
+        # Feedback je nach Status
+        if status == "Ja":
+            st.success(f"{grundlagenpraktika_name} bestanden (+ {ects} ECTS)")
+        else:
+            st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {ects} ECTS)")
+
+    else: 
+        # neuen Eintrag erstellen, wenn noch keiner existiert
+        neuer_eintrag = {
+        "username": st.session_state["username"],
+        "Modul": grundlagenpraktika_name,
+        "Status": "Nein", 
+        "timestamp": pd.Timestamp.now()
+        }
+
+        data_manager.append_record(session_state_key='Grundlagenpraktika', record_dict=neuer_eintrag)
+        st.rerun()
+
+    #else:
+     #   st.session_state["Grundlagenpraktika"] = {
+      #      "status": "Nein",
+       #     "ects": 0
+        #}
+    
+        # Feedback anzeigen
+        #if status == "Ja":
+         #   st.success(f"{grundlagenpraktika_name} bestanden (+{grundlagenpraktikum['ects']} ECTS)")
+        #else:
+         #   st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
+
+    
 
 
 
