@@ -228,7 +228,6 @@ def manage_pruefungen(fach_name, session_state_key, spalten
                 st.write(row['Note'])
             with col5:
                if st.button(f'{row["Pruefung"]} löschen', key=f"delete_{df_pruefungen}_{idx}"):
-###########df_pruefungen ist allgemein! Muss Fachspezifischen Schlüssel haben!!
 
                 #Zeile aus Session-DataFrame löschen und Index zuruecksetzen
                     st.session_state["Pruefungen"] = st.session_state["Pruefungen"].drop(row.name).reset_index(drop=True)
@@ -283,6 +282,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten
             else:
                 result_dict = {
                     "username": st.session_state["username"],
+                    "semester": st.session_state["semester"],
                     "Modul": fach_name,
                     "Pruefung": name,
                     "Datum": datum,
@@ -392,7 +392,7 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
             neuer_status = st.session_state.get('status', aktueller_status)  # aktueller Status aus Session State
             timestamp = pd.Timestamp.now()
 
-            # Überschreibe den bestehenden Eintrag im DataFrame im Session-State
+############### Überschreibe den bestehenden Eintrag im DataFrame im Session-State
             st.session_state["Grundlagenpraktika"].loc[index, 'Status'] = neuer_status
             st.session_state["Grundlagenpraktika"].loc[index, 'timestamp'] = timestamp
             
@@ -418,6 +418,7 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         # neuen Eintrag erstellen, wenn noch keiner existiert
         neuer_eintrag = {
         "username": st.session_state["username"],
+        "semester": st.session_state["semester"],
         "Modul": grundlagenpraktika_name,
         "Status": "Nein", 
         "timestamp": pd.Timestamp.now()
@@ -439,23 +440,3 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
          #   st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
 
     
-
-
-
-def trennlinie_duenn(farbe="#888", hoehe="1px", abstand="20px"):
-    st.markdown(
-        f"""
-        <div style='margin:{abstand} 0;'>
-            <hr style='height:{hoehe}; border:none; background-color:{farbe};'>
-        </div>
-        """,
-        unsafe_allow_html=True)
-    
-def trennlinie_stark(farbe="#888", hoehe="3px", abstand="30px"):
-    st.markdown(
-        f"""
-        <div style='margin:{abstand} 0;'>
-            <hr style='height:{hoehe}; border:none; background-color:{farbe}; border-radius:2px;'>
-        </div>
-        """,
-        unsafe_allow_html=True)

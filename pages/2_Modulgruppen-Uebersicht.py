@@ -5,8 +5,8 @@ from functions.notenrechner import schnitt_modulgruppe
 from functions.notenrechner import modulgruppen
 from functions.notenrechner import grundlagenpraktikum
 from functions.notenrechner import grundlagenpraktika_dict
-from functions.notenrechner import trennlinie_duenn
-from functions.notenrechner import trennlinie_stark
+from functions.design import trennlinie_duenn
+from functions.design import trennlinie_stark
 from utils.data_manager import DataManager
 
 # ====== Start Login Block ======
