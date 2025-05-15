@@ -14,38 +14,17 @@ st.write('username', st.session_state.get('username','-'))
 
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Institution/kestmo_App")  # Switchdrive
 
-st.write(data_manager.info())
-
 # initialize the login manager
 login_manager = LoginManager(data_manager)
 
-if login_manager.login_register():  # Login erfolgreich
-    st.write(st.session_state['username'])
-    st.success("Login erfolgreich! Daten werden geladen...")
+data_manager.load_user_data(
+    session_state_key="Pruefungen",
+    file_name="Pruefungen.csv",
+    initial_value=pd.DataFrame()
+    )
 
-    # Daten aus Dateien laden, falls sie existieren
-    try:
-        data_manager.load_user_data(
-            session_state_key="Pruefungen",
-            file_name="Pruefungen.csv",
-            initial_value=pd.DataFrame()
-            )
-        st.write("Pruefungen.csv geladen")
-        
-    except FileNotFoundError:
-        st.warning("Die Datei 'Pruefungen.csv' wurde nicht gefunden. Es wird ein leerer DataFrame verwendet.")
-
-    try:
-        data_manager.load_user_data(
-            session_state_key="Grundlagenpraktika",
-            file_name="Grundlagenpraktika.csv",
-            initial_value=pd.DataFrame()
-        )
-        st.write("Grundlagenpraktika.csv geladen")
-    except FileNotFoundError:
-        st.warning("Die Datei 'Grundlagenpraktika.csv' wurde nicht gefunden. Es wird ein leerer DataFrame verwendet.")
-
-    # Weiterleitung zur Dashboard-Seite
-   # nav_page('Dashboard')
-
-st.write(data_manager.info())
+data_manager.load_user_data(
+    session_state_key="Grundlagenpraktika",
+    file_name="Grundlagenpraktika.csv",
+    initial_value=pd.DataFrame()
+)
