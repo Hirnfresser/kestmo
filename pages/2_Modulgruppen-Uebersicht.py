@@ -30,6 +30,8 @@ data_manager.load_user_data(
         parse_dates=['timestamp']
     )
 
+st.write(data_manager.info())
+
 
 semesters = ['Herbstsemester 1', 'Fruehlingssemester 1', 
              'Herbstsemester 2', 'Fruehlingssemester 2', 

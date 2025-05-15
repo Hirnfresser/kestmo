@@ -69,6 +69,32 @@ class DataManager:
         self.app_data_reg = {}
         self.user_data_reg = {}
 
+    def info(self):
+        """
+        Returns a formatted string with information about the DataManager's internal state.
+        
+        Returns:
+            str: A string containing information about filesystem, root folder, and data registries
+        """
+        info_str = f"DataManager Information:\n"
+        info_str += f"  Filesystem Type: {type(self.fs).__name__}\n"
+        info_str += f"  Root Folder: {self.fs_root_folder}\n"
+        info_str += f"  App Data Registry: {len(self.app_data_reg)} entries\n"
+        
+        if self.app_data_reg:
+            info_str += "    Registered app data files:\n"
+            for key in self.app_data_reg:
+                info_str += f"      - {key}\n"
+        
+        info_str += f"  User Data Registry: {len(self.user_data_reg)} entries\n"
+        
+        if self.user_data_reg:
+            info_str += "    Registered user data files:\n"
+            for key in self.user_data_reg:
+                info_str += f"      - {key}\n"
+                
+        return info_str
+
     @staticmethod
     def _init_filesystem(protocol: str):
         """
