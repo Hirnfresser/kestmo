@@ -393,9 +393,8 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
             (df_grundlagenpraktika['Modul'] == grundlagenpraktika_name) &
             (df_grundlagenpraktika['semester'] == aktuelles_semester)
         ]
-        
-        aktueller_status = df_grundlagenpraktika.iloc[0]['Status']
-        index = df_grundlagenpraktika.index[0] 
+        aktueller_status = df_grundlagenpraktika['Status'] 
+        index=df_grundlagenpraktika.index[0]
 
          # Funktion, die beim Aendern des Radio-Status ausgeführt wird
         def update_status():
