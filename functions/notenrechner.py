@@ -7,7 +7,7 @@ from utils.data_manager import DataManager
 
 ects_dict = {
     'Gesundheitsdaten': 2,
-    'Hämatologie und Hämostaseologie 1': 2,
+    'Haematologie und Haemostaseologie 1': 2,
     'Medizinische Mikrobiologie 1': 3,
     'Systemerkrankungen': 3,
     'Biologie 1': 5,
@@ -17,7 +17,7 @@ ects_dict = {
     'Englisch 1': 2,
     'Gesellschaftlicher Kontext und Sprache 1': 2,
     
-    'Hämatologie und Hämostaseologie 2': 3,
+    'Haematologie und Haemostaseologie 2': 3,
     'Histologie und Zytologie 1': 3,
     'Klinische Chemie und Immunologie 1': 2,
     'Medizinische Mikrobiologie 2': 2,
@@ -31,13 +31,13 @@ ects_dict = {
     
     'Klinische Chemie und Immunologie 2': 2,
     'Histologie und Zytologie 2': 2,
-    'Immunhämatologie und Transfusionsmedizin 1': 2,
+    'Immunhaematologie und Transfusionsmedizin 1': 2,
     'Herz-Kreislauf- und respiratorische Erkrankungen': 3,
-    'Neoplasien und hämatologische Erkrankungen': 3,
+    'Neoplasien und haematologische Erkrankungen': 3,
     'Selbst- und patientennahe Diagnostik': 3,
     'Hygiene und Epidemiologie': 2,
     
-    'Immunhämatologie und Transfusionsmedizin 2': 2,
+    'Immunhaematologie und Transfusionsmedizin 2': 2,
     'Medizinische Genetik 1': 2,
     'Bewegungsapparat und neurologische Erkrankungen': 3,
     'Endokrinologie, Stoffwechselerkrankungen': 3,
@@ -49,7 +49,7 @@ ects_dict = {
     'Kommunikation 1': 4,
     'Evidenzbasiertes Handeln': 2,
     'Entwicklungen, Trends, Unternehmertum': 2,
-    'Gesundheitsförderung und Prävention': 2,
+    'Gesundheitsförderung und Praevention': 2,
     'Projektarbeit': 6,
     'Forschungsmethoden 1': 2,
     
@@ -65,7 +65,7 @@ modulgruppen = {
         'ects': 10,
         'faecher': {
             'Gesundheitsdaten': {'key': 'pruefungen_geda', 'ects': ects_dict['Gesundheitsdaten']},
-            'Hämatologie und Hämostaseologie 1': {'key': 'pruefungen_hähä1', 'ects': ects_dict['Hämatologie und Hämostaseologie 1']},
+            'Haematologie und Haemostaseologie 1': {'key': 'pruefungen_haehae1', 'ects': ects_dict['Haematologie und Haemostaseologie 1']},
             'Medizinische Mikrobiologie 1': {'key': 'pruefungen_memi1', 'ects': ects_dict['Medizinische Mikrobiologie 1']},
             'Systemerkrankungen': {'key': 'pruefungen_sys', 'ects': ects_dict['Systemerkrankungen']}}},
     'Wissenschaftliche Grundlagen 1': {
@@ -84,7 +84,7 @@ modulgruppen = {
     'Basiswissen BMLD 2': {
         'ects': 12,
         'faecher': {
-            'Hämatologie und Hämostaseologie 2': {'key': 'pruefungen_hähä2', 'ects': ects_dict['Hämatologie und Hämostaseologie 2']},
+            'Haematologie und Haemostaseologie 2': {'key': 'pruefungen_haehae2', 'ects': ects_dict['Haematologie und Haemostaseologie 2']},
             'Histologie und Zytologie 1': {'key': 'pruefungen_histo1', 'ects': ects_dict['Histologie und Zytologie 1']},
             'Klinische Chemie und Immunologie 1': {'key': 'pruefungen_kcl1', 'ects': ects_dict['Klinische Chemie und Immunologie 1']},
             'Medizinische Mikrobiologie 2': {'key': 'pruefungen_memi2', 'ects': ects_dict['Medizinische Mikrobiologie 2']}}},
@@ -104,19 +104,19 @@ modulgruppen = {
         'faecher': {
             'Klinische Chemie und Immunologie 2': {'key': 'pruefungen_kcl2', 'ects': ects_dict['Klinische Chemie und Immunologie 2']},
             'Histologie und Zytologie 2': {'key': 'pruefungen_histo2', 'ects': ects_dict['Histologie und Zytologie 2']},
-            'Immunhämatologie und Transfusionsmedizin 1': {'key': 'pruefungen_iht1', 'ects': ects_dict['Immunhämatologie und Transfusionsmedizin 1']}}},
+            'Immunhaematologie und Transfusionsmedizin 1': {'key': 'pruefungen_iht1', 'ects': ects_dict['Immunhaematologie und Transfusionsmedizin 1']}}},
     'Analyseprozesse und Labordiagnostik 2':{
         'ects': 11,
         'faecher': {
             'Herz-Kreislauf- und respiratorische Erkrankungen': {'key': 'pruefungen_hkr', 'ects': ects_dict['Herz-Kreislauf- und respiratorische Erkrankungen']},
-            'Neoplasien und hämatologische Erkrankungen': {'key': 'pruefungen_neopla', 'ects': ects_dict['Neoplasien und hämatologische Erkrankungen']},
+            'Neoplasien und haematologische Erkrankungen': {'key': 'pruefungen_neopla', 'ects': ects_dict['Neoplasien und haematologische Erkrankungen']},
             'Selbst- und patientennahe Diagnostik': {'key': 'pruefungen_spd', 'ects': ects_dict['Selbst- und patientennahe Diagnostik']},
             'Hygiene und Epidemiologie': {'key': 'pruefungen_hyep', 'ects': ects_dict['Hygiene und Epidemiologie']}}},
     
     'Analyseprozesse und Labordiagnostik 3':{
         'ects': 10,
         'faecher': {
-            'Immunhämatologie und Transfusionsmedizin 2': {'key': 'pruefungen_iht2', 'ects': ects_dict['Immunhämatologie und Transfusionsmedizin 2']},
+            'Immunhaematologie und Transfusionsmedizin 2': {'key': 'pruefungen_iht2', 'ects': ects_dict['Immunhaematologie und Transfusionsmedizin 2']},
             'Medizinische Genetik 1': {'key': 'pruefungen_gen1', 'ects': ects_dict['Medizinische Genetik 1']},
             'Bewegungsapparat und neurologische Erkrankungen': {'key': 'pruefungen_bene', 'ects': ects_dict['Bewegungsapparat und neurologische Erkrankungen']},
             'Endokrinologie, Stoffwechselerkrankungen': {'key': 'pruefungen_endo', 'ects': ects_dict['Endokrinologie, Stoffwechselerkrankungen']}}},
@@ -134,7 +134,7 @@ modulgruppen = {
             'Kommunikation 1': {'key': 'pruefungen_kom1', 'ects': ects_dict['Kommunikation 1']},
             'Evidenzbasiertes Handeln': {'key': 'pruefungen_ebh', 'ects': ects_dict['Evidenzbasiertes Handeln']},
             'Entwicklungen, Trends, Unternehmertum': {'key': 'pruefungen_etu', 'ects': ects_dict['Entwicklungen, Trends, Unternehmertum']},
-            'Gesundheitsförderung und Prävention': {'key': 'pruefungen_gepr', 'ects': ects_dict['Gesundheitsförderung und Prävention']}}},
+            'Gesundheitsförderung und Praevention': {'key': 'pruefungen_gepr', 'ects': ects_dict['Gesundheitsförderung und Praevention']}}},
     'Angewandte Forschung': {
         'ects': 8,
         'faecher': {
@@ -314,7 +314,7 @@ def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
 
-    # Nutzerspezifischer Präfix
+    # Nutzerspezifischer Praefix
     user_key_prefix = st.session_state["username"]
 
     gruppe = modulgruppen.get(modulgruppe_name)
@@ -374,7 +374,7 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         return
 
     ects = grundlagenpraktika_dict.get(grundlagenpraktika_name, {}).get('ects')   # Holen der Anzahl-ECTS aus dem 'grundlagenpraktika_dict'
-    df_grundlagenpraktika = st.session_state["Grundlagenpraktika"] # vollständiger DataFrame
+    df_grundlagenpraktika = st.session_state["Grundlagenpraktika"] # vollstaendiger DataFrame
 
     st.subheader(grundlagenpraktika_name)
     
@@ -387,7 +387,7 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         aktueller_status = df_grundlagenpraktika.iloc[0]['Status']
         index = df_grundlagenpraktika.index[0]
 
-        # Funktion, die beim Ändern des Radio-Status ausgeführt wird
+        # Funktion, die beim Aendern des Radio-Status ausgeführt wird
         def update_status():
             neuer_status = st.session_state.get(f"{grundlagenpraktika_name}_status", aktueller_status)  # aktueller Status aus Session State
             timestamp = pd.Timestamp.now()
@@ -396,17 +396,17 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
             st.session_state["Grundlagenpraktika"].loc[index, 'Status'] = neuer_status
             st.session_state["Grundlagenpraktika"].loc[index, 'timestamp'] = timestamp
             
-            # Änderungen im CSV-File speichern
+            # Aenderungen im CSV-File speichern
             data_manager.save_data(session_state_key="Grundlagenpraktika")
 
     
-        # Radio-Box mit vorausgewähltem aktuellem Status, mit on-change-Callback
+        # Radio-Box mit vorausgewaehltem aktuellem Status, mit on-change-Callback
         status = st.radio(
             '**Bestanden?**',
             ["Ja", "Nein"],
             index=0 if aktueller_status == "Ja" else 1,
             key=f"{grundlagenpraktika_name}_status",
-            on_change = update_status # Wird automatisch aufgerufen, wenn der Wert sich ändert
+            on_change = update_status # Wird automatisch aufgerufen, wenn der Wert sich aendert
         )
     
 ########## Feedback je nach Status

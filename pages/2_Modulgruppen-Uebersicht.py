@@ -36,7 +36,7 @@ semesters = ['Herbstsemester 1', 'Fruehlingssemester 1',
 if 'semester' not in st.session_state:
     st.session_state.semester = semesters[0]
 
-semester = st.selectbox('Wähle das Semester', semesters, index=semesters.index(st.session_state.semester))
+semester = st.selectbox('Waehle das Semester', semesters, index=semesters.index(st.session_state.semester))
 
 if semester != st.session_state.semester:
     st.session_state.semester = semester
@@ -60,8 +60,8 @@ if semester == 'Herbstsemester 1':
         trennlinie_duenn()
 
         manage_pruefungen(
-            fach_name='Hämatologie und Hämostaseologie 1',
-            session_state_key='pruefungen_hähä1',
+            fach_name='Haematologie und Haemostaseologie 1',
+            session_state_key='pruefungen_haehae1',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
 
         trennlinie_duenn()
@@ -143,8 +143,8 @@ elif semester == 'Fruehlingssemester 1':
         trennlinie_stark()
 
         manage_pruefungen(
-            fach_name='Hämatologie und Hämostaseologie 2',
-            session_state_key='pruefungen_hähä2',
+            fach_name='Haematologie und Haemostaseologie 2',
+            session_state_key='pruefungen_haehae2',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
         trennlinie_duenn()
@@ -249,7 +249,7 @@ if semester == 'Herbstsemester 2':
         trennlinie_duenn()
 
         manage_pruefungen(
-            fach_name='Immunhämatologie und Transfusionsmedizin 1',
+            fach_name='Immunhaematologie und Transfusionsmedizin 1',
             session_state_key='pruefungen_iht1',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
 
@@ -267,7 +267,7 @@ if semester == 'Herbstsemester 2':
         trennlinie_duenn()
 
         manage_pruefungen(
-            fach_name='Neoplasien und hämatologische Erkrankungen',
+            fach_name='Neoplasien und haematologische Erkrankungen',
             session_state_key='pruefungen_neopla',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
@@ -299,7 +299,7 @@ if semester == 'Fruehlingssemester 2':
         trennlinie_stark()
 
         manage_pruefungen(
-            fach_name='Immunhämatologie und Transfusionsmedizin 2',
+            fach_name='Immunhaematologie und Transfusionsmedizin 2',
             session_state_key='pruefungen_iht2',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
   
@@ -391,7 +391,7 @@ if semester == 'Herbstsemester 3':
         trennlinie_duenn()
 
         manage_pruefungen(
-            fach_name='Gesundheitsförderung und Prävention',
+            fach_name='Gesundheitsförderung und Praevention',
             session_state_key='pruefungen_gepr',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
