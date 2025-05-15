@@ -172,7 +172,7 @@ grundlagenpraktika_dict = {
     'Gesellschaft, Kultur und Gesundheit': {
         'ects': 3}}
 
-data_manager = DataManager()
+data_manager = DataManager
 
 def manage_pruefungen(fach_name, session_state_key, spalten
                       ):
@@ -375,19 +375,10 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
 
     ects = grundlagenpraktika_dict.get(grundlagenpraktika_name, {}).get('ects')   # Holen der Anzahl-ECTS aus dem 'grundlagenpraktika_dict'
     df_grundlagenpraktika = st.session_state["Grundlagenpraktika"] # vollstaendiger DataFrame
-    
 
     st.subheader(grundlagenpraktika_name)
-
-
-    aktuelles_semester = st.session_state['semester']
-
-    #Für die if-Prüfung unten die Variabel festlegen, ob schon Daten für das entsrpechende Modul ihm entsprechenden Semester vorliegen
-    eintrag_existiert = not df_grundlagenpraktika[
-        (df_grundlagenpraktika["Modul"] == grundlagenpraktika_name) &
-        (df_grundlagenpraktika["semester"] == aktuelles_semester)].empty
     
-    if eintrag_existiert:
+    if not df_grundlagenpraktika.empty:
          
         # Filtere den DataFrame für das angegebene Praktikum
         df_grundlagenpraktika = df_grundlagenpraktika[df_grundlagenpraktika['Modul'] == grundlagenpraktika_name] # Gefilterter DataFrame für das angegebene Praktikum
@@ -418,7 +409,7 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
             on_change = update_status # Wird automatisch aufgerufen, wenn der Wert sich aendert
         )
     
-        #Feedback je nach Status
+########## Feedback je nach Status
         if status == "Ja":
             st.success(f"{grundlagenpraktika_name} bestanden (+ {ects} ECTS)")
         else:
@@ -448,3 +439,5 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
          #   st.success(f"{grundlagenpraktika_name} bestanden (+{grundlagenpraktikum['ects']} ECTS)")
         #else:
          #   st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
+
+    
