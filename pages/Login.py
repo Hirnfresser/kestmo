@@ -30,6 +30,7 @@ if login_manager.login_register():  # Login erfolgreich
             file_name="Pruefungen.csv",
             initial_value=pd.DataFrame()
             )
+        st.write("Pruefungen.csv geladen")
         
     except FileNotFoundError:
         st.warning("Die Datei 'Pruefungen.csv' wurde nicht gefunden. Es wird ein leerer DataFrame verwendet.")
@@ -40,6 +41,7 @@ if login_manager.login_register():  # Login erfolgreich
             file_name="Grundlagenpraktika.csv",
             initial_value=pd.DataFrame()
         )
+        st.write("Grundlagenpraktika.csv geladen")
     except FileNotFoundError:
         st.warning("Die Datei 'Grundlagenpraktika.csv' wurde nicht gefunden. Es wird ein leerer DataFrame verwendet.")
 
