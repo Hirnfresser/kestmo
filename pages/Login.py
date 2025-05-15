@@ -45,3 +45,5 @@ if login_manager.login_register():  # Login erfolgreich
 
     # Weiterleitung zur Dashboard-Seite
    # nav_page('Dashboard')
+
+st.write(data_manager.info())
