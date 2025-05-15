@@ -68,7 +68,7 @@ class DataManager:
         self.fs = self._init_filesystem(fs_protocol)
         self.app_data_reg = {}
         self.user_data_reg = {}
-        self.username = {}
+        self.username = None
 
     def info(self):
         """
@@ -168,7 +168,7 @@ class DataManager:
         for key in self.user_data_reg:
             st.session_state.pop(key)
         self.user_data_reg = {}
-
+        self.username = None
 
     def load_user_data(self, session_state_key, file_name, initial_value=None, **load_args):
         """
