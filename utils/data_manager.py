@@ -197,6 +197,8 @@ class DataManager:
             raise ValueError(f"DataManager: Key {session_state_key} not found in session state")
         
         dh = self._get_data_handler()
+        print(self.data_reg)
+        print(session_state_key, self.data_reg[session_state_key])
         dh.save(self.data_reg[session_state_key], st.session_state[session_state_key])
 
     def save_all_data(self):
