@@ -389,10 +389,10 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
 
         # Funktion, die beim Ändern des Radio-Status ausgeführt wird
         def update_status():
-            neuer_status = st.session_state.get('status', aktueller_status)  # aktueller Status aus Session State
+            neuer_status = st.session_state.get(f"{grundlagenpraktika_name}_status", aktueller_status)  # aktueller Status aus Session State
             timestamp = pd.Timestamp.now()
 
-############### Überschreibe den bestehenden Eintrag im DataFrame im Session-State
+            # Überschreibe den bestehenden Eintrag im DataFrame im Session-State
             st.session_state["Grundlagenpraktika"].loc[index, 'Status'] = neuer_status
             st.session_state["Grundlagenpraktika"].loc[index, 'timestamp'] = timestamp
             
@@ -405,10 +405,11 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
             '**Bestanden?**',
             ["Ja", "Nein"],
             index=0 if aktueller_status == "Ja" else 1,
+            key=f"{grundlagenpraktika_name}_status",
             on_change = update_status # Wird automatisch aufgerufen, wenn der Wert sich ändert
         )
     
-        # Feedback je nach Status
+########## Feedback je nach Status
         if status == "Ja":
             st.success(f"{grundlagenpraktika_name} bestanden (+ {ects} ECTS)")
         else:
