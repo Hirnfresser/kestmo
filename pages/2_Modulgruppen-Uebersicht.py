@@ -30,7 +30,7 @@ data_manager.load_user_data(
         parse_dates=['timestamp']
     )
 try:
-    st.write(data_manager.info())
+    st.markdown(data_manager.info())
 except Exception as e:
     st.write(f"Error: {e}")
 

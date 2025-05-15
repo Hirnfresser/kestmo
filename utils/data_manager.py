@@ -83,15 +83,15 @@ class DataManager:
         
         if self.app_data_reg:
             info_str += "    Registered app data files:\n"
-            for key in self.app_data_reg:
-                info_str += f"      - {key}\n"
+            for key, value in self.app_data_reg.items():
+                info_str += f"      - {key}: {value}\n"
         
         info_str += f"  User Data Registry: {len(self.user_data_reg)} entries\n"
         
         if self.user_data_reg:
             info_str += "    Registered user data files:\n"
-            for key in self.user_data_reg:
-                info_str += f"      - {key}\n"
+            for key, value in self.user_data_reg.items():
+                info_str += f"      - {key}: {value}\n"
                 
         return info_str
 
