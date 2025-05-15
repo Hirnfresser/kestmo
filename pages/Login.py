@@ -24,7 +24,8 @@ if login_manager.login_register():  # Login erfolgreich
         data_manager.load_user_data(
             session_state_key="Pruefungen",
             file_name="Pruefungen.csv",
-            initial_value=pd.DataFrame()
+            initial_value=pd.DataFrame(),
+            encoding="latin1"
             )
         
     except FileNotFoundError:
