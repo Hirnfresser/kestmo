@@ -172,7 +172,6 @@ grundlagenpraktika_dict = {
     'Gesellschaft, Kultur und Gesundheit': {
         'ects': 3}}
 
-data_manager = DataManager
 
 def manage_pruefungen(fach_name, session_state_key, spalten
                       ):

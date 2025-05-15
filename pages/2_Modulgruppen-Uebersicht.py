@@ -9,8 +9,6 @@ from functions.design import trennlinie_duenn
 from functions.design import trennlinie_stark
 from utils.data_manager import DataManager
 
-data_manager = DataManager()
-
 # ====== Start Login Block ======
 from utils.login_manager import LoginManager
 LoginManager().go_to_login('pages/Login.py') 
