@@ -184,14 +184,10 @@ def manage_pruefungen(fach_name, session_state_key, spalten
 
     ects = ects_dict.get(fach_name)
     df_pruefungen = st.session_state["Pruefungen"]
-    aktuelles_semester = st.session_state["semester"]
 
     # Anzeigen der Pruefungsdaten
     if not df_pruefungen.empty:
-        data = df_pruefungen[(df_pruefungen['Modul'] == fach_name) &
-                             (df_pruefungen['semester'] == aktuelles_semester)
-                             ]
-
+        data = df_pruefungen[df_pruefungen['Modul'] == fach_name]
         #farbe = 'green' if st.session_state[gewichtete_note_key] >= 4 else 'red'
 
         #col1, col2, col3 = st.columns([2, 1, 1])
@@ -264,11 +260,8 @@ def manage_pruefungen(fach_name, session_state_key, spalten
 
         if submit_button:
             fehler = []
-
-            # auf falsche oder inkorrekte Eingaben überprüfen
             if not name.strip():
                 fehler.append('Bitte einen Namen fuer die Pruefung eingeben.')
-
             # Überprüfen, ob die Spalte "Gewichtung" existiert und der DataFrame nicht leer ist
             if "Gewichtung" in df_pruefungen.columns and not df_pruefungen.empty:
                 gesamt_gewichtung = data['Gewichtung'].sum() + gewichtung
@@ -280,7 +273,6 @@ def manage_pruefungen(fach_name, session_state_key, spalten
                 fehler.append('Die Gewichtung muss größer als 0 sein.')
             if gewichtung > 100:
                 fehler.append('Die Gewichtung darf nicht grösser als 100 sein.')
-
             if note < 1 or note > 6:
                 fehler.append('Die Note muss zwischen 1.0 und 6.0 liegen.')
             
@@ -387,16 +379,15 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
     st.subheader(grundlagenpraktika_name)
     
     if not df_grundlagenpraktika.empty:
-        # Filterung nach Modulname und Semester
-        aktuelles_semester = st.session_state.get("semester")
-        df_grundlagenpraktika = df_grundlagenpraktika[
-            (df_grundlagenpraktika['Modul'] == grundlagenpraktika_name) &
-            (df_grundlagenpraktika['semester'] == aktuelles_semester)
-        ]
-        aktueller_status = df_grundlagenpraktika['Status'] 
-        index=df_grundlagenpraktika.index[0]
+         
+        # Filtere den DataFrame für das angegebene Praktikum
+        df_grundlagenpraktika = df_grundlagenpraktika[df_grundlagenpraktika['Modul'] == grundlagenpraktika_name] # Gefilterter DataFrame für das angegebene Praktikum
+        
+        # Der passende Eintrag (aktuelle Status und Index)
+        aktueller_status = df_grundlagenpraktika.iloc[0]['Status']
+        index = df_grundlagenpraktika.index[0]
 
-         # Funktion, die beim Aendern des Radio-Status ausgeführt wird
+        # Funktion, die beim Aendern des Radio-Status ausgeführt wird
         def update_status():
             neuer_status = st.session_state.get(f"{grundlagenpraktika_name}_status", aktueller_status)  # aktueller Status aus Session State
             timestamp = pd.Timestamp.now()
@@ -418,13 +409,13 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
             on_change = update_status # Wird automatisch aufgerufen, wenn der Wert sich aendert
         )
     
-        #Feedback je nach Status
+########## Feedback je nach Status
         if status == "Ja":
             st.success(f"{grundlagenpraktika_name} bestanden (+ {ects} ECTS)")
         else:
             st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {ects} ECTS)")
 
-    else:
+    else: 
         # neuen Eintrag erstellen, wenn noch keiner existiert
         neuer_eintrag = {
         "username": st.session_state["username"],
@@ -437,37 +428,16 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         data_manager.append_record(session_state_key='Grundlagenpraktika', record_dict=neuer_eintrag)
         st.rerun()
 
-
-
     #else:
-        # Der passende Eintrag (aktuelle Status und Index)
-     #   aktueller_status = df_grundlagenpraktika.iloc[0]['Status']
-      #  index = df_grundlagenpraktika.index[0]
-
-        # Funktion, die beim Aendern des Radio-Status ausgeführt wird
-       # def update_status():
-        #    neuer_status = st.session_state.get(f"{grundlagenpraktika_name}_status", aktueller_status)  # aktueller Status aus Session State
-         #   timestamp = pd.Timestamp.now()
-
-            # Überschreibe den bestehenden Eintrag im DataFrame im Session-State
-          #  st.session_state["Grundlagenpraktika"].loc[index, 'Status'] = neuer_status
-           # st.session_state["Grundlagenpraktika"].loc[index, 'timestamp'] = timestamp
-            
-            # Aenderungen im CSV-File speichern
-            #data_manager.save_data(session_state_key="Grundlagenpraktika")
-
+     #   st.session_state["Grundlagenpraktika"] = {
+      #      "status": "Nein",
+       #     "ects": 0
+        #}
     
-        # Radio-Box mit vorausgewaehltem aktuellem Status, mit on-change-Callback
-     #   status = st.radio(
-      #      '**Bestanden?**',
-       #     ["Ja", "Nein"],
-        #    index=0 if aktueller_status == "Ja" else 1,
-         #   key=f"{grundlagenpraktika_name}_status",
-          #  on_change = update_status # Wird automatisch aufgerufen, wenn der Wert sich aendert
-        #)
-    
-        #Feedback je nach Status
+        # Feedback anzeigen
         #if status == "Ja":
-         #   st.success(f"{grundlagenpraktika_name} bestanden (+ {ects} ECTS)")
+         #   st.success(f"{grundlagenpraktika_name} bestanden (+{grundlagenpraktikum['ects']} ECTS)")
         #else:
-         #   st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {ects} ECTS)")
+         #   st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
+
+    
