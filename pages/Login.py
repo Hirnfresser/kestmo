@@ -16,6 +16,7 @@ data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Institution/kes
 
 # initialize the login manager
 login_manager = LoginManager(data_manager)
+login_manager.login_register()
 
 data_manager.load_user_data(
     session_state_key="Pruefungen",
