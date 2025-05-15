@@ -378,11 +378,26 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
 
     st.subheader(grundlagenpraktika_name)
     
-    if not df_grundlagenpraktika.empty:
-         
-        # Filtere den DataFrame für das angegebene Praktikum
-        df_grundlagenpraktika = df_grundlagenpraktika[df_grundlagenpraktika['Modul'] == grundlagenpraktika_name] # Gefilterter DataFrame für das angegebene Praktikum
-        
+    # Filterung nach Modulname und Semester
+    aktuelles_semester = st.session_state.get("semester")
+    df_grundlagenpraktika = df_grundlagenpraktika[
+        (df_grundlagenpraktika['Modul'] == grundlagenpraktika_name) &
+        (df_grundlagenpraktika['semester'] == aktuelles_semester)
+    ] 
+
+    if df_grundlagenpraktika.empty:
+        # neuen Eintrag erstellen, wenn noch keiner existiert
+        neuer_eintrag = {
+        "username": st.session_state["username"],
+        "semester": st.session_state["semester"],
+        "Modul": grundlagenpraktika_name,
+        "Status": "Nein", 
+        "timestamp": pd.Timestamp.now()
+        }
+
+        data_manager.append_record(session_state_key='Grundlagenpraktika', record_dict=neuer_eintrag)
+        st.rerun()
+    else:
         # Der passende Eintrag (aktuelle Status und Index)
         aktueller_status = df_grundlagenpraktika.iloc[0]['Status']
         index = df_grundlagenpraktika.index[0]
@@ -414,30 +429,3 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
             st.success(f"{grundlagenpraktika_name} bestanden (+ {ects} ECTS)")
         else:
             st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {ects} ECTS)")
-
-    else: 
-        # neuen Eintrag erstellen, wenn noch keiner existiert
-        neuer_eintrag = {
-        "username": st.session_state["username"],
-        "semester": st.session_state["semester"],
-        "Modul": grundlagenpraktika_name,
-        "Status": "Nein", 
-        "timestamp": pd.Timestamp.now()
-        }
-
-        data_manager.append_record(session_state_key='Grundlagenpraktika', record_dict=neuer_eintrag)
-        st.rerun()
-
-    #else:
-     #   st.session_state["Grundlagenpraktika"] = {
-      #      "status": "Nein",
-       #     "ects": 0
-        #}
-    
-        # Feedback anzeigen
-        #if status == "Ja":
-         #   st.success(f"{grundlagenpraktika_name} bestanden (+{grundlagenpraktikum['ects']} ECTS)")
-        #else:
-         #   st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
-
-    
