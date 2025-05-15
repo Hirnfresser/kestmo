@@ -68,6 +68,7 @@ class DataManager:
         self.fs = self._init_filesystem(fs_protocol)
         self.app_data_reg = {}
         self.user_data_reg = {}
+        self.username = {}
 
     def info(self):
         """
@@ -160,6 +161,15 @@ class DataManager:
         st.session_state[session_state_key] = data
         self.app_data_reg[session_state_key] = file_name
 
+    def del_all_user_data(self):
+        """
+        Delete all user-specific data from the session state and data registry.
+        """
+        for key in self.user_data_reg:
+            st.session_state.pop(key)
+        self.user_data_reg = {}
+
+
     def load_user_data(self, session_state_key, file_name, initial_value=None, **load_args):
         """
         Load user-specific data from a file in the user's data folder.
@@ -183,11 +193,12 @@ class DataManager:
         """
         username = st.session_state.get('username', None)
         if username is None:
-            for key in self.user_data_reg:  # delete all user data
-                st.session_state.pop(key)
-            self.user_data_reg = {}
+            self.del_all_user_data()
             st.error(f"DataManager: No user logged in, cannot load file `{file_name}` into session state with key `{session_state_key}`")
             return
+        elif username != self.username:
+            self.del_all_user_data()
+            self.username = username
         elif session_state_key in st.session_state:
             return
 
