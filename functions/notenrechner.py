@@ -172,7 +172,6 @@ grundlagenpraktika_dict = {
     'Gesellschaft, Kultur und Gesundheit': {
         'ects': 3}}
 
-data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Institution/kestmo_App")
 
 def manage_pruefungen(fach_name, session_state_key, spalten
                       ):
@@ -291,7 +290,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten
                     "timestamp": pd.Timestamp.now()
                     }
                 
-                data_manager.append_record(session_state_key='Pruefungen', record_dict=result_dict)
+                DataManager().append_record(session_state_key='Pruefungen', record_dict=result_dict)
                 
                 # **Hinzufuegen eines Flags fuer erfolgreiches Hinzufuegen**
                 st.session_state[f'{session_state_key}_added'] = True
@@ -425,7 +424,7 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         "timestamp": pd.Timestamp.now()
         }
 
-        data_manager.append_record(session_state_key='Grundlagenpraktika', record_dict=neuer_eintrag)
+        DataManager().append_record(session_state_key='Grundlagenpraktika', record_dict=neuer_eintrag)
         st.rerun()
 
     #else:
