@@ -373,7 +373,7 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
 
-    ects = grundlagenpraktika_dict.get(grundlagenpraktika_name)   # Holen der ECTS aus dem 'grundlagenpraktika_dict'
+    ects = grundlagenpraktika_dict.get(grundlagenpraktika_name, {}).get('ects')   # Holen der ECTS aus dem 'grundlagenpraktika_dict'
     df_grundlagenpraktika = st.session_state["Grundlagenpraktika"] # vollständiger DataFrame
 
     st.subheader(grundlagenpraktika_name)
