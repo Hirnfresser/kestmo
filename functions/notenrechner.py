@@ -376,12 +376,15 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
     ects = grundlagenpraktika_dict.get(grundlagenpraktika_name, {}).get('ects')   # Holen der Anzahl-ECTS aus dem 'grundlagenpraktika_dict'
     df_grundlagenpraktika = st.session_state["Grundlagenpraktika"] # vollstaendiger DataFrame
 
+    # Filtere den DataFrame für das angegebene Praktikum
+    df_grundlagenpraktika = df_grundlagenpraktika[df_grundlagenpraktika['Modul'] == grundlagenpraktika_name] # Gefilterter DataFrame für das angegebene Praktikum
+
     st.subheader(grundlagenpraktika_name)
     
     if not df_grundlagenpraktika.empty:
          
         # Filtere den DataFrame für das angegebene Praktikum
-        df_grundlagenpraktika = df_grundlagenpraktika[df_grundlagenpraktika['Modul'] == grundlagenpraktika_name] # Gefilterter DataFrame für das angegebene Praktikum
+        #df_grundlagenpraktika = df_grundlagenpraktika[df_grundlagenpraktika['Modul'] == grundlagenpraktika_name] # Gefilterter DataFrame für das angegebene Praktikum
         
         # Der passende Eintrag (aktuelle Status und Index)
         aktueller_status = df_grundlagenpraktika.iloc[0]['Status']
@@ -409,7 +412,7 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
             on_change = update_status # Wird automatisch aufgerufen, wenn der Wert sich aendert
         )
     
-########## Feedback je nach Status
+        #Feedback je nach Status
         if status == "Ja":
             st.success(f"{grundlagenpraktika_name} bestanden (+ {ects} ECTS)")
         else:
