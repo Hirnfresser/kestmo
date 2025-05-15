@@ -172,6 +172,7 @@ grundlagenpraktika_dict = {
     'Gesellschaft, Kultur und Gesundheit': {
         'ects': 3}}
 
+data_manager = DataManager()
 
 def manage_pruefungen(fach_name, session_state_key, spalten
                       ):
@@ -408,7 +409,7 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
             on_change = update_status # Wird automatisch aufgerufen, wenn der Wert sich aendert
         )
     
-########## Feedback je nach Status
+        #Feedback je nach Status
         if status == "Ja":
             st.success(f"{grundlagenpraktika_name} bestanden (+ {ects} ECTS)")
         else:
