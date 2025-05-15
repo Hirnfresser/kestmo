@@ -184,10 +184,14 @@ def manage_pruefungen(fach_name, session_state_key, spalten
 
     ects = ects_dict.get(fach_name)
     df_pruefungen = st.session_state["Pruefungen"]
+    aktuelles_semester = st.session_state["semester"]
 
     # Anzeigen der Pruefungsdaten
     if not df_pruefungen.empty:
-        data = df_pruefungen[df_pruefungen['Modul'] == fach_name]
+        data = df_pruefungen[(df_pruefungen['Modul'] == fach_name) &
+                             (df_pruefungen['semester'] == aktuelles_semester)
+                             ]
+
         #farbe = 'green' if st.session_state[gewichtete_note_key] >= 4 else 'red'
 
         #col1, col2, col3 = st.columns([2, 1, 1])
