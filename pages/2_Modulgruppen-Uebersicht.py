@@ -14,6 +14,8 @@ from utils.login_manager import LoginManager
 LoginManager().go_to_login('pages/Login.py') 
 # ====== End Login Block ======
 
+st.write(DataManager().info())
+
 st.title('Modulgruppen-Uebersicht')
 
 st.write(st.session_state['username'])
