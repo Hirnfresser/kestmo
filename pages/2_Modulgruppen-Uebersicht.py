@@ -29,8 +29,10 @@ data_manager.load_user_data(
         initial_value=pd.DataFrame(),
         parse_dates=['timestamp']
     )
-
-st.write(data_manager.info())
+try:
+    st.write(data_manager.info())
+except Exception as e:
+    st.write(f"Error: {e}")
 
 
 semesters = ['Herbstsemester 1', 'Fruehlingssemester 1', 
