@@ -10,11 +10,8 @@ st.sidebar.page_link('Start.py', label='Startseite')
 st.sidebar.page_link('pages/1_Dashboard.py', label='Dashboard')
 st.sidebar.page_link('pages/2_Modulgruppen-Uebersicht.py', label='Modulgruppen-Uebersicht')
 
-st.write('username', st.session_state.get('username','-'))
-
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Institution/kestmo_App")  # Switchdrive
 
-st.write(data_manager.info())
 
 # initialize the login manager
 login_manager = LoginManager(data_manager)
@@ -31,5 +28,3 @@ data_manager.load_user_data(
     file_name="Grundlagenpraktika.csv",
     initial_value=pd.DataFrame()
 )
-
-st.write(data_manager.info())

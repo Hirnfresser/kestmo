@@ -14,11 +14,7 @@ from utils.login_manager import LoginManager
 LoginManager().go_to_login('pages/Login.py') 
 # ====== End Login Block ======
 
-st.write(DataManager().info())
-
 st.title('Modulgruppen-Uebersicht')
-
-st.write(st.session_state['username'])
 
 st.sidebar.page_link('Start.py', label='Startseite')
 st.sidebar.page_link('pages/1_Dashboard.py', label='Dashboard')
@@ -36,8 +32,6 @@ semester = st.selectbox('Waehle das Semester', semesters, index=semesters.index(
 if semester != st.session_state.semester:
     st.session_state.semester = semester
     st.rerun()
-
-
 
 if semester == 'Herbstsemester 1':
     tab1, tab2, tab3, tab4 = st.tabs(['Basiswissen BMLD 1', 'Wissenschaftliche Grundlagen 1', 'Sprache', 'Grundlagenpraktikum 1'])
