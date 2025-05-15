@@ -16,6 +16,8 @@ LoginManager().go_to_login('pages/Login.py')
 
 st.title('Modulgruppen-Uebersicht')
 
+st.write(st.session_state['username'])
+
 st.sidebar.page_link('Start.py', label='Startseite')
 st.sidebar.page_link('pages/1_Dashboard.py', label='Dashboard')
 st.sidebar.page_link('pages/2_Modulgruppen-Uebersicht.py', label='Modulgruppen-Uebersicht')

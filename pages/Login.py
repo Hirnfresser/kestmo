@@ -17,6 +17,7 @@ data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Institution/kes
 login_manager = LoginManager(data_manager)
 
 if login_manager.login_register():  # Login erfolgreich
+    st.write(st.session_state['username'])
     st.success("Login erfolgreich! Daten werden geladen...")
 
     # Daten aus Dateien laden, falls sie existieren
@@ -40,4 +41,4 @@ if login_manager.login_register():  # Login erfolgreich
         st.warning("Die Datei 'Grundlagenpraktika.csv' wurde nicht gefunden. Es wird ein leerer DataFrame verwendet.")
 
     # Weiterleitung zur Dashboard-Seite
-    nav_page('Dashboard')
+   # nav_page('Dashboard')

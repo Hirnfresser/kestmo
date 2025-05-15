@@ -290,7 +290,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten
                     "Note": note,
                     "timestamp": pd.Timestamp.now()
                     }
-        
+                
                 data_manager.append_record(session_state_key='Pruefungen', record_dict=result_dict)
                 
                 # **Hinzufuegen eines Flags fuer erfolgreiches Hinzufuegen**
