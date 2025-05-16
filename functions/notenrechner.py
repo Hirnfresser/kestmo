@@ -308,6 +308,55 @@ def manage_pruefungen(fach_name, session_state_key, spalten
             del st.session_state[flag_key]
 
 
+def schnitt_modul_berechnen(fach_name):
+    if 'username' not in st.session_state:
+        st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
+        return
+
+    st.subheader(fach_name)
+
+    aktuelles_semester = st.session_state['semester']
+    ects = ects_dict.get(fach_name)
+
+    df_pruefungen = st.session_state['Pruefungen']
+    df_modulschnitt = df_pruefungen[
+        (df_pruefungen['Modul'] == fach_name) &
+        (df_pruefungen['semester'] == aktuelles_semester)
+    ]
+    
+    if not df_modulschnitt.empty:
+
+        aktuelle_gesamt_gewichtung = df_modulschnitt['Gewichtung'].sum()
+        
+        if aktuelle_gesamt_gewichtung > 0:
+            schnitt_modul = (df_modulschnitt['Note'] *
+                              df_modulschnitt['Gewichtung']).sum() / aktuelle_gesamt_gewichtung
+            
+            farbe = 'green' if schnitt_modul >= 4 else 'red'
+            erreichte_ects = ects if schnitt_modul >= 4 else 0
+
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown("**Notendurchschnitt des Moduls**")
+                st.markdown(f"**Ø** <span style='color:{farbe}'>{schnitt_modul:.2f}</span>", unsafe_allow_html=True)
+            with col2:
+                st.markdown("**erreichte ECTS**")
+                ects_farbe = 'green' if erreichte_ects > 0 else 'red'
+                st.markdown(f"<span style='color:{ects_farbe}'><strong>{erreichte_ects}</strong></span>", unsafe_allow_html=True)
+
+        if aktuelle_gesamt_gewichtung < 0:
+            st.info('Die Gewichtung der Prüfungen ist kleiner als 0%. Bitte Prüfungen erfassen.')
+
+
+    else:
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write('**Maximale ECTS der Modulgruppe**')
+        with col2:
+            st.write(ects)
+        st.info("Noch keine gueltigen Noten vorhanden.")
+
+
 def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
     if "username" not in st.session_state:
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")

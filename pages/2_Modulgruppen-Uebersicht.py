@@ -1,14 +1,11 @@
 import streamlit as st
-import pandas as pd
 from functions.notenrechner import manage_pruefungen
 from functions.notenrechner import schnitt_modulgruppe
 from functions.notenrechner import modulgruppen
-from functions.notenrechner import grundlagenpraktikum
-from functions.notenrechner import grundlagenpraktika_dict
 from functions.design import trennlinie_duenn
 from functions.design import trennlinie_stark
 from functions.design import sidebar_anzeige
-from utils.data_manager import DataManager
+from functions.notenrechner import schnitt_modul_berechnen
 
 # ====== Start Login Block ======
 from utils.login_manager import LoginManager
@@ -40,12 +37,16 @@ if semester == 'Herbstsemester 1':
         
         trennlinie_stark()
 
+        schnitt_modul_berechnen('Gesundheitsdaten')
+
         manage_pruefungen(
             fach_name='Gesundheitsdaten',
             session_state_key='pruefungen_geda',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
   
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Haematologie und Haemostaseologie 1')
 
         manage_pruefungen(
             fach_name='Haematologie und Haemostaseologie 1',
@@ -54,12 +55,16 @@ if semester == 'Herbstsemester 1':
 
         trennlinie_duenn()
 
+        schnitt_modul_berechnen('Medizinische Mikrobiologie 1')
+
         manage_pruefungen(
             fach_name='Medizinische Mikrobiologie 1',
             session_state_key='pruefungen_memi1',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
 
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Systemerkrankungen')
 
         manage_pruefungen(
             fach_name='Systemerkrankungen',
@@ -72,12 +77,16 @@ if semester == 'Herbstsemester 1':
     
         trennlinie_stark()
 
+        schnitt_modul_berechnen('Biologie 1')
+
         manage_pruefungen(
             fach_name='Biologie 1',
             session_state_key='pruefungen_bio1',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
         trennlinie_duenn()   
+
+        schnitt_modul_berechnen('Chemie 1')
 
         manage_pruefungen(
             fach_name='Chemie 1',
@@ -86,12 +95,16 @@ if semester == 'Herbstsemester 1':
         
         trennlinie_duenn()
 
+        schnitt_modul_berechnen('Informatik 1')
+
         manage_pruefungen(
             fach_name='Informatik 1',
             session_state_key='pruefungen_inf1',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Mathematik 1')
 
         manage_pruefungen(
             fach_name='Mathematik 1',
@@ -104,12 +117,16 @@ if semester == 'Herbstsemester 1':
         
         trennlinie_stark()
 
+        schnitt_modul_berechnen('Englisch 1')
+
         manage_pruefungen(
             fach_name='Englisch 1',
             session_state_key='pruefungen_eng1',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
 
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Gesellschaftlicher Kontext und Sprache 1')
 
         manage_pruefungen(
             fach_name='Gesellschaftlicher Kontext und Sprache 1',
@@ -118,8 +135,8 @@ if semester == 'Herbstsemester 1':
 
 
 
-    with tab4:
-        grundlagenpraktikum(grundlagenpraktika_dict, 'Grundlagenpraktikum 1')
+    #with tab4:
+     #   grundlagenpraktikum(grundlagenpraktika_dict, 'Grundlagenpraktikum 1')
 
 
 elif semester == 'Fruehlingssemester 1':
@@ -130,12 +147,16 @@ elif semester == 'Fruehlingssemester 1':
         
         trennlinie_stark()
 
+        schnitt_modul_berechnen('Haematologie und Haemostaseologie 2')
+
         manage_pruefungen(
             fach_name='Haematologie und Haemostaseologie 2',
             session_state_key='pruefungen_haehae2',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Histologie und Zytologie 1')
 
         manage_pruefungen(
             fach_name='Histologie und Zytologie 1',
@@ -144,12 +165,16 @@ elif semester == 'Fruehlingssemester 1':
         
         trennlinie_duenn()
 
+        schnitt_modul_berechnen('Klinische Chemie und Immunologie 1')
+
         manage_pruefungen(
             fach_name='Klinische Chemie und Immunologie 1',
             session_state_key='pruefungen_kci1',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
 
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Medizinische Mikrobiologie 2')
 
         manage_pruefungen(
             fach_name='Medizinische Mikrobiologie 2',
@@ -163,12 +188,16 @@ elif semester == 'Fruehlingssemester 1':
         
         trennlinie_stark()
 
+        schnitt_modul_berechnen('Biologie 2')
+
         manage_pruefungen(
             fach_name='Biologie 2',
             session_state_key='pruefungen_bio2',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Chemie 2')
 
         manage_pruefungen(
             fach_name='Chemie 2',
@@ -177,12 +206,16 @@ elif semester == 'Fruehlingssemester 1':
         
         trennlinie_duenn()
 
+        schnitt_modul_berechnen('Informatik')
+
         manage_pruefungen(
             fach_name='Informatik 2',
             session_state_key='pruefungen_inf2',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Mathematik 2')
 
         manage_pruefungen(
             fach_name='Mathematik 2',
@@ -191,12 +224,16 @@ elif semester == 'Fruehlingssemester 1':
 
         trennlinie_duenn()
 
+        schnitt_modul_berechnen('Physik')
+
         manage_pruefungen(
             fach_name='Physik',
             session_state_key='pruefungen_phy',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
     
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Englisch 2')
 
         manage_pruefungen(
             fach_name='Englisch 2',
@@ -205,13 +242,15 @@ elif semester == 'Fruehlingssemester 1':
         
         trennlinie_duenn()
 
+        schnitt_modul_berechnen('Gesellschaftlicher Kontext und Sprache 2')
+
         manage_pruefungen(
             fach_name='Gesellschaftlicher Kontext und Sprache 2',
             session_state_key='pruefungen_gks2',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
 
-    with tab3:
-        grundlagenpraktikum(grundlagenpraktika_dict, 'Grundlagenpraktikum 2')
+    #with tab3:
+     #   grundlagenpraktikum(grundlagenpraktika_dict, 'Grundlagenpraktikum 2')
 
 
 if semester == 'Herbstsemester 2':
@@ -222,6 +261,8 @@ if semester == 'Herbstsemester 2':
         
         trennlinie_stark()
 
+        schnitt_modul_berechnen('Klinische Chemie und Immunologie 2')
+
         manage_pruefungen(
             fach_name='Klinische Chemie und Immunologie 2',
             session_state_key='pruefungen_kci2',
@@ -229,12 +270,16 @@ if semester == 'Herbstsemester 2':
   
         trennlinie_duenn()
 
+        schnitt_modul_berechnen('Histologie und Zytologie 2')
+
         manage_pruefungen(
             fach_name='Histologie und Zytologie 2',
             session_state_key='pruefungen_histo2',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
 
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Immunhaematologie und Transfusionsmedizin 1')
 
         manage_pruefungen(
             fach_name='Immunhaematologie und Transfusionsmedizin 1',
@@ -247,12 +292,16 @@ if semester == 'Herbstsemester 2':
     
         trennlinie_stark()
 
+        schnitt_modul_berechnen('Herz-Kreislauf- und respiratorische Erkrankungen')
+
         manage_pruefungen(
             fach_name='Herz-Kreislauf- und respiratorische Erkrankungen',
             session_state_key='pruefungen_hkr',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Neoplasien und haematologische Erkrankungen')
 
         manage_pruefungen(
             fach_name='Neoplasien und haematologische Erkrankungen',
@@ -261,6 +310,8 @@ if semester == 'Herbstsemester 2':
         
         trennlinie_duenn()
 
+        schnitt_modul_berechnen('Selbst- und patientennahe Diagnostik')
+
         manage_pruefungen(
             fach_name='Selbst- und patientennahe Diagnostik',
             session_state_key='pruefungen_spd',
@@ -268,14 +319,16 @@ if semester == 'Herbstsemester 2':
         
         trennlinie_duenn()
 
+        schnitt_modul_berechnen('Hygiene und Epidemiologie')
+
         manage_pruefungen(
             fach_name='Hygiene und Epidemiologie',
             session_state_key='pruefungen_hyep',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
             
     
-    with tab3:
-        grundlagenpraktikum(grundlagenpraktika_dict, 'Externes Praktikum Fachbereich A')
+#    with tab3:
+ #       grundlagenpraktikum(grundlagenpraktika_dict, 'Externes Praktikum Fachbereich A')
 
 
 if semester == 'Fruehlingssemester 2':
@@ -286,6 +339,8 @@ if semester == 'Fruehlingssemester 2':
         
         trennlinie_stark()
 
+        schnitt_modul_berechnen('Immunhaematologie und Transfusionsmedizin 2')
+
         manage_pruefungen(
             fach_name='Immunhaematologie und Transfusionsmedizin 2',
             session_state_key='pruefungen_iht2',
@@ -293,12 +348,16 @@ if semester == 'Fruehlingssemester 2':
   
         trennlinie_duenn()
 
+        schnitt_modul_berechnen('Medizinische Genetik 1')
+        
         manage_pruefungen(
             fach_name='Medizinische Genetik 1',
             session_state_key='pruefungen_gen1',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Bewegungsapparat und neurologische Erkrankungen')
 
         manage_pruefungen(
             fach_name='Bewegungsapparat und neurologische Erkrankungen',
@@ -312,10 +371,10 @@ if semester == 'Fruehlingssemester 2':
             session_state_key='pruefungen_endo',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
-    with tab2:
-        grundlagenpraktikum(grundlagenpraktika_dict, 'Externes Praktikum Fachbereich B')
-        grundlagenpraktikum(grundlagenpraktika_dict, 'Externes Praktikum Fachbereich C')
-        grundlagenpraktikum(grundlagenpraktika_dict, 'Praxisreflexion und interprofessionelles Handeln')
+  #  with tab2:
+   #     grundlagenpraktikum(grundlagenpraktika_dict, 'Externes Praktikum Fachbereich B')
+    #    grundlagenpraktikum(grundlagenpraktika_dict, 'Externes Praktikum Fachbereich C')
+     #   grundlagenpraktikum(grundlagenpraktika_dict, 'Praxisreflexion und interprofessionelles Handeln')
 
 
 if semester == 'Herbstsemester 3':
@@ -326,6 +385,8 @@ if semester == 'Herbstsemester 3':
         
         trennlinie_stark()
 
+        schnitt_modul_berechnen('Medizinische Genetik 2')
+
         manage_pruefungen(
             fach_name='Medizinische Genetik 2',
             session_state_key='pruefungen_gen2',
@@ -333,12 +394,16 @@ if semester == 'Herbstsemester 3':
         
         trennlinie_duenn()
 
+        schnitt_modul_berechnen('Urogenitale und gastrointestinale Erkrankugnen')
+
         manage_pruefungen(
             fach_name='Urogenitale und gastrointestinale Erkrankugnen',
             session_state_key='pruefungen_uro',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Entwicklungsstörungen und vererbbare Erkrankungen')
 
         manage_pruefungen(
             fach_name='Entwicklungsstörungen und vererbbare Erkrankungen',
@@ -350,12 +415,16 @@ if semester == 'Herbstsemester 3':
         
         trennlinie_stark()
 
+        schnitt_modul_berechnen('Projekt-, Change- und Risikomanagement 1')
+
         manage_pruefungen(
             fach_name='Projekt-, Change- und Risikomanagement 1',
             session_state_key='pruefungen_pcr1',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
         trennlinie_duenn()    
+
+        schnitt_modul_berechnen('Kommunikation 1')
 
         manage_pruefungen(
             fach_name='Kommunikation 1',
@@ -364,6 +433,8 @@ if semester == 'Herbstsemester 3':
         
         trennlinie_duenn()
 
+        schnitt_modul_berechnen('Evidenzbasiertes Handeln')
+
         manage_pruefungen(
             fach_name='Evidenzbasiertes Handeln',
             session_state_key='pruefungen_ebh',
@@ -371,12 +442,16 @@ if semester == 'Herbstsemester 3':
         
         trennlinie_duenn()
 
+        schnitt_modul_berechnen('Entwicklungen, Trends, Unternehmertum')
+
         manage_pruefungen(
             fach_name='Entwicklungen, Trends, Unternehmertum',
             session_state_key='pruefungen_etu',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Gesundheitsförderung und Praevention')
 
         manage_pruefungen(
             fach_name='Gesundheitsförderung und Praevention',
@@ -388,6 +463,8 @@ if semester == 'Herbstsemester 3':
         
         trennlinie_stark()
 
+        schnitt_modul_berechnen('Projektarbeit')
+
         manage_pruefungen(
             fach_name='Projektarbeit',
             session_state_key='pruefungen_proj',
@@ -395,14 +472,16 @@ if semester == 'Herbstsemester 3':
         
         trennlinie_duenn()
 
+        schnitt_modul_berechnen('Forschungmethoden 1')
+
         manage_pruefungen(
             fach_name='Forschungsmethoden 1',
             session_state_key='pruefungen_fors1',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
-    with tab4:
-        grundlagenpraktikum(grundlagenpraktika_dict, 'Gesellschaft, Kultur und Gesundheit')
-        st.markdown('*Einzelne Module nicht bekannt!*')
+    #with tab4:
+     #   grundlagenpraktikum(grundlagenpraktika_dict, 'Gesellschaft, Kultur und Gesundheit')
+      #  st.markdown('*Einzelne Module nicht bekannt!*')
         
 if semester == 'Fruehlingssemester 3':
     tab1, tab2, tab3 = st.tabs(['Gesundheitssystem', 'Kommunikation und Management 2', 'Bachelorarbeit'])
@@ -412,12 +491,16 @@ if semester == 'Fruehlingssemester 3':
 
         trennlinie_stark()
 
+        schnitt_modul_berechnen('Klinische Pharmakologie und personalisierte Medizin')
+
         manage_pruefungen(
             fach_name='Klinische Pharmakologie und personalisierte Medizin',
             session_state_key='pruefungen_pharma',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Gesundheitssystem und Digital Health')
 
         manage_pruefungen(
             fach_name='Gesundheitssystem und Digital Health',
@@ -429,12 +512,16 @@ if semester == 'Fruehlingssemester 3':
 
         trennlinie_stark()
 
+        schnitt_modul_berechnen('Projekt-, Change- und Risikomanagement 2')
+
         manage_pruefungen(
             fach_name='Projekt-, Change- und Risikomanagement 2',
             session_state_key='pruefungen_pcr2',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
         trennlinie_duenn()
+
+        schnitt_modul_berechnen('Forschungsmethoden 2')
 
         manage_pruefungen(
             fach_name='Forschungsmethoden 2',
@@ -443,12 +530,17 @@ if semester == 'Fruehlingssemester 3':
 
         trennlinie_duenn()
 
+        schnitt_modul_berechnen('Kommunikation 2')
+
         manage_pruefungen(
             fach_name='Kommunikation 2',
             session_state_key='pruefungen_kom2',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
 
     with tab3:
+
+        schnitt_modul_berechnen('Bachelorarbeit')
+
         manage_pruefungen(
             fach_name='Bachelorarbeit',
             session_state_key='pruefungen_ba',
