@@ -1,5 +1,10 @@
 import streamlit as st
 
+def sidebar_anzeige():
+    st.sidebar.page_link('Start.py', label='Startseite')
+    st.sidebar.page_link('pages/1_Dashboard.py', label='Dashboard')
+    st.sidebar.page_link('pages/2_Modulgruppen-Uebersicht.py', label='Modulgruppen-Uebersicht')
+    
 
 def trennlinie_duenn(farbe="#888", hoehe="1px", abstand="20px"):
     st.markdown(

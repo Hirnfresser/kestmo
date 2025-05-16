@@ -7,6 +7,7 @@ from functions.notenrechner import grundlagenpraktikum
 from functions.notenrechner import grundlagenpraktika_dict
 from functions.design import trennlinie_duenn
 from functions.design import trennlinie_stark
+from functions.design import sidebar_anzeige
 from utils.data_manager import DataManager
 
 # ====== Start Login Block ======
@@ -16,9 +17,7 @@ LoginManager().go_to_login('pages/Login.py')
 
 st.title('Modulgruppen-Uebersicht')
 
-st.sidebar.page_link('Start.py', label='Startseite')
-st.sidebar.page_link('pages/1_Dashboard.py', label='Dashboard')
-st.sidebar.page_link('pages/2_Modulgruppen-Uebersicht.py', label='Modulgruppen-Uebersicht')
+sidebar_anzeige()
 
 semesters = ['Herbstsemester 1', 'Fruehlingssemester 1', 
              'Herbstsemester 2', 'Fruehlingssemester 2', 

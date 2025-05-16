@@ -232,7 +232,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten
                     st.session_state["Pruefungen"] = st.session_state["Pruefungen"].drop(row.name).reset_index(drop=True)
 
                 # Speichern
-                    data_manager.save_data("Pruefungen")
+                    DataManager().save_data("Pruefungen")
 
                     st.rerun()
 
@@ -292,7 +292,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten
                 
                 DataManager().append_record(session_state_key='Pruefungen', record_dict=result_dict)
                 
-                # **Hinzufuegen eines Flags fuer erfolgreiches Hinzufuegen**
+                #Hinzufuegen eines Flags fuer erfolgreiches Hinzufuegen
                 st.session_state[f'{session_state_key}_added'] = True
 
                 st.rerun()

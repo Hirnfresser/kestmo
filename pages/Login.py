@@ -3,12 +3,11 @@ from utils.login_manager import LoginManager
 import pandas as pd
 import streamlit as st
 from utils.helpers import nav_page
+from functions.design import sidebar_anzeige
 
 st.title('Login & Registrierung')
 
-st.sidebar.page_link('Start.py', label='Startseite')
-st.sidebar.page_link('pages/1_Dashboard.py', label='Dashboard')
-st.sidebar.page_link('pages/2_Modulgruppen-Uebersicht.py', label='Modulgruppen-Uebersicht')
+sidebar_anzeige()
 
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Institution/kestmo_App")  # Switchdrive
 
@@ -28,3 +27,5 @@ data_manager.load_user_data(
     file_name="Grundlagenpraktika.csv",
     initial_value=pd.DataFrame()
 )
+
+#nav_page('Dashboard')
