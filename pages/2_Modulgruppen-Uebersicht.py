@@ -1,11 +1,10 @@
 import streamlit as st
 from functions.notenrechner import manage_pruefungen
-from functions.notenrechner import schnitt_modulgruppe
-from functions.notenrechner import modulgruppen
 from functions.design import trennlinie_duenn
 from functions.design import trennlinie_stark
 from functions.design import sidebar_anzeige
 from functions.notenrechner import schnitt_modul_berechnen
+from functions.notenrechner import schnitt_modulgruppe_berechnen
 
 # ====== Start Login Block ======
 from utils.login_manager import LoginManager
@@ -33,7 +32,7 @@ if semester == 'Herbstsemester 1':
     tab1, tab2, tab3, tab4 = st.tabs(['Basiswissen BMLD 1', 'Wissenschaftliche Grundlagen 1', 'Sprache', 'Grundlagenpraktikum 1'])
 
     with tab1:
-        schnitt_modulgruppe(modulgruppen, 'Basiswissen BMLD 1' )
+        schnitt_modulgruppe_berechnen('Basiswissen BMLD 1')
         
         trennlinie_stark()
 
@@ -73,8 +72,8 @@ if semester == 'Herbstsemester 1':
 
 
     with tab2:
-        schnitt_modulgruppe(modulgruppen, 'Wissenschaftliche Grundlagen 1' )
-    
+        schnitt_modulgruppe_berechnen('Wissenschaftliche Grundlagen 1')    
+
         trennlinie_stark()
 
         schnitt_modul_berechnen('Biologie 1')
@@ -113,7 +112,7 @@ if semester == 'Herbstsemester 1':
     
 
     with tab3:
-        schnitt_modulgruppe(modulgruppen, 'Sprache' )
+        schnitt_modulgruppe_berechnen('Sprache')
         
         trennlinie_stark()
 
@@ -143,7 +142,7 @@ elif semester == 'Fruehlingssemester 1':
     tab1, tab2, tab3 = st.tabs(['Basiswissen BMLD 2', 'Wissenschaftliche Grundlagen 2', 'Grundlagenpraktikum 2'])
 
     with tab1:
-        schnitt_modulgruppe(modulgruppen, 'Basiswissen BMLD 2' )
+        schnitt_modulgruppe_berechnen('Basiswissen BMLD 2')
         
         trennlinie_stark()
 
@@ -184,7 +183,7 @@ elif semester == 'Fruehlingssemester 1':
 
     
     with tab2:
-        schnitt_modulgruppe(modulgruppen, 'Wissenschaftliche Grundlagen 2' )
+        schnitt_modulgruppe_berechnen('Wissenschaftliche Grundlagen 2')
         
         trennlinie_stark()
 
@@ -257,7 +256,7 @@ if semester == 'Herbstsemester 2':
     tab1, tab2, tab3 = st.tabs(['Analyseprozesse & Labordiagnostik 1', ' Analyse Prozesse & Labordiagnostik 2', ' Externes Praktikum'])
 
     with tab1:
-        schnitt_modulgruppe(modulgruppen, 'Analyseprozesse und Labordiagnostik 1' )
+        schnitt_modulgruppe_berechnen('Analyseprozesse & Labordiagnostik 1')
         
         trennlinie_stark()
 
@@ -288,7 +287,7 @@ if semester == 'Herbstsemester 2':
 
 
     with tab2:
-        schnitt_modulgruppe(modulgruppen, 'Analyseprozesse und Labordiagnostik 2' )
+        schnitt_modulgruppe_berechnen('Analyseprozesse & Labordiagnostik 2')
     
         trennlinie_stark()
 
@@ -335,7 +334,7 @@ if semester == 'Fruehlingssemester 2':
     tab1, tab2 = st.tabs(['Analyseprozesse & Labordiagnostik 3', ' Externe Praktika'])
 
     with tab1:
-        schnitt_modulgruppe(modulgruppen, 'Analyseprozesse und Labordiagnostik 3' )
+        schnitt_modulgruppe_berechnen('Analyseprozesse & Labordiagnostik 3')
         
         trennlinie_stark()
 
@@ -378,10 +377,10 @@ if semester == 'Fruehlingssemester 2':
 
 
 if semester == 'Herbstsemester 3':
-    tab1, tab2, tab3, tab4 = st.tabs(['Analyseprozesse & Labordiagnostik 4', 'Kommunikation und Management 1', 'Angewandte Forschung', 'Gesellschaft, Kultur und Gesundheit'])
+    tab1, tab2, tab3, tab4 = st.tabs(['Analyseprozesse & Labordiagnostik 4', 'Kommunikation & Management 1', 'Angewandte Forschung', 'Gesellschaft, Kultur & Gesundheit'])
     
     with tab1:
-        schnitt_modulgruppe(modulgruppen, 'Analyseprozesse und Labordiagnostik 4' )
+        schnitt_modulgruppe_berechnen('Analyseprozesse & Labordiagnostik 4')
         
         trennlinie_stark()
 
@@ -411,7 +410,7 @@ if semester == 'Herbstsemester 3':
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
     with tab2:
-        schnitt_modulgruppe(modulgruppen, 'Kommunikation und Management 1' )
+        schnitt_modulgruppe_berechnen('Kommunikation & Management 1')
         
         trennlinie_stark()
 
@@ -459,7 +458,7 @@ if semester == 'Herbstsemester 3':
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
     with tab3:
-        schnitt_modulgruppe(modulgruppen, 'Angewandte Forschung' )
+        schnitt_modulgruppe_berechnen('Angewandte Forschung')
         
         trennlinie_stark()
 
@@ -484,10 +483,10 @@ if semester == 'Herbstsemester 3':
       #  st.markdown('*Einzelne Module nicht bekannt!*')
         
 if semester == 'Fruehlingssemester 3':
-    tab1, tab2, tab3 = st.tabs(['Gesundheitssystem', 'Kommunikation und Management 2', 'Bachelorarbeit'])
+    tab1, tab2, tab3 = st.tabs(['Gesundheitssystem', 'Kommunikation & Management 2', 'Bachelorarbeit'])
 
     with tab1:
-        schnitt_modulgruppe(modulgruppen, 'Gesundheitssystem' )
+        schnitt_modulgruppe_berechnen('Gesundheitssystem')
 
         trennlinie_stark()
 
@@ -508,7 +507,7 @@ if semester == 'Fruehlingssemester 3':
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
     
     with tab2:
-        schnitt_modulgruppe(modulgruppen, 'Kommunikation und Management 2' )
+        schnitt_modulgruppe_berechnen('Kommunikation & Management 2')
 
         trennlinie_stark()
 
@@ -538,7 +537,6 @@ if semester == 'Fruehlingssemester 3':
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
 
     with tab3:
-
         schnitt_modul_berechnen('Bachelorarbeit')
 
         manage_pruefungen(

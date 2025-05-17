@@ -99,13 +99,13 @@ modulgruppen = {
             'Englisch 2': {'key': 'pruefungen_eng2', 'ects': ects_dict['Englisch 2']},
             'Gesellschaftlicher Kontext und Sprache 2': {'key': 'pruefungen_gks2', 'ects': ects_dict['Gesellschaftlicher Kontext und Sprache 2']}}},
             
-    'Analyseprozesse und Labordiagnostik 1':{
+    'Analyseprozesse & Labordiagnostik 1':{
         'ects': 6,
         'faecher': {
             'Klinische Chemie und Immunologie 2': {'key': 'pruefungen_kcl2', 'ects': ects_dict['Klinische Chemie und Immunologie 2']},
             'Histologie und Zytologie 2': {'key': 'pruefungen_histo2', 'ects': ects_dict['Histologie und Zytologie 2']},
             'Immunhaematologie und Transfusionsmedizin 1': {'key': 'pruefungen_iht1', 'ects': ects_dict['Immunhaematologie und Transfusionsmedizin 1']}}},
-    'Analyseprozesse und Labordiagnostik 2':{
+    'Analyseprozesse & Labordiagnostik 2':{
         'ects': 11,
         'faecher': {
             'Herz-Kreislauf- und respiratorische Erkrankungen': {'key': 'pruefungen_hkr', 'ects': ects_dict['Herz-Kreislauf- und respiratorische Erkrankungen']},
@@ -113,7 +113,7 @@ modulgruppen = {
             'Selbst- und patientennahe Diagnostik': {'key': 'pruefungen_spd', 'ects': ects_dict['Selbst- und patientennahe Diagnostik']},
             'Hygiene und Epidemiologie': {'key': 'pruefungen_hyep', 'ects': ects_dict['Hygiene und Epidemiologie']}}},
     
-    'Analyseprozesse und Labordiagnostik 3':{
+    'Analyseprozesse & Labordiagnostik 3':{
         'ects': 10,
         'faecher': {
             'Immunhaematologie und Transfusionsmedizin 2': {'key': 'pruefungen_iht2', 'ects': ects_dict['Immunhaematologie und Transfusionsmedizin 2']},
@@ -121,13 +121,13 @@ modulgruppen = {
             'Bewegungsapparat und neurologische Erkrankungen': {'key': 'pruefungen_bene', 'ects': ects_dict['Bewegungsapparat und neurologische Erkrankungen']},
             'Endokrinologie, Stoffwechselerkrankungen': {'key': 'pruefungen_endo', 'ects': ects_dict['Endokrinologie, Stoffwechselerkrankungen']}}},
 
-    'Analyseprozesse und Labordiagnostik 4':{
+    'Analyseprozesse & Labordiagnostik 4':{
         'ects': 7,
         'faecher': {
             'Medizinische Genetik 2': {'key': 'pruefungen_gen2', 'ects': ects_dict['Medizinische Genetik 2']},
             'Urogenitale und gastrointestinale Erkrankungen': {'key': 'pruefungen_uro', 'ects': ects_dict['Urogenitale und gastrointestinale Erkrankungen']},
             'Entwicklungsstörungen und vererbbare Erkrankungen': {'key': 'pruefungen_entw', 'ects': ects_dict['Entwicklungsstörungen und vererbbare Erkrankungen']}}},                                                  
-    'Kommunikation und Management 1': {
+    'Kommunikation & Management 1': {
         'ects': 14,
         'faecher': {
             'Projekt-, Change- und Risikomanagement 1': {'key': 'pruefungen_pcr1', 'ects': ects_dict['Projekt-, Change- und Risikomanagement 1']},
@@ -140,7 +140,7 @@ modulgruppen = {
         'faecher': {
             'Projektarbeit': {'key': 'pruefungen_proj', 'ects': ects_dict['Projektarbeit']},
             'Forschungsmethoden 1': {'key': 'pruefungen_fors1', 'ects': ects_dict['Forschungsmethoden 1']}}},
-    'Gesellschaft, Kultur und Gesundheit':{
+    'Gesellschaft, Kultur & Gesundheit':{
         'ects': 3},
 
     'Gesundheitssystem':{
@@ -148,7 +148,7 @@ modulgruppen = {
         'faecher': {
             'Klinische Pharmakologie und personalisierte Medizin': {'key': 'pruefungen_pharma', 'ects': ects_dict['Klinische Pharmakologie und personalisierte Medizin']},
             'Gesundheitssystem und Digital Health': {'key': 'pruefungen_gedh', 'ects': ects_dict['Gesundheitssystem und Digital Health']}}},
-    'Kommunikation und Management 2': {
+    'Kommunikation & Management 2': {
         'ects': 6,
         'faecher': {
             'Projekt-, Change- und Risikomanagement 2': {'key': 'pruefungen_pcr2', 'ects': ects_dict['Projekt-, Change- und Risikomanagement 2']},
@@ -169,7 +169,7 @@ grundlagenpraktika_dict = {
     'Praxisreflexion und interprofessionelles Handeln':{
         'ects': 2},
         
-    'Gesellschaft, Kultur und Gesundheit': {
+    'Gesellschaft, Kultur & Gesundheit': {
         'ects': 3}}
 
 
@@ -178,8 +178,6 @@ def manage_pruefungen(fach_name, session_state_key, spalten
     if "username" not in st.session_state:
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
-
-    st.subheader(f'{fach_name}')
 
     ects = ects_dict.get(fach_name)
     df_pruefungen = st.session_state["Pruefungen"]
@@ -357,63 +355,88 @@ def schnitt_modul_berechnen(fach_name):
         st.info("Noch keine gueltigen Noten vorhanden.")
 
 
-def schnitt_modulgruppe(modulgruppen, modulgruppe_name):
-    if "username" not in st.session_state:
+def schnitt_modulgruppe_berechnen(modulgruppe):
+    # Prüfen, ob ein Benutzer eingeloggt ist
+    if 'username' not in st.session_state:
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
 
-    # Nutzerspezifischer Praefix
-    user_key_prefix = st.session_state["username"]
+    st.header(modulgruppe)  # Titel anzeigen
 
-    gruppe = modulgruppen.get(modulgruppe_name)
-    if not gruppe:
-        st.error(f"Modulgruppe '{modulgruppe_name}' nicht gefunden.")
+    aktuelles_semester = st.session_state['semester']
+    df_pruefungen = st.session_state['Pruefungen']
+    
+    # Modulgruppen-Daten abrufen
+    gruppe = modulgruppen.get(modulgruppe)
+    if not gruppe or 'faecher' not in gruppe:
+        st.info("Keine Fächer in dieser Modulgruppe hinterlegt.")
         return
 
     faecher = gruppe['faecher']
-    max_ects = gruppe['ects']
+    
+    # Initialisierung für gewichtete Durchschnittsberechnung
+    gesamt_gewichtete_note = 0   # Summe von (Modulschnitt * ECTS)
+    gesamt_gewichtete_ects = 0   # Summe aller ECTS, die zur Berechnung verwendet wurden
+    gesamt_ects = 0              # Maximale ECTS der Modulgruppe
 
-    gesamt_note = 0
-    gesamt_ects = 0
-
-    for fachname, infos in faecher.items():
-        # Nutzerspezifischer Schluessel fuer das Fach
-        key = f"{user_key_prefix}_{infos['key']}"
+    # Über alle Fächer der Modulgruppe iterieren
+    for fach_name, infos in faecher.items():
+        key = infos['key']
         ects = infos['ects']
+        gesamt_ects += ects  # Gesamt-ECTS der Gruppe berechnen
 
-        if key in st.session_state and not st.session_state[key].empty:
-            df = st.session_state[key]
-            gewichtung = df['Gewichtung'].sum()
-            if gewichtung > 0:
-                schnitt = (df['Note'] * df['Gewichtung']).sum() / gewichtung
-                gesamt_note += schnitt * ects
-                gesamt_ects += ects
+        # Prüfungsdaten für aktuelles Fach im aktuellen Semester filtern
+        df_fach = df_pruefungen[
+            (df_pruefungen['Modul'] == fach_name) & 
+            (df_pruefungen['semester'] == aktuelles_semester)
+        ]
 
-    if gesamt_ects > 0:
-        schnitt_modulgruppe = gesamt_note / gesamt_ects
+        # Wenn Daten für das Fach vorhanden sind
+        if not df_fach.empty:
+            gesamt_gewichtung = df_fach['Gewichtung'].sum()
+
+            if gesamt_gewichtung > 0:
+                # Modulschnitt berechnen
+                schnitt = (df_fach['Note'] * df_fach['Gewichtung']).sum() / gesamt_gewichtung
+
+                # Schnitt in gewichtete Gesamtnote aufnehmen
+                gesamt_gewichtete_note += schnitt * ects
+                gesamt_gewichtete_ects += ects
+
+    # Wenn gültige Noten zur Berechnung vorhanden sind
+    if gesamt_gewichtete_ects > 0:
+        # Gesamtschnitt der Modulgruppe berechnen
+        schnitt_modulgruppe = gesamt_gewichtete_note / gesamt_gewichtete_ects
+
+        # Farblogik für Darstellung (grün = bestanden, rot = nicht bestanden)
         farbe = 'green' if schnitt_modulgruppe >= 4 else 'red'
-        erreichte_ects = max_ects if schnitt_modulgruppe >= 4 else 0
 
-        st.markdown(f'## {modulgruppe_name}')
-        col1, col2, col3 = st.columns([2, 1, 1])
+        # Neue Regel: nur bei Schnitt ≥ 4 alle ECTS vergeben, sonst keine
+        erreichte_ects = gesamt_ects if schnitt_modulgruppe >= 4 else 0
+        ects_farbe = 'green' if erreichte_ects > 0 else 'red'
+
+        # Darstellung in zwei Spalten
+        col1, col2 = st.columns(2)
         with col1:
             st.markdown("**Notendurchschnitt der Modulgruppe**")
-            st.markdown(f"**Ø** <span style='color:{farbe}'>{schnitt_modulgruppe:.2f}</span>", unsafe_allow_html=True)
+            st.markdown(
+            f"<span style='font-size:1.5em; color:{farbe}; font-weight:bold;'>Ø {schnitt_modulgruppe:.2f}</span>",
+            unsafe_allow_html=True
+            )
         with col2:
-            st.markdown("**erreichte ECTS**")
-            ects_farbe = 'green' if erreichte_ects > 0 else 'red'
-            st.markdown(f"<span style='color:{ects_farbe}'><strong>{erreichte_ects}</strong></span>", unsafe_allow_html=True)
-        with col3:
-            st.markdown("**maximale ECTS**")
-            st.markdown(f"<span style='color:black'>{max_ects}</strong></span>", unsafe_allow_html=True)
+            st.markdown("**Erreichte ECTS**")
+            st.markdown(
+            f"<span style='font-size:1.5em; color:{ects_farbe}; font-weight:bold;'>{erreichte_ects} / {gesamt_ects}</span>",
+            unsafe_allow_html=True
+            )
     else:
-        st.markdown(f'## {modulgruppe_name}')
+        # Wenn keine gültigen Noten vorliegen
         col1, col2 = st.columns(2)
         with col1:
             st.write('**Maximale ECTS der Modulgruppe**')
         with col2:
-            st.write(max_ects)
-        st.info("Noch keine gueltigen Noten vorhanden.")
+            st.write(gesamt_ects)
+        st.info("Noch keine gueltigen Noten zur Berechnung vorhanden.")
 
 
 def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
