@@ -205,7 +205,7 @@ elif semester == 'Fruehlingssemester 1':
         
         trennlinie_duenn()
 
-        schnitt_modul_berechnen('Informatik')
+        schnitt_modul_berechnen('Informatik 2')
 
         manage_pruefungen(
             fach_name='Informatik 2',
