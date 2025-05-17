@@ -185,22 +185,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten
     # Anzeigen der Pruefungsdaten
     if not df_pruefungen.empty:
         data = df_pruefungen[df_pruefungen['Modul'] == fach_name]
-        #farbe = 'green' if st.session_state[gewichtete_note_key] >= 4 else 'red'
-
-        #col1, col2, col3 = st.columns([2, 1, 1])
-        #with col1:
-         #   st.markdown("**Notendurchschnitt des Moduls**")
-          #  st.markdown(f"**Ø** <span style='color:{farbe}'>{st.session_state[gewichtete_note_key]:.2f}</span>", unsafe_allow_html=True)
-        #with col2:
-         #   st.markdown("**erreichte ECTS**")
-          #  erreichte_ects = ects if st.session_state[gewichtete_note_key] >= 4 else 0
-           # ects_farbe = 'green' if erreichte_ects > 0 else 'red'
-            #st.markdown(f"<span style='color:{ects_farbe}'><strong>{erreichte_ects}</strong></span>", unsafe_allow_html=True)
-        #with col3:
-         #   st.markdown("**maximale ECTS**")
-          #  st.markdown(f"<span style='color:black'>{ects}</strong></span>", unsafe_allow_html=True)
-
-
+    
         col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 2, 5])
         with col1:
             st.markdown("**Pruefung**")
@@ -290,7 +275,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten
                 
                 DataManager().append_record(session_state_key='Pruefungen', record_dict=result_dict)
                 
-                #Hinzufuegen eines Flags fuer erfolgreiches Hinzufuegen
+                #Hinzufuegen eines Flags fuer erfolgreiches Hinzufuegen, damit der Plathalter angezeigt werden kann
                 st.session_state[f'{session_state_key}_added'] = True
 
                 st.rerun()
@@ -349,7 +334,7 @@ def schnitt_modul_berechnen(fach_name):
     else:
         col1, col2 = st.columns(2)
         with col1:
-            st.write('**Maximale ECTS der Modulgruppe**')
+            st.write('**Maximale ECTS des Moduls**')
         with col2:
             st.write(ects)
         st.info("Noch keine gueltigen Noten vorhanden.")
