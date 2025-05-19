@@ -6,7 +6,7 @@ import time
 # ====== Seiten-Setup =====
 st.set_page_config(
     page_title="Kestmo - Dashboard",
-    page_icon="📊",
+    page_icon="📚",
     layout="wide")
 # ====== Seiten-Setup =====
 
@@ -77,7 +77,7 @@ with col2:
     st.markdown(
         """
         <div style='text-align:center;'>
-            <div style='font-size: 1.3em; font-weight: bold;'>Bestes Modul des Semesters</div>
+            <div style='font-size: 1.3em; font-weight: bold; color: #000;'>Bestes Modul des Semesters</div>
         </div>
         """, unsafe_allow_html=True
     )

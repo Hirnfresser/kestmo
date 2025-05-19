@@ -168,8 +168,35 @@ modulgruppen = {
         'ects': 6,
         'faecher': {
             'Projekt-, Change- und Risikomanagement 2': {'key': 'pruefungen_pcr2', 'ects': ects_dict['Projekt-, Change- und Risikomanagement 2']},
-            'Forschungsmethoden 2': {'key': 'pruefungen_fors2', 'ects': ects_dict['Forschungsmethoden 2']}}}}
+            'Forschungsmethoden 2': {'key': 'pruefungen_fors2', 'ects': ects_dict['Forschungsmethoden 2']}}}
+            }
 
+modulgruppen_farben = {
+    # Herbstsemester 1
+    'Basiswissen BMLD 1': ["#1565c0", "#1976d2", "#42a5f5", "#90caf9"],  # Blautöne
+    'Wissenschaftliche Grundlagen 1': ["#1b5e20", "#388e3c", "#66bb6a", "#a5d6a7"],  # Grüntöne
+    'Sprache': ["#b71c1c", "#e57373"],  # Rottöne
+
+    # Fruehlingssemester 1
+    'Basiswissen BMLD 2': ["#1565c0", "#1976d2", "#42a5f5", "#90caf9"],  # Blautöne
+    'Wissenschaftliche Grundlagen 2': ["#1b5e20", "#388e3c", "#66bb6a", "#a5d6a7", "#558b2f", "#9ccc65", "#c5e1a5"],  # Grüntöne
+
+    # Herbstsemester 2
+    'Analyseprozesse & Labordiagnostik 1': ["#1565c0", "#1976d2", "#42a5f5"],  # Blautöne
+    'Analyseprozesse & Labordiagnostik 2': ["#1b5e20", "#388e3c", "#66bb6a", "#a5d6a7"],  # Grüntöne
+
+    # Fruehlingssemester 2
+    'Analyseprozesse & Labordiagnostik 3': ["#1565c0", "#1976d2", "#42a5f5", "#90caf9"],  # Blautöne
+
+    # Herbstsemester 3
+    'Analyseprozesse & Labordiagnostik 4': ["#1565c0", "#1976d2", "#42a5f5"],  # Blautöne
+    'Kommunikation & Management 1': ["#1b5e20", "#388e3c", "#66bb6a", "#a5d6a7", "#558b2f"],  # Grüntöne
+    'Angewandte Forschung': ["#b71c1c", "#e57373"],  # Rottöne
+
+    # Fruehlingssemester 3
+    'Gesundheitssystem': ["#1565c0", "#1976d2"],  # Blautöne
+    'Kommunikation & Management 2': ["#1b5e20", "#388e3c"],  # Grüntöne
+}
 
 grundlagenpraktika_dict = {
     'Grundlagenpraktikum 1': {
@@ -474,8 +501,6 @@ def semesterschnitt_berechnen(semester):
         if not faecher:
             continue
 
-        summe_gewichtete_note = 0
-        summe_ects = 0
         max_ects = gruppe.get('ects', 0)
 
         # Berechne gewichteten Schnitt der Modulgruppe
@@ -543,20 +568,39 @@ def noten_verteilung(semester):
     alle_kombis = pd.MultiIndex.from_product([bereiche, alle_modul], names=['Notenklasse', 'Modul'])
     grouped = grouped.set_index(['Notenklasse', 'Modul']).reindex(alle_kombis, fill_value=0).reset_index()
 
-    # Diagramm erstellen
+    # --- Farben zuordnen ---
+    # Mapping Modulname -> Farbe anhand der Modulgruppe
+    modul_farbe = {}
+    for gruppenname, gruppe in modulgruppen.items():
+        if gruppe.get('semester') == semester:
+            faecher = list(gruppe.get('faecher', {}).keys())
+            farben = modulgruppen_farben.get(gruppenname, [])
+            for i, fach in enumerate(faecher):
+                if i < len(farben):
+                    modul_farbe[fach] = farben[i]
+
+    # Füge das Feld für die Legende hinzu
+    grouped["Modul_Legende"] = grouped["Modul"]
+
+    import altair as alt
     chart = alt.Chart(grouped).mark_bar().encode(
         x=alt.X('Notenklasse:O', title="Note", sort=bereiche),
         y=alt.Y('Anzahl:Q', title="Anzahl Noten", axis=alt.Axis(format='d')),
-        color=alt.Color('Modul:N', title='Fach'),
+        color=alt.Color(
+            'Modul_Legende:N',
+            scale=alt.Scale(domain=list(modul_farbe.keys()), range=list(modul_farbe.values())),
+            legend=alt.Legend(title="Modul")
+        ),
         tooltip=['Notenklasse', 'Modul', 'Anzahl', alt.Tooltip('Tatsaechliche_Noten:N', title='Tatsächliche Noten')],
     ).properties(
-        title="📊 Notenverteilung (in 0.5er-Schritten, nach Fach)",
+        title="📊 Notenverteilung (in 0.5er-Schritten)",
         width=600,
         height=400
     )
 
-    st.altair_chart(chart, use_container_width=True)
-
+    with st.container(border=True):
+        st.altair_chart(chart, use_container_width=True)
+        
 
 
     
