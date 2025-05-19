@@ -41,12 +41,14 @@ with col1:
 
 bestes_modul, beste_note = bestes_modul_anzeigen(semester)
 
+farbe_semesterschnitt = 'red' if semesterschnitt is not None and semesterschnitt < 4 else 'black'
+
 col1, col2, col3 = st.columns(3, border=True)
 with col1:
     st.markdown(
         f"""
         <div style='text-align:center;'>
-            <div style='font-size: 1.3em; font-weight: bold;'>Notendurchschnitt</div>
+            <div style='font-size: 1.3em; font-weight: bold; color: #000;'>Aktueller Semesterdurchschnitt</div>
             <div style='font-size: 1.2em; color: #000;'>{semester}</div>
         </div>
         """, unsafe_allow_html=True
@@ -57,8 +59,8 @@ with col1:
     else:
         st.markdown(
             f"""
-            <div style='text-align:center; font-size: 1.2em; font-weight: bold; color: #000; margin-top: 8px;'>
-                {semesterschnitt}
+            <div style='text-align:center; font-size: 1.2em; font-weight: bold; color: {farbe_semesterschnitt}; margin-top: 8px;'>
+                Ø {semesterschnitt}
             </div>
             """, unsafe_allow_html=True
         )
@@ -79,7 +81,7 @@ with col2:
             f"""
             <div style='text-align:center; margin-top: 8px;'>
                 <div style='font-size: 1.2em; color: #000;'>{bestes_modul}</div>
-                <div style='font-size: 1.2em; font-weight: bold; color: #000;'>{beste_note}</div>
+                <div style='font-size: 1.2em; font-weight: bold; color: #000;'>Mit der Note {beste_note}</div>
             </div>
             """, unsafe_allow_html=True
         )

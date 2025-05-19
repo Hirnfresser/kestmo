@@ -330,29 +330,32 @@ def schnitt_modul_berechnen(fach_name):
     ]
     
     if not df_modulschnitt.empty:
-
         aktuelle_gesamt_gewichtung = df_modulschnitt['Gewichtung'].sum()
-        
-        if aktuelle_gesamt_gewichtung > 0:
-            schnitt_modul = (df_modulschnitt['Note'] *
-                              df_modulschnitt['Gewichtung']).sum() / aktuelle_gesamt_gewichtung
-            
-            farbe = 'green' if schnitt_modul >= 4 else 'red'
-            erreichte_ects = ects if schnitt_modul >= 4 else 0
-
-            col1, col2 = st.columns(2)
-            with col1:
-                st.markdown("**Notendurchschnitt des Moduls**")
+        schnitt_modul = (df_modulschnitt['Note'] * df_modulschnitt['Gewichtung']).sum() / aktuelle_gesamt_gewichtung if aktuelle_gesamt_gewichtung > 0 else None
+        farbe = 'green' if schnitt_modul is not None and schnitt_modul >= 4 else 'red'
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("**Notendurchschnitt des Moduls**")
+            if schnitt_modul is not None:
                 st.markdown(f"**Ø** <span style='color:{farbe}'>{schnitt_modul:.2f}</span>", unsafe_allow_html=True)
-            with col2:
-                st.markdown("**erreichte ECTS**")
+            else:
+                st.markdown("<span style='color:gray'>-</span>", unsafe_allow_html=True)
+        with col2:
+            st.markdown("**erreichte ECTS**")
+            if aktuelle_gesamt_gewichtung == 100 and schnitt_modul is not None:
+                erreichte_ects = ects if schnitt_modul >= 4 else 0
                 ects_farbe = 'green' if erreichte_ects > 0 else 'red'
-                st.markdown(f"<span style='color:{ects_farbe}'><strong>{erreichte_ects}</strong></span>", unsafe_allow_html=True)
-
+                st.markdown(
+                    f"<span style='color:{ects_farbe}'><strong>{erreichte_ects} / {ects}</strong></span>",
+                    unsafe_allow_html=True
+                )
+            else:
+                st.markdown(
+                    f"<span style='color:gray'><strong>0 / {ects}</strong></span>",
+                    unsafe_allow_html=True
+                )
         if aktuelle_gesamt_gewichtung < 0:
             st.info('Die Gewichtung der Prüfungen ist kleiner als 0%. Bitte Prüfungen erfassen.')
-
-
     else:
         col1, col2 = st.columns(2)
         with col1:
@@ -380,74 +383,84 @@ def schnitt_modulgruppe_berechnen(modulgruppe):
         return
 
     faecher = gruppe['faecher']
-    
-    # Initialisierung für gewichtete Durchschnittsberechnung
-    gesamt_gewichtete_note = 0   # Summe von (Modulschnitt * ECTS)
-    gesamt_gewichtete_ects = 0   # Summe aller ECTS, die zur Berechnung verwendet wurden
-    gesamt_ects = 0              # Maximale ECTS der Modulgruppe
+    gesamt_gewichtete_note = 0
+    gesamt_gewichtete_ects = 0
+    gesamt_ects = 0
+
+    module_vollstaendig = []
+    module_ects = {}
+    module_schnitte = {}
 
     # Über alle Fächer der Modulgruppe iterieren
     for fach_name, infos in faecher.items():
         key = infos['key']
         ects = infos['ects']
-        gesamt_ects += ects  # Gesamt-ECTS der Gruppe berechnen
+        gesamt_ects += ects
 
-        # Prüfungsdaten für aktuelles Fach im aktuellen Semester filtern
         df_fach = df_pruefungen[
             (df_pruefungen['Modul'] == fach_name) & 
             (df_pruefungen['semester'] == aktuelles_semester)
         ]
 
-        # Wenn Daten für das Fach vorhanden sind
         if not df_fach.empty:
             gesamt_gewichtung = df_fach['Gewichtung'].sum()
-
-            if gesamt_gewichtung > 0:
-                # Modulschnitt berechnen
+            if gesamt_gewichtung == 100:
                 schnitt = (df_fach['Note'] * df_fach['Gewichtung']).sum() / gesamt_gewichtung
-
-                # Schnitt in gewichtete Gesamtnote aufnehmen
+                module_vollstaendig.append(fach_name)
+                module_schnitte[fach_name] = schnitt
+                module_ects[fach_name] = ects
+                # Für Gruppenschnitt
                 gesamt_gewichtete_note += schnitt * ects
                 gesamt_gewichtete_ects += ects
 
-    # Wenn gültige Noten zur Berechnung vorhanden sind
-    if gesamt_gewichtete_ects > 0:
-        # Gesamtschnitt der Modulgruppe berechnen
-        schnitt_modulgruppe = gesamt_gewichtete_note / gesamt_gewichtete_ects
+    alle_module_vollstaendig = len(module_vollstaendig) == len(faecher)
+    modulgruppe_schnitt = (gesamt_gewichtete_note / gesamt_gewichtete_ects) if gesamt_gewichtete_ects > 0 else None
 
-        # Farblogik für Darstellung (grün = bestanden, rot = nicht bestanden)
-        farbe = 'green' if schnitt_modulgruppe >= 4 else 'red'
+    # ECTS-Anzeige-Logik
+    ects_anzeigen = 0
+    for fach_name in module_vollstaendig:
+        schnitt = module_schnitte[fach_name]
+        if schnitt >= 4.0:
+            ects_anzeigen += module_ects[fach_name]
+        elif alle_module_vollstaendig and modulgruppe_schnitt is not None and modulgruppe_schnitt >= 4.0:
+            ects_anzeigen += module_ects[fach_name]
+        # sonst keine ECTS für dieses Modul
 
-        # Neue Regel: nur bei Schnitt ≥ 4 alle ECTS vergeben, sonst keine
-        erreichte_ects = gesamt_ects if schnitt_modulgruppe >= 4 else 0
-        ects_farbe = 'green' if erreichte_ects > 0 else 'red'
-
-        # Darstellung in zwei Spalten
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown("**Notendurchschnitt der Modulgruppe**")
-            st.markdown(
-            f"<span style='font-size:1.5em; color:{farbe}; font-weight:bold;'>Ø {schnitt_modulgruppe:.2f}</span>",
-            unsafe_allow_html=True
-            )
-        with col2:
-            st.markdown("**Erreichte ECTS**")
-            st.markdown(
-            f"<span style='font-size:1.5em; color:{ects_farbe}; font-weight:bold;'>{erreichte_ects} / {gesamt_ects}</span>",
-            unsafe_allow_html=True
-            )
+    # Farblogik für Darstellung
+    farbe = 'green' if modulgruppe_schnitt is not None and modulgruppe_schnitt >= 4 else 'red'
+    if modulgruppe_schnitt is None:
+        ects_farbe = 'gray'
     else:
-        # Wenn keine gültigen Noten vorliegen
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write('**Maximale ECTS der Modulgruppe**')
-        with col2:
-            st.write(gesamt_ects)
-        st.info("Noch keine gültigen Noten zur Berechnung vorhanden.")
+        ects_farbe = 'green' if ects_anzeigen > 0 else 'red'
+
+    # Darstellung in zwei Spalten
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown("**Notendurchschnitt der Modulgruppe**")
+        if modulgruppe_schnitt is not None:
+            st.markdown(
+                f"<span style='font-size:1.5em; color:{farbe}; font-weight:bold;'>Ø {modulgruppe_schnitt:.2f}</span>",
+                unsafe_allow_html=True
+            )
+        else:
+            st.markdown("<span style='font-size:1.5em; color:gray; font-weight:bold;'>-</span>", unsafe_allow_html=True)
+    with col2:
+        st.markdown("**Erreichte ECTS**")
+        st.markdown(
+            f"<span style='font-size:1.5em; color:{ects_farbe}; font-weight:bold;'>{ects_anzeigen} / {gesamt_ects}</span>",
+            unsafe_allow_html=True
+        )
+    with col3:
+        if ects_anzeigen == 0:
+            st.markdown("&nbsp;") # leerer Platzhalter
+            st.markdown(
+                f"<span style='font-size:1.0em; color:gray; font-weight:bold; '>Verfügbar, wenn für mind. ein Modul alle Prüfungen erfasst wurden.</span>",
+                unsafe_allow_html=True
+            )
+    
 
 
-def semesterschnitt_berechnen(semester): ##PROBLEM MIT BERECHNUNG, überprüfen!! Frühlingssemester 1
-
+def semesterschnitt_berechnen(semester):
     df_pruefungen = st.session_state['Pruefungen']
 
     gesamtgewichtete_note = 0
@@ -463,45 +476,28 @@ def semesterschnitt_berechnen(semester): ##PROBLEM MIT BERECHNUNG, überprüfen!
 
         summe_gewichtete_note = 0
         summe_ects = 0
+        max_ects = gruppe.get('ects', 0)
 
+        # Berechne gewichteten Schnitt der Modulgruppe
+        noten = []
+        gewichtungen = []
         for fach_name, infos in faecher.items():
-            ects = infos.get('ects', 0)
             df_modul = df_pruefungen[
                 (df_pruefungen['Modul'] == fach_name) &
                 (df_pruefungen['semester'] == semester)
             ]
-
             if not df_modul.empty:
                 gewichtung_summe = df_modul['Gewichtung'].sum()
                 if gewichtung_summe > 0:
-                    modul_schnitt = (df_modul['Note'] * df_modul['Gewichtung']).sum() / gewichtung_summe
-                    note_akzeptiert = modul_schnitt if modul_schnitt >= 4.0 else 0
-                    summe_gewichtete_note += note_akzeptiert * ects
-                    summe_ects += ects if note_akzeptiert > 0 else 0
-
-        # Falls keine ECTS vergeben wurden, aber Modulgruppe Fächer hat:
-        if summe_ects == 0 and faecher:
-            alle_noten = []
-            for fach_name, infos in faecher.items():
-                df_mod = df_pruefungen[
-                    (df_pruefungen['Modul'] == fach_name) &
-                    (df_pruefungen['semester'] == semester)
-                ]
-                if not df_mod.empty:
-                    gewichtung_summe = df_mod['Gewichtung'].sum()
-                    if gewichtung_summe > 0:
-                        schnitt = (df_mod['Note'] * df_mod['Gewichtung']).sum() / gewichtung_summe
-                        if schnitt >= 4.0:
-                            alle_noten.append(schnitt)
-            if alle_noten:
-                summe_gewichtete_note = sum(alle_noten) / len(alle_noten)
-                summe_ects = 1
-            else:
-                continue
-
-        modulgruppen_schnitt = summe_gewichtete_note / summe_ects
-        gesamtgewichtete_note += modulgruppen_schnitt * summe_ects
-        gesamtsumme_ects += summe_ects
+                    schnitt = (df_modul['Note'] * df_modul['Gewichtung']).sum() / gewichtung_summe
+                    noten.append(schnitt)
+                    gewichtungen.append(infos.get('ects', 0))
+        # Modulgruppen-Schnitt berechnen (nur wenn Noten vorhanden)
+        if noten and gewichtungen and sum(gewichtungen) > 0:
+            modulgruppen_schnitt = sum([n * e for n, e in zip(noten, gewichtungen)]) / sum(gewichtungen)
+            gesamtgewichtete_note += modulgruppen_schnitt * max_ects
+            gesamtsumme_ects += max_ects
+        # Falls keine Noten vorhanden, ignoriere die Modulgruppe
 
     if gesamtsumme_ects > 0:
         semesterschnitt = round(gesamtgewichtete_note / gesamtsumme_ects, 2)
@@ -519,7 +515,7 @@ def bestes_modul_anzeigen(semester):
     gruppieren = df_semester.groupby('Modul').apply(
         lambda x: (x['Note'] * x['Gewichtung']).sum() / x['Gewichtung'].sum())
     bestes_modul = gruppieren.idxmax()
-    beste_note = gruppieren.max()
+    beste_note = round(gruppieren.max(), 2)
     return(bestes_modul, beste_note)
 
 
