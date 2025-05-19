@@ -41,46 +41,48 @@ with col1:
 
 bestes_modul, beste_note = bestes_modul_anzeigen(semester)
 
-# Damit die Spalten gleichmäßig sind, muss ich alles in ein st-markdown packen und die verschieden möglichen Variablen hier definieren
-if semesterschnitt is None:
-    anzeige_semesterschnitt = st.info("Der Semesterschnitt kann nicht berechnet werden, da nicht alle Noten vorhanden sind.")
-else:
-    anzeige_semesterschnitt = semesterschnitt
-
-if bestes_modul is None:
-    anzeige_bestes_modul = st.info("Für dieses Semester sind noch keine Noten vorhanden.")
-else:
-    anzeige_bestes_modul = bestes_modul
-
-if beste_note is None:
-    anzeige_beste_note = st.info("Für dieses Semester sind noch keine Noten vorhanden.")
-else:
-    anzeige_beste_note = beste_note
-
-
-#tatsächlihce Spalten mit den Werten
 col1, col2, col3 = st.columns(3, border=True)
 with col1:
     st.markdown(
         f"""
-        <div style='text-align:center; min-height: 6em; display: flex; flex-direction: column; justify-content: center;'>
+        <div style='text-align:center;'>
             <div style='font-size: 1.3em; font-weight: bold;'>Notendurchschnitt</div>
             <div style='font-size: 1.2em; color: #000;'>{semester}</div>
-            <div style='font-size: 1.2em; font-weight: bold; color: #000; margin-top: 8px;'>{anzeige_semesterschnitt}</div>
         </div>
         """, unsafe_allow_html=True
     )
 
+    if semesterschnitt is None:
+        st.info("Der Semesterschnitt kann nicht berechnet werden, da nicht alle Noten vorhanden sind.")
+    else:
+        st.markdown(
+            f"""
+            <div style='text-align:center; font-size: 1.2em; font-weight: bold; color: #000; margin-top: 8px;'>
+                {semesterschnitt}
+            </div>
+            """, unsafe_allow_html=True
+        )
+
 with col2:
     st.markdown(
-        f"""
-        <div style='text-align:center; min-height: 6em; display: flex; flex-direction: column; justify-content: center;'>
+        """
+        <div style='text-align:center;'>
             <div style='font-size: 1.3em; font-weight: bold;'>Bestes Modul des Semesters</div>
-            <div style='font-size: 1.2em; color: #000;'>{anzeige_bestes_modul}</div>
-            <div style='font-size: 1.2em; font-weight: bold; color: #000; margin-top: 8px;'>{anzeige_beste_note}</div>
         </div>
-        """, unsafe_allow_html=True)
-    
+        """, unsafe_allow_html=True
+    )
+
+    if bestes_modul is None or beste_note is None:
+        st.info("Für dieses Semester sind noch keine Noten vorhanden.")
+    else:
+        st.markdown(
+            f"""
+            <div style='text-align:center; margin-top: 8px;'>
+                <div style='font-size: 1.2em; color: #000;'>{bestes_modul}</div>
+                <div style='font-size: 1.2em; font-weight: bold; color: #000;'>{beste_note}</div>
+            </div>
+            """, unsafe_allow_html=True
+        )
 
 with col3:
     total_ects = 180
