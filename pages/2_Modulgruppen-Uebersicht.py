@@ -6,6 +6,13 @@ from functions.design import sidebar_anzeige
 from functions.notenrechner import schnitt_modul_berechnen
 from functions.notenrechner import schnitt_modulgruppe_berechnen
 
+# ====== Seiten-Setup =====
+st.set_page_config(
+    page_title="Kestmo - Modulgruppen",
+    page_icon="📚",
+    layout="wide")
+# ====== Seiten-Setup =====
+
 # ====== Start Login Block ======
 from utils.login_manager import LoginManager
 LoginManager().go_to_login('pages/Login.py') 

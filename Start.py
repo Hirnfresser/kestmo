@@ -1,5 +1,12 @@
 import streamlit as st
 
+# ======= Seiten-Setup =====
+st.set_page_config(
+    page_title="Kestmo - Startseite",
+    page_icon="🏠",
+    layout="wide")
+# ======= Seiten-Setup =====
+
 st.title("Notenrechner - kestmo")
 st.sidebar.page_link('Start.py', label='Startseite')
 st.sidebar.page_link('pages/1_Dashboard.py', label='Dashboard')

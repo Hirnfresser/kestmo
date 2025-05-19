@@ -5,6 +5,13 @@ import streamlit as st
 from utils.helpers import nav_page
 from functions.design import sidebar_anzeige
 
+# ====== Seiten-Setup =====
+st.set_page_config(
+    page_title="Login & Registrierung",
+    page_icon="🔑",
+    layout="wide")
+# ====== Seiten-Setup =====
+
 st.title('Login & Registrierung')
 
 sidebar_anzeige()

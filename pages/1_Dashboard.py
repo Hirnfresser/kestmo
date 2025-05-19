@@ -3,6 +3,14 @@ from functions.design import sidebar_anzeige
 from functions.notenrechner import semesterschnitt_berechnen, bestes_modul_anzeigen, noten_verteilung
 import time
 
+# ====== Seiten-Setup =====
+st.set_page_config(
+    page_title="Kestmo - Dashboard",
+    page_icon="📊",
+    layout="wide")
+# ====== Seiten-Setup =====
+
+
 # ====== Start Login Block ======
 from utils.login_manager import LoginManager
 LoginManager().go_to_login('pages/Login.py') 
