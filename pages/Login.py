@@ -28,4 +28,4 @@ data_manager.load_user_data(
     initial_value=pd.DataFrame()
 )
 
-#nav_page('Dashboard')
+nav_page('Dashboard')

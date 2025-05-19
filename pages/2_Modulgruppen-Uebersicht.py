@@ -22,7 +22,7 @@ semesters = ['Herbstsemester 1', 'Fruehlingssemester 1',
 if 'semester' not in st.session_state:
     st.session_state.semester = semesters[0]
 
-semester = st.selectbox('Waehle das Semester', semesters, index=semesters.index(st.session_state.semester))
+semester = st.selectbox('Wähle das Semester', semesters, index=semesters.index(st.session_state.semester))
 
 if semester != st.session_state.semester:
     st.session_state.semester = semester

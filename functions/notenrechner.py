@@ -3,6 +3,9 @@ import pandas as pd
 import time
 import pandas as pd
 from utils.data_manager import DataManager
+import matplotlib.pyplot as plt
+import altair as alt
+import numpy as np
 
 
 ects_dict = {
@@ -62,6 +65,7 @@ ects_dict = {
 
 modulgruppen = {
     'Basiswissen BMLD 1': {
+        'semester': 'Herbstsemester 1',
         'ects': 10,
         'faecher': {
             'Gesundheitsdaten': {'key': 'pruefungen_geda', 'ects': ects_dict['Gesundheitsdaten']},
@@ -69,6 +73,7 @@ modulgruppen = {
             'Medizinische Mikrobiologie 1': {'key': 'pruefungen_memi1', 'ects': ects_dict['Medizinische Mikrobiologie 1']},
             'Systemerkrankungen': {'key': 'pruefungen_sys', 'ects': ects_dict['Systemerkrankungen']}}},
     'Wissenschaftliche Grundlagen 1': {
+        'semester': 'Herbstsemester 1',
         'ects': 13,
         'faecher': {
             'Biologie 1': {'key': 'pruefungen_bio1', 'ects': ects_dict['Biologie 1']},
@@ -76,12 +81,14 @@ modulgruppen = {
             'Informatik 1': {'key': 'pruefungen_inf1', 'ects': ects_dict['Informatik 1']},
             'Mathematik 1': {'key': 'pruefungen_mat1', 'ects': ects_dict['Mathematik 1']}}},
     'Sprache': {
+        'semester': 'Herbstsemester 1',
         'ects': 4,
         'faecher': {
             'Englisch 1': {'key': 'pruefungen_eng1', 'ects': ects_dict['Englisch 1']},
             'Gesellschaftlicher Kontext und Sprache 1': {'key': 'pruefungen_gks1', 'ects': ects_dict['Gesellschaftlicher Kontext und Sprache 1']}}},
 
     'Basiswissen BMLD 2': {
+        'semester': 'Fruehlingssemester 1',
         'ects': 12,
         'faecher': {
             'Haematologie und Haemostaseologie 2': {'key': 'pruefungen_haehae2', 'ects': ects_dict['Haematologie und Haemostaseologie 2']},
@@ -89,6 +96,7 @@ modulgruppen = {
             'Klinische Chemie und Immunologie 1': {'key': 'pruefungen_kcl1', 'ects': ects_dict['Klinische Chemie und Immunologie 1']},
             'Medizinische Mikrobiologie 2': {'key': 'pruefungen_memi2', 'ects': ects_dict['Medizinische Mikrobiologie 2']}}},
     'Wissenschaftliche Grundlagen 2': {
+        'semester': 'Fruehlingssemester 1',
         'ects': 17,
         'faecher': {
             'Biologie 2': {'key': 'pruefungen_bio2', 'ects': ects_dict['Biologie 2']},
@@ -100,12 +108,14 @@ modulgruppen = {
             'Gesellschaftlicher Kontext und Sprache 2': {'key': 'pruefungen_gks2', 'ects': ects_dict['Gesellschaftlicher Kontext und Sprache 2']}}},
             
     'Analyseprozesse & Labordiagnostik 1':{
+        'semester': 'Herbstsemester 2',
         'ects': 6,
         'faecher': {
             'Klinische Chemie und Immunologie 2': {'key': 'pruefungen_kcl2', 'ects': ects_dict['Klinische Chemie und Immunologie 2']},
             'Histologie und Zytologie 2': {'key': 'pruefungen_histo2', 'ects': ects_dict['Histologie und Zytologie 2']},
             'Immunhaematologie und Transfusionsmedizin 1': {'key': 'pruefungen_iht1', 'ects': ects_dict['Immunhaematologie und Transfusionsmedizin 1']}}},
     'Analyseprozesse & Labordiagnostik 2':{
+        'semester': 'Herbstsemester 2',
         'ects': 11,
         'faecher': {
             'Herz-Kreislauf- und respiratorische Erkrankungen': {'key': 'pruefungen_hkr', 'ects': ects_dict['Herz-Kreislauf- und respiratorische Erkrankungen']},
@@ -114,6 +124,7 @@ modulgruppen = {
             'Hygiene und Epidemiologie': {'key': 'pruefungen_hyep', 'ects': ects_dict['Hygiene und Epidemiologie']}}},
     
     'Analyseprozesse & Labordiagnostik 3':{
+        'semester': 'Fruehlingssemester 2',
         'ects': 10,
         'faecher': {
             'Immunhaematologie und Transfusionsmedizin 2': {'key': 'pruefungen_iht2', 'ects': ects_dict['Immunhaematologie und Transfusionsmedizin 2']},
@@ -122,12 +133,14 @@ modulgruppen = {
             'Endokrinologie, Stoffwechselerkrankungen': {'key': 'pruefungen_endo', 'ects': ects_dict['Endokrinologie, Stoffwechselerkrankungen']}}},
 
     'Analyseprozesse & Labordiagnostik 4':{
+        'semester': 'Herbstsemester 3',
         'ects': 7,
         'faecher': {
             'Medizinische Genetik 2': {'key': 'pruefungen_gen2', 'ects': ects_dict['Medizinische Genetik 2']},
             'Urogenitale und gastrointestinale Erkrankungen': {'key': 'pruefungen_uro', 'ects': ects_dict['Urogenitale und gastrointestinale Erkrankungen']},
             'Entwicklungsstörungen und vererbbare Erkrankungen': {'key': 'pruefungen_entw', 'ects': ects_dict['Entwicklungsstörungen und vererbbare Erkrankungen']}}},                                                  
     'Kommunikation & Management 1': {
+        'semester': 'Herbstsemester 3',
         'ects': 14,
         'faecher': {
             'Projekt-, Change- und Risikomanagement 1': {'key': 'pruefungen_pcr1', 'ects': ects_dict['Projekt-, Change- und Risikomanagement 1']},
@@ -136,6 +149,7 @@ modulgruppen = {
             'Entwicklungen, Trends, Unternehmertum': {'key': 'pruefungen_etu', 'ects': ects_dict['Entwicklungen, Trends, Unternehmertum']},
             'Gesundheitsförderung und Praevention': {'key': 'pruefungen_gepr', 'ects': ects_dict['Gesundheitsförderung und Praevention']}}},
     'Angewandte Forschung': {
+        'semester': 'Herbstsemester 3',
         'ects': 8,
         'faecher': {
             'Projektarbeit': {'key': 'pruefungen_proj', 'ects': ects_dict['Projektarbeit']},
@@ -144,11 +158,13 @@ modulgruppen = {
         'ects': 3},
 
     'Gesundheitssystem':{
+        'semester': 'Fruehlingssemester 3',
         'ects': 6,
         'faecher': {
             'Klinische Pharmakologie und personalisierte Medizin': {'key': 'pruefungen_pharma', 'ects': ects_dict['Klinische Pharmakologie und personalisierte Medizin']},
             'Gesundheitssystem und Digital Health': {'key': 'pruefungen_gedh', 'ects': ects_dict['Gesundheitssystem und Digital Health']}}},
     'Kommunikation & Management 2': {
+        'semester': 'Fruehlingssemester 3',
         'ects': 6,
         'faecher': {
             'Projekt-, Change- und Risikomanagement 2': {'key': 'pruefungen_pcr2', 'ects': ects_dict['Projekt-, Change- und Risikomanagement 2']},
@@ -157,16 +173,22 @@ modulgruppen = {
 
 grundlagenpraktika_dict = {
     'Grundlagenpraktikum 1': {
+        'semester': 'Herbstsemester 1',
         'ects': 3},
     'Grundlagenpraktikum 2': {
+        'semester': 'Fruehlingssemester 1',
         'ects': 3},
     'Externes Praktikum Fachbereich A': {
+        'semester': 'Herbstsemester 2',
         'ects': 11},
     'Externes Praktikum Fachbereich B': {
+        'semester': 'Fruehlingssemester 2',
         'ects': 11},
     'Externes Praktikum Fachbereich C': {
+        'semester': 'Herbstsemester 3',
         'ects': 9},
     'Praxisreflexion und interprofessionelles Handeln':{
+        'semester': 'Fruehingssemester 3',
         'ects': 2},
         
     'Gesellschaft, Kultur & Gesundheit': {
@@ -188,7 +210,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten
     
         col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 2, 5])
         with col1:
-            st.markdown("**Pruefung**")
+            st.markdown("**Prüfung**")
         with col2:
             st.markdown("**Datum**")
         with col3:
@@ -225,12 +247,12 @@ def manage_pruefungen(fach_name, session_state_key, spalten
             st.write('**Maximale ECTS des Moduls**')
         with col2:
             st.write(ects)
-        st.info('Noch keine Pruefungen eingetragen. Bitte eine Pruefung hinzufuegen.')
+        st.info('Noch keine Prüfungen eingetragen. Bitte eine Prüfung hinzufügen.')
 
     with st.form(key=f'{fach_name}_form'):
         col1, col2, col3, col4 = st.columns([1.2, 0.8, 1, 0.8])
         with col1:
-            name = st.text_input('Pruefungsname')
+            name = st.text_input('Prüfungsname')
         with col2:
             datum = st.date_input('Datum')
         with col3:
@@ -238,19 +260,19 @@ def manage_pruefungen(fach_name, session_state_key, spalten
         with col4:
             note = round(st.number_input('Note', min_value=1.0, max_value=6.0, step=0.05), 2)
 
-        submit_button = st.form_submit_button('Pruefung hinzufuegen')
+        submit_button = st.form_submit_button('Prüfung hinzufügen')
 
         if submit_button:
             fehler = []
             if not name.strip():
-                fehler.append('Bitte einen Namen fuer die Pruefung eingeben.')
+                fehler.append('Bitte einen Namen für die Prüfung eingeben.')
             # Überprüfen, ob die Spalte "Gewichtung" existiert und der DataFrame nicht leer ist
             if "Gewichtung" in df_pruefungen.columns and not df_pruefungen.empty:
                 gesamt_gewichtung = data['Gewichtung'].sum() + gewichtung
             else:
                 gesamt_gewichtung = gewichtung # Nur die neue Gewichtung verwenden, wenn keine Daten vorhanden sind
             if gesamt_gewichtung > 100:
-                fehler.append('Die Gesamtgewichtung der Pruefungen darf 100% nicht ueberschreiten.')
+                fehler.append('Die Gesamtgewichtung der Prüfungen darf 100% nicht überschreiten.')
             if gewichtung <= 0:
                 fehler.append('Die Gewichtung muss größer als 0 sein.')
             if gewichtung > 100:
@@ -275,7 +297,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten
                 
                 DataManager().append_record(session_state_key='Pruefungen', record_dict=result_dict)
                 
-                #Hinzufuegen eines Flags fuer erfolgreiches Hinzufuegen, damit der Plathalter angezeigt werden kann
+                #Hinzufügen eines Flags für erfolgreiches Hinzufuegen, damit der Plathalter angezeigt werden kann
                 st.session_state[f'{session_state_key}_added'] = True
 
                 st.rerun()
@@ -285,7 +307,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten
         
         if flag_key in st.session_state and st.session_state[flag_key]:
             platzhalter = st.empty()
-            platzhalter.success('Pruefung erfolgreich hinzugefuegt!')                
+            platzhalter.success('Prüfung erfolgreich hinzugefügt!')                
             time.sleep(3)
             platzhalter.empty()   
             del st.session_state[flag_key]
@@ -337,7 +359,7 @@ def schnitt_modul_berechnen(fach_name):
             st.write('**Maximale ECTS des Moduls**')
         with col2:
             st.write(ects)
-        st.info("Noch keine gueltigen Noten vorhanden.")
+        st.info("Noch keine gültigen Noten vorhanden.")
 
 
 def schnitt_modulgruppe_berechnen(modulgruppe):
@@ -421,8 +443,127 @@ def schnitt_modulgruppe_berechnen(modulgruppe):
             st.write('**Maximale ECTS der Modulgruppe**')
         with col2:
             st.write(gesamt_ects)
-        st.info("Noch keine gueltigen Noten zur Berechnung vorhanden.")
+        st.info("Noch keine gültigen Noten zur Berechnung vorhanden.")
 
+
+def semesterschnitt_berechnen(semester): ##PROBLEM MIT BERECHNUNG, überprüfen!! Frühlingssemester 1
+
+    df_pruefungen = st.session_state['Pruefungen']
+
+    gesamtgewichtete_note = 0
+    gesamtsumme_ects = 0
+
+    for modulgruppe_name, gruppe in modulgruppen.items():
+        if gruppe.get('semester') != semester:
+            continue
+
+        faecher = gruppe.get('faecher')
+        if not faecher:
+            continue
+
+        summe_gewichtete_note = 0
+        summe_ects = 0
+
+        for fach_name, infos in faecher.items():
+            ects = infos.get('ects', 0)
+            df_modul = df_pruefungen[
+                (df_pruefungen['Modul'] == fach_name) &
+                (df_pruefungen['semester'] == semester)
+            ]
+
+            if not df_modul.empty:
+                gewichtung_summe = df_modul['Gewichtung'].sum()
+                if gewichtung_summe > 0:
+                    modul_schnitt = (df_modul['Note'] * df_modul['Gewichtung']).sum() / gewichtung_summe
+                    note_akzeptiert = modul_schnitt if modul_schnitt >= 4.0 else 0
+                    summe_gewichtete_note += note_akzeptiert * ects
+                    summe_ects += ects if note_akzeptiert > 0 else 0
+
+        # Falls keine ECTS vergeben wurden, aber Modulgruppe Fächer hat:
+        if summe_ects == 0 and faecher:
+            alle_noten = []
+            for fach_name, infos in faecher.items():
+                df_mod = df_pruefungen[
+                    (df_pruefungen['Modul'] == fach_name) &
+                    (df_pruefungen['semester'] == semester)
+                ]
+                if not df_mod.empty:
+                    gewichtung_summe = df_mod['Gewichtung'].sum()
+                    if gewichtung_summe > 0:
+                        schnitt = (df_mod['Note'] * df_mod['Gewichtung']).sum() / gewichtung_summe
+                        if schnitt >= 4.0:
+                            alle_noten.append(schnitt)
+            if alle_noten:
+                summe_gewichtete_note = sum(alle_noten) / len(alle_noten)
+                summe_ects = 1
+            else:
+                continue
+
+        modulgruppen_schnitt = summe_gewichtete_note / summe_ects
+        gesamtgewichtete_note += modulgruppen_schnitt * summe_ects
+        gesamtsumme_ects += summe_ects
+
+    if gesamtsumme_ects > 0:
+        semesterschnitt = round(gesamtgewichtete_note / gesamtsumme_ects, 2)
+        return semesterschnitt
+    else:
+        return None
+
+
+def bestes_modul_anzeigen(semester):
+    df_pruefungen = st.session_state['Pruefungen']
+    df_semester = df_pruefungen[df_pruefungen['semester'] == semester]
+
+    if df_semester.empty:
+        return None, None
+    gruppieren = df_semester.groupby('Modul').apply(
+        lambda x: (x['Note'] * x['Gewichtung']).sum() / x['Gewichtung'].sum())
+    bestes_modul = gruppieren.idxmax()
+    beste_note = gruppieren.max()
+    return(bestes_modul, beste_note)
+
+
+def noten_verteilung(semester):
+    df_pruefungen = st.session_state['Pruefungen']
+    df_semester = df_pruefungen[df_pruefungen['semester'] == semester]
+
+    if df_semester.empty:
+        st.info("Keine Notendaten für dieses Semester vorhanden.")
+        return
+
+    # Noten in 0.5er-Bins einsortieren
+    bins = np.arange(1.0, 6.5, 0.5)
+    bereiche = [f"{bins[i]:.1f}–{bins[i+1]:.1f}" for i in range(len(bins)-1)]
+    df_semester['Notenklasse'] = pd.cut(df_semester['Note'], bins=bins, labels=bereiche, include_lowest=True, right=False)
+
+    # Gruppiere nach Notenklasse und Modul
+    grouped = df_semester.groupby(['Notenklasse', 'Modul'])['Note'].agg([
+        ('Anzahl', 'count'),
+        ('Tatsaechliche_Noten', lambda x: ', '.join(f"{n:.2f}" for n in sorted(x)))
+    ]).reset_index()
+
+    # Alle Kombinationen von Notenklasse und Modul sicherstellen (auch 0en)
+    alle_modul = df_semester['Modul'].unique()
+    alle_kombis = pd.MultiIndex.from_product([bereiche, alle_modul], names=['Notenklasse', 'Modul'])
+    grouped = grouped.set_index(['Notenklasse', 'Modul']).reindex(alle_kombis, fill_value=0).reset_index()
+
+    # Diagramm erstellen
+    chart = alt.Chart(grouped).mark_bar().encode(
+        x=alt.X('Notenklasse:O', title="Note", sort=bereiche),
+        y=alt.Y('Anzahl:Q', title="Anzahl Noten", axis=alt.Axis(format='d')),
+        color=alt.Color('Modul:N', title='Fach'),
+        tooltip=['Notenklasse', 'Modul', 'Anzahl', alt.Tooltip('Tatsaechliche_Noten:N', title='Tatsächliche Noten')],
+    ).properties(
+        title="📊 Notenverteilung (in 0.5er-Schritten, nach Fach)",
+        width=600,
+        height=400
+    )
+
+    st.altair_chart(chart, use_container_width=True)
+
+
+
+    
 
 def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
     if "username" not in st.session_state:
@@ -430,7 +571,7 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         return
 
     ects = grundlagenpraktika_dict.get(grundlagenpraktika_name, {}).get('ects')   # Holen der Anzahl-ECTS aus dem 'grundlagenpraktika_dict'
-    df_grundlagenpraktika = st.session_state["Grundlagenpraktika"] # vollstaendiger DataFrame
+    df_grundlagenpraktika = st.session_state["Grundlagenpraktika"] # vollständiger DataFrame
 
     st.subheader(grundlagenpraktika_name)
     
@@ -456,7 +597,7 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
             data_manager.save_data(session_state_key="Grundlagenpraktika")
 
     
-        # Radio-Box mit vorausgewaehltem aktuellem Status, mit on-change-Callback
+        # Radio-Box mit vorausgewähltem aktuellem Status, mit on-change-Callback
         status = st.radio(
             '**Bestanden?**',
             ["Ja", "Nein"],
@@ -496,4 +637,4 @@ def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
         #else:
          #   st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
 
-    
+

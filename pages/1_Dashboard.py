@@ -1,14 +1,17 @@
 import streamlit as st
 from functions.design import sidebar_anzeige
+from functions.notenrechner import semesterschnitt_berechnen, bestes_modul_anzeigen, noten_verteilung
+import time
 
 # ====== Start Login Block ======
 from utils.login_manager import LoginManager
 LoginManager().go_to_login('pages/Login.py') 
 # ====== End Login Block ======
 
+sidebar_anzeige()
+
 st.title('Dashboard')
 
-sidebar_anzeige()
 
 semesters = ['Herbstsemester 1', 'Fruehlingssemester 1',
              'Herbstsemester 2', 'Fruehlingssemester 2', 
@@ -22,3 +25,86 @@ semester = st.selectbox('Wähle das Semester', semesters, index=semesters.index(
 if semester != st.session_state.semester:
     st.session_state.semester = semester
     st.rerun()
+
+
+semesterschnitt = semesterschnitt_berechnen(semester)
+
+col1, = st.columns(1, border=True, vertical_alignment='center')
+with col1:
+    if semesterschnitt is None:
+        st.warning("Je härter ich arbeite, umso mehr Glück scheine ich zu haben. ~Thomas Jefferson")
+    elif semesterschnitt < 4.0:
+        st.warning("Der bequemste Weg geht immer bergab. ~Jochen Simbrig ")
+    elif semesterschnitt >= 4.0:
+        st.success("Je härter ich arbeite, umso mehr Glück scheine ich zu haben. ~Thomas Jefferson")
+
+
+bestes_modul, beste_note = bestes_modul_anzeigen(semester)
+
+# Damit die Spalten gleichmäßig sind, muss ich alles in ein st-markdown packen und die verschieden möglichen Variablen hier definieren
+if semesterschnitt is None:
+    anzeige_semesterschnitt = st.info("Der Semesterschnitt kann nicht berechnet werden, da nicht alle Noten vorhanden sind.")
+else:
+    anzeige_semesterschnitt = semesterschnitt
+
+if bestes_modul is None:
+    anzeige_bestes_modul = st.info("Für dieses Semester sind noch keine Noten vorhanden.")
+else:
+    anzeige_bestes_modul = bestes_modul
+
+if beste_note is None:
+    anzeige_beste_note = st.info("Für dieses Semester sind noch keine Noten vorhanden.")
+else:
+    anzeige_beste_note = beste_note
+
+
+#tatsächlihce Spalten mit den Werten
+col1, col2, col3 = st.columns(3, border=True)
+with col1:
+    st.markdown(
+        f"""
+        <div style='text-align:center; min-height: 6em; display: flex; flex-direction: column; justify-content: center;'>
+            <div style='font-size: 1.3em; font-weight: bold;'>Notendurchschnitt</div>
+            <div style='font-size: 1.2em; color: #000;'>{semester}</div>
+            <div style='font-size: 1.2em; font-weight: bold; color: #000; margin-top: 8px;'>{anzeige_semesterschnitt}</div>
+        </div>
+        """, unsafe_allow_html=True
+    )
+
+with col2:
+    st.markdown(
+        f"""
+        <div style='text-align:center; min-height: 6em; display: flex; flex-direction: column; justify-content: center;'>
+            <div style='font-size: 1.3em; font-weight: bold;'>Bestes Modul des Semesters</div>
+            <div style='font-size: 1.2em; color: #000;'>{anzeige_bestes_modul}</div>
+            <div style='font-size: 1.2em; font-weight: bold; color: #000; margin-top: 8px;'>{anzeige_beste_note}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+
+with col3:
+    total_ects = 180
+    current_ects = 120  # Beispielwert ANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    # Fortschrittsbalken grün einfärben
+    st.markdown("""
+        <style>
+        .stProgress > div > div > div > div {
+            background-color: #21ba45;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # Fortschrittsbalken und animierte Zahl
+    progress_bar = st.progress(0)
+    text_placeholder = st.empty()
+
+    for i in range(current_ects + 1):
+        progress = i / total_ects
+        progress_bar.progress(progress)
+        text_placeholder.markdown(f"**{i} von {total_ects} ECTS erreicht**")
+        time.sleep(0.02)  # Geschwindigkeit der Animation
+
+            
+
+noten_verteilung(semester)
