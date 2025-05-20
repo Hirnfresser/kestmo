@@ -78,10 +78,11 @@ with col2:
         """
         <div style='text-align:center;'>
             <div style='font-size: 1.3em; font-weight: bold; color: #000;'>Bestes Modul des Semesters</div>
+            <div style='font-size: 1.2em; color: #000;'></div>
         </div>
         """, unsafe_allow_html=True
     )
-
+    
     if bestes_modul is None or beste_note is None:
         st.info("Für dieses Semester sind noch keine Noten vorhanden.")
     else:
