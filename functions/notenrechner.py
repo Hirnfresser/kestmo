@@ -671,8 +671,14 @@ def noten_verteilung(semester):
     bereiche = [f"{bins[i]:.1f}–{bins[i+1]:.1f}" for i in range(len(bins)-1)]
 
     # Weise jeder Note eine Notenklasse zu, abhängig davon, in welchen Bin sie fällt
-    df_semester['Notenklasse'] = pd.cut(df_semester['Note'], bins=bins, labels=bereiche, include_lowest=True, right=False)
-
+    df_semester['Notenklasse'] = pd.cut(
+    df_semester['Note'],
+    bins=bins,
+    labels=bereiche,
+    include_lowest=True,
+    right=True
+    )
+    
     # Gruppiere nach Notenklasse und Modul und berechne:
     # - Anzahl der Noten in der jeweiligen Klasse
     # - Tatsächliche Noten als sortierte Liste als String (für Tooltip)
@@ -699,6 +705,12 @@ def noten_verteilung(semester):
             for i, fach in enumerate(faecher):
                 if i < len(farben):
                     modul_farbe[fach] = farben[i]
+    # ...vor Altair-Chart...
+
+    # Ergänze Farben für Module, die im DataFrame vorkommen, aber nicht im modul_farbe dict sind
+    for fach in alle_modul:
+        if fach not in modul_farbe:
+            modul_farbe[fach] = "#888888"  # Standardfarbe für unbekannte Module
 
     # Spalte für die Legende hinzufügen (Modulname)
     grouped["Modul_Legende"] = grouped["Modul"]
