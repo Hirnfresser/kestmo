@@ -222,19 +222,23 @@ grundlagenpraktika_dict = {
         'ects': 3}}
 
 
-def manage_pruefungen(fach_name, session_state_key
-                      ):
+def manage_pruefungen(fach_name, session_state_key):
+    # Prüfen, ob ein Benutzer eingeloggt ist
     if "username" not in st.session_state:
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
 
+    # ECTS für das aktuelle Fach holen
     ects = ects_dict.get(fach_name)
+    # Den DataFrame mit den gespeicherten Prüfungen aus dem Session State holen
     df_pruefungen = st.session_state["Pruefungen"]
 
-    # Anzeigen der Pruefungsdaten
+    # Wenn bereits Prüfungsdaten existieren, zeige sie an
     if not df_pruefungen.empty:
+        # Filter für das aktuelle Fach
         data = df_pruefungen[df_pruefungen['Modul'] == fach_name]
-    
+
+        # Spalten für die Anzeige der Prüfungen definieren
         col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 2, 5])
         with col1:
             st.markdown("**Prüfung**")
@@ -245,10 +249,21 @@ def manage_pruefungen(fach_name, session_state_key
         with col4:
             st.markdown("**Note**")
 
-        # Tabelle mit einem Löschen-Button fuer jede Zeile
+        #Ausrichtung des Löschen-Buttons auf der gleichen Zeile, wie die Prüfung selbst
+        st.markdown(""" 
+            <style>
+            div[data-testid="stButton"] button {
+                margin-top: -8px !important;
+                margin-bottom: 0px !important;
+                padding-top: 4px !important;
+                padding-bottom: 4px !important;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+
+        # Jede vorhandene Prüfung als Zeile anzeigen, inkl. Lösch-Button
         for idx, row in data.iterrows():
             col1, col2, col3, col4, col5 = st.columns([3, 2, 2, 2, 5])
-
             with col1:
                 st.write(row["Pruefung"])
             with col2:
@@ -258,17 +273,16 @@ def manage_pruefungen(fach_name, session_state_key
             with col4:
                 st.write(row['Note'])
             with col5:
-               if st.button(f'{row["Pruefung"]} löschen', key=f"delete_{df_pruefungen}_{idx}"):
-
-                #Zeile aus Session-DataFrame löschen und Index zuruecksetzen
+                # Lösch-Button für diese Prüfungszeile
+                if st.button(f'{row["Pruefung"]} löschen', key=f"delete_{df_pruefungen}_{idx}"):
+                    # Zeile aus dem DataFrame löschen und Index neu setzen
                     st.session_state["Pruefungen"] = st.session_state["Pruefungen"].drop(row.name).reset_index(drop=True)
-
-                # Speichern
+                    # Änderungen in der Datei speichern
                     DataManager().save_data("Pruefungen")
-
+                    # Seite neuladen, damit die Löschung sichtbar wird
                     st.rerun()
 
-    
+    # Formular zum Hinzufügen einer neuen Prüfung
     with st.form(key=f'{fach_name}_form'):
         col1, col2, col3, col4 = st.columns([1.2, 0.8, 1, 0.8])
         with col1:
@@ -280,17 +294,22 @@ def manage_pruefungen(fach_name, session_state_key
         with col4:
             note = round(st.number_input('Note', min_value=1.0, max_value=6.0, step=0.05), 2)
 
+        # Button zum Speichern der Prüfung
         submit_button = st.form_submit_button('Prüfung hinzufügen')
 
         if submit_button:
-            fehler = []
+            fehler = []  # Liste zur Sammlung von Fehlern
+
+            # Validierung: Prüfungsname muss angegeben sein
             if not name.strip():
                 fehler.append('Bitte einen Namen für die Prüfung eingeben.')
-            # Überprüfen, ob die Spalte "Gewichtung" existiert und der DataFrame nicht leer ist
+
+            # Gewichtung prüfen, damit sie 100% nicht übersteigt
             if "Gewichtung" in df_pruefungen.columns and not df_pruefungen.empty:
                 gesamt_gewichtung = data['Gewichtung'].sum() + gewichtung
             else:
-                gesamt_gewichtung = gewichtung # Nur die neue Gewichtung verwenden, wenn keine Daten vorhanden sind
+                gesamt_gewichtung = gewichtung  # Nur die neue Gewichtung zählen, wenn vorher nichts da ist
+
             if gesamt_gewichtung > 100:
                 fehler.append('Die Gesamtgewichtung der Prüfungen darf 100% nicht überschreiten.')
             if gewichtung <= 0:
@@ -299,11 +318,13 @@ def manage_pruefungen(fach_name, session_state_key
                 fehler.append('Die Gewichtung darf nicht grösser als 100 sein.')
             if note < 1 or note > 6:
                 fehler.append('Die Note muss zwischen 1.0 und 6.0 liegen.')
-            
+
+            # Falls es Validierungsfehler gibt, zeige sie an
             if fehler:
                 for msg in fehler:
                     st.error(msg)
             else:
+                # Prüfung ist valide → Dictionary zum Speichern vorbereiten
                 result_dict = {
                     "username": st.session_state["username"],
                     "semester": st.session_state["semester"],
@@ -313,54 +334,79 @@ def manage_pruefungen(fach_name, session_state_key
                     "Gewichtung": gewichtung,
                     "Note": note,
                     "timestamp": pd.Timestamp.now()
-                    }
-                
+                }
+
+                # Datensatz zur Session speichern und persistieren
                 DataManager().append_record(session_state_key='Pruefungen', record_dict=result_dict)
-                
-                #Hinzufügen eines Flags für erfolgreiches Hinzufuegen, damit der Plathalter angezeigt werden kann
+
+                # Flag setzen, um Erfolgsmeldung anzuzeigen
                 st.session_state[f'{session_state_key}_added'] = True
 
+                # Seite neuladen
                 st.rerun()
 
-        flag_key = f'{session_state_key}_added'  # <-- KORREKTUR: Flag-Name angleichen
-
+        # Erfolgsmeldung anzeigen, wenn Flag gesetzt ist
+        flag_key = f'{session_state_key}_added'
         if flag_key in st.session_state and st.session_state[flag_key]:
             platzhalter = st.empty()
-            platzhalter.success('Prüfung erfolgreich hinzugefügt!')                
-            time.sleep(3)
-            platzhalter.empty()   
-            del st.session_state[flag_key]
+            platzhalter.success('Prüfung erfolgreich hinzugefügt!')
+            time.sleep(3)  # Erfolgsmeldung 3 Sekunden anzeigen
+            platzhalter.empty()
+            del st.session_state[flag_key]  # Flag wieder löschen
+
 
 
 def schnitt_modul_berechnen(fach_name):
+    # Sicherstellen, dass ein Benutzer eingeloggt ist
     if 'username' not in st.session_state:
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
 
+    # Modulüberschrift anzeigen
     st.subheader(fach_name)
 
+    # Aktuelles Semester und ECTS des Fachs abrufen
     aktuelles_semester = st.session_state['semester']
     ects = ects_dict.get(fach_name)
 
+    # Alle gespeicherten Prüfungen laden
     df_pruefungen = st.session_state['Pruefungen']
+
+    # Nur die Prüfungen des aktuellen Moduls und Semesters filtern
     df_modulschnitt = df_pruefungen[
         (df_pruefungen['Modul'] == fach_name) &
         (df_pruefungen['semester'] == aktuelles_semester)
     ]
     
+    # Wenn es zu diesem Modul bereits Prüfungen gibt
     if not df_modulschnitt.empty:
+        # Gesamtgewichtung der erfassten Prüfungen berechnen
         aktuelle_gesamt_gewichtung = df_modulschnitt['Gewichtung'].sum()
-        schnitt_modul = (df_modulschnitt['Note'] * df_modulschnitt['Gewichtung']).sum() / aktuelle_gesamt_gewichtung if aktuelle_gesamt_gewichtung > 0 else None
+
+        # Notendurchschnitt berechnen (gewichtetes Mittel)
+        schnitt_modul = (
+            (df_modulschnitt['Note'] * df_modulschnitt['Gewichtung']).sum() / 
+            aktuelle_gesamt_gewichtung
+        ) if aktuelle_gesamt_gewichtung > 0 else None
+
+        # Farbe je nach Bestehen (grün = bestanden, rot = nicht bestanden)
         farbe = 'green' if schnitt_modul is not None and schnitt_modul >= 4 else 'red'
+
+        # Drei Spalten zur Darstellung von Durchschnitt, ECTS, Info
         col1, col2, col3 = st.columns(3)
+
         with col1:
             st.markdown("**Notendurchschnitt des Moduls**")
             if schnitt_modul is not None:
-                st.markdown(f"**Ø <span style='color:{farbe}; font-size:1.2em; font-weight:bold'>{schnitt_modul:.2f}</span>**", unsafe_allow_html=True)
+                # Durchschnitt in Farbe darstellen
+                st.markdown(f"<span style='color:{farbe}; font-size:1.2em; font-weight:bold'>Ø {schnitt_modul:.2f}</span>", unsafe_allow_html=True)
             else:
+                # Kein Schnitt vorhanden
                 st.markdown("<span style='color:gray'>-</span>", unsafe_allow_html=True)
+
         with col2:
             st.markdown("**erreichte ECTS**")
+            # Nur anzeigen, wenn alle Prüfungen vorhanden sind (Gewichtung = 100)
             if aktuelle_gesamt_gewichtung == 100 and schnitt_modul is not None:
                 erreichte_ects = ects if schnitt_modul >= 4 else 0
                 ects_farbe = 'green' if erreichte_ects > 0 else 'red'
@@ -369,30 +415,37 @@ def schnitt_modul_berechnen(fach_name):
                     unsafe_allow_html=True
                 )
             else:
+                # Noch keine vollständige Bewertung
                 st.markdown(
                     f"<span style='color:gray; font-size:1.2em; font-weight:bold;'>0 / {ects}</span>",
                     unsafe_allow_html=True
                 )
 
         with col3:
-            if aktuelle_gesamt_gewichtung == 100 and schnitt_modul is not None:
-                st.markdown("&nbsp;")
-            else:
-                st.markdown("&nbsp;")
+            # Hinweis, dass noch nicht alle Prüfungen erfasst wurden
+            if aktuelle_gesamt_gewichtung != 100 or schnitt_modul is None:
+                st.markdown("&nbsp;")  # Leerzeile zur Formatierung
                 st.markdown(
                     f"<span style='color:gray'><strong>ECTS verfügbar, wenn alle Prüfungen dieses Moduls erfasst wurden.</strong></span>",
                     unsafe_allow_html=True
                 )
+            else:
+                # Wenn alles vollständig, leer lassen
+                st.markdown("&nbsp;")
 
+        # Zusätzliche Info, falls Gewichtung aus unerklärlichem Grund < 0 ist
         if aktuelle_gesamt_gewichtung < 0:
             st.info('Die Gewichtung der Prüfungen ist kleiner als 0%. Bitte Prüfungen erfassen.')
+
     else:
+        # Falls noch keine Prüfungen vorhanden sind, Hinweis anzeigen
         col1, col2 = st.columns(2)
         with col1:
             st.write('**Maximale ECTS des Moduls**')
         with col2:
             st.write(ects)
         st.info("Noch keine gültigen Noten vorhanden. Bitte eine Prüfung hinzufügen.")
+
 
 
 def schnitt_modulgruppe_berechnen(modulgruppe):

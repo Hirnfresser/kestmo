@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide"
     )
 sidebar_anzeige()
-logout_button('Dashboard')
+logout_button("Dashboard")
 # ====== Seiten-Setup =====
 
 

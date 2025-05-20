@@ -9,7 +9,7 @@ st.set_page_config(
     layout="wide"
     )
 sidebar_anzeige()
-logout_button('Modulgruppen-Uebersicht')
+logout_button("Modulgruppen-Uebersicht")
 # ====== Seiten-Setup =====
 
 # ====== Start Login Block ======
