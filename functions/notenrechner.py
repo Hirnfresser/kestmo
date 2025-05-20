@@ -212,13 +212,14 @@ grundlagenpraktika_dict = {
         'semester': 'Fruehlingssemester 2',
         'ects': 11},
     'Externes Praktikum Fachbereich C': {
-        'semester': 'Herbstsemester 3',
+        'semester': 'Fruehlingssemester 2',
         'ects': 9},
     'Praxisreflexion und interprofessionelles Handeln':{
-        'semester': 'Fruehingssemester 3',
+        'semester': 'Fruehingssemester 2',
         'ects': 2},
         
     'Gesellschaft, Kultur & Gesundheit': {
+        'semester': 'Herbstsemester 3',
         'ects': 3}}
 
 
@@ -268,14 +269,7 @@ def manage_pruefungen(fach_name, session_state_key, spalten
 
                     st.rerun()
 
-    else:
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write('**Maximale ECTS des Moduls**')
-        with col2:
-            st.write(ects)
-        st.info('Noch keine Prüfungen eingetragen. Bitte eine Prüfung hinzufügen.')
-
+    
     with st.form(key=f'{fach_name}_form'):
         col1, col2, col3, col4 = st.columns([1.2, 0.8, 1, 0.8])
         with col1:
@@ -329,9 +323,8 @@ def manage_pruefungen(fach_name, session_state_key, spalten
 
                 st.rerun()
 
-                    
-        flag_key = f'{session_state_key}_erfolgreich_hinzugefuegt'
-        
+        flag_key = f'{session_state_key}_added'  # <-- KORREKTUR: Flag-Name angleichen
+
         if flag_key in st.session_state and st.session_state[flag_key]:
             platzhalter = st.empty()
             platzhalter.success('Prüfung erfolgreich hinzugefügt!')                
@@ -360,11 +353,11 @@ def schnitt_modul_berechnen(fach_name):
         aktuelle_gesamt_gewichtung = df_modulschnitt['Gewichtung'].sum()
         schnitt_modul = (df_modulschnitt['Note'] * df_modulschnitt['Gewichtung']).sum() / aktuelle_gesamt_gewichtung if aktuelle_gesamt_gewichtung > 0 else None
         farbe = 'green' if schnitt_modul is not None and schnitt_modul >= 4 else 'red'
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         with col1:
             st.markdown("**Notendurchschnitt des Moduls**")
             if schnitt_modul is not None:
-                st.markdown(f"**Ø** <span style='color:{farbe}'>{schnitt_modul:.2f}</span>", unsafe_allow_html=True)
+                st.markdown(f"**Ø <span style='color:{farbe}; font-size:1.2em; font-weight:bold'>{schnitt_modul:.2f}</span>**", unsafe_allow_html=True)
             else:
                 st.markdown("<span style='color:gray'>-</span>", unsafe_allow_html=True)
         with col2:
@@ -373,14 +366,25 @@ def schnitt_modul_berechnen(fach_name):
                 erreichte_ects = ects if schnitt_modul >= 4 else 0
                 ects_farbe = 'green' if erreichte_ects > 0 else 'red'
                 st.markdown(
-                    f"<span style='color:{ects_farbe}'><strong>{erreichte_ects} / {ects}</strong></span>",
+                    f"<span style='color:{ects_farbe}; font-size:1.2em'>{erreichte_ects} / {ects}</span>",
                     unsafe_allow_html=True
                 )
             else:
                 st.markdown(
-                    f"<span style='color:gray'><strong>0 / {ects}</strong></span>",
+                    f"<span style='color:gray; font-size:1.2em; font-weight:bold;'>0 / {ects}</span>",
                     unsafe_allow_html=True
                 )
+
+        with col3:
+            if aktuelle_gesamt_gewichtung == 100 and schnitt_modul is not None:
+                st.markdown("&nbsp;")
+            else:
+                st.markdown("&nbsp;")
+                st.markdown(
+                    f"<span style='color:gray'><strong>ECTS verfügbar, wenn alle Prüfungen dieses Moduls erfasst wurden.</strong></span>",
+                    unsafe_allow_html=True
+                )
+
         if aktuelle_gesamt_gewichtung < 0:
             st.info('Die Gewichtung der Prüfungen ist kleiner als 0%. Bitte Prüfungen erfassen.')
     else:
@@ -389,7 +393,7 @@ def schnitt_modul_berechnen(fach_name):
             st.write('**Maximale ECTS des Moduls**')
         with col2:
             st.write(ects)
-        st.info("Noch keine gültigen Noten vorhanden.")
+        st.info("Noch keine gültigen Noten vorhanden. Bitte eine Prüfung hinzufügen.")
 
 
 def schnitt_modulgruppe_berechnen(modulgruppe):
@@ -603,78 +607,63 @@ def noten_verteilung(semester):
         
 
 
-    
-
-def grundlagenpraktikum(grundlagenpraktika, grundlagenpraktika_name):
+ 
+def grundlagenpraktikum(grundlagenpraktika_name):
     if "username" not in st.session_state:
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
 
-    ects = grundlagenpraktika_dict.get(grundlagenpraktika_name, {}).get('ects')   # Holen der Anzahl-ECTS aus dem 'grundlagenpraktika_dict'
-    df_grundlagenpraktika = st.session_state["Grundlagenpraktika"] # vollständiger DataFrame
+    # Werte vorbereiten
+    ects = grundlagenpraktika_dict.get(grundlagenpraktika_name, {}).get('ects')
+    df = st.session_state.get("Grundlagenpraktika", pd.DataFrame())
 
     st.subheader(grundlagenpraktika_name)
-    
-    if not df_grundlagenpraktika.empty:
-         
-        # Filtere den DataFrame für das angegebene Praktikum
-        df_grundlagenpraktika = df_grundlagenpraktika[df_grundlagenpraktika['Modul'] == grundlagenpraktika_name] # Gefilterter DataFrame für das angegebene Praktikum
-        
-        # Der passende Eintrag (aktuelle Status und Index)
-        aktueller_status = df_grundlagenpraktika.iloc[0]['Status']
-        index = df_grundlagenpraktika.index[0]
 
-        # Funktion, die beim Aendern des Radio-Status ausgeführt wird
+    # Prüfen, ob Eintrag schon vorhanden ist
+    eintrag_vorhanden = not df.empty and any(
+        (df["Modul"] == grundlagenpraktika_name) & (df["username"] == st.session_state["username"])
+    )
+
+    if eintrag_vorhanden:
+        eintrag = df[(df["Modul"] == grundlagenpraktika_name) & (df["username"] == st.session_state["username"])]
+        aktueller_status = eintrag.iloc[0]["Status"]
+        index = eintrag.index[0]
+
         def update_status():
-            neuer_status = st.session_state.get(f"{grundlagenpraktika_name}_status", aktueller_status)  # aktueller Status aus Session State
+            neuer_status = st.session_state.get(f"{grundlagenpraktika_name}_status", aktueller_status)
             timestamp = pd.Timestamp.now()
 
-            # Überschreibe den bestehenden Eintrag im DataFrame im Session-State
-            st.session_state["Grundlagenpraktika"].loc[index, 'Status'] = neuer_status
-            st.session_state["Grundlagenpraktika"].loc[index, 'timestamp'] = timestamp
-            
-            # Aenderungen im CSV-File speichern
-            data_manager.save_data(session_state_key="Grundlagenpraktika")
+            st.session_state["Grundlagenpraktika"].loc[index, "Status"] = neuer_status
+            st.session_state["Grundlagenpraktika"].loc[index, "timestamp"] = timestamp
 
-    
-        # Radio-Box mit vorausgewähltem aktuellem Status, mit on-change-Callback
+            # Änderungen speichern
+            DataManager().save_data(session_state_key="Grundlagenpraktika")
+
+        # Auswahlfeld mit aktuellem Status
         status = st.radio(
-            '**Bestanden?**',
+            "**Bestanden?**",
             ["Ja", "Nein"],
             index=0 if aktueller_status == "Ja" else 1,
             key=f"{grundlagenpraktika_name}_status",
-            on_change = update_status # Wird automatisch aufgerufen, wenn der Wert sich aendert
+            on_change=update_status
         )
-    
-########## Feedback je nach Status
-        if status == "Ja":
-            st.success(f"{grundlagenpraktika_name} bestanden (+ {ects} ECTS)")
-        else:
-            st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {ects} ECTS)")
 
-    else: 
-        # neuen Eintrag erstellen, wenn noch keiner existiert
+    else:
+        # Neuen Eintrag anlegen
         neuer_eintrag = {
-        "username": st.session_state["username"],
-        "semester": st.session_state["semester"],
-        "Modul": grundlagenpraktika_name,
-        "Status": "Nein", 
-        "timestamp": pd.Timestamp.now()
+            "username": st.session_state["username"],
+            "semester": st.session_state.get("semester"),
+            "Modul": grundlagenpraktika_name,
+            "Status": "Nein",  # Standard: nicht bestanden
+            "timestamp": pd.Timestamp.now()
         }
 
-        DataManager().append_record(session_state_key='Grundlagenpraktika', record_dict=neuer_eintrag)
+        DataManager().append_record(session_state_key="Grundlagenpraktika", record_dict=neuer_eintrag)
         st.rerun()
 
-    #else:
-     #   st.session_state["Grundlagenpraktika"] = {
-      #      "status": "Nein",
-       #     "ects": 0
-        #}
-    
-        # Feedback anzeigen
-        #if status == "Ja":
-         #   st.success(f"{grundlagenpraktika_name} bestanden (+{grundlagenpraktikum['ects']} ECTS)")
-        #else:
-         #   st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {grundlagenpraktikum['ects']} ECTS)")
-
-
+    # Feedback anzeigen
+    final_status = st.session_state.get(f"{grundlagenpraktika_name}_status", "Nein")
+    if final_status == "Ja":
+        st.success(f"{grundlagenpraktika_name} bestanden (+ {ects} ECTS)")
+    else:
+        st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {ects} ECTS)")

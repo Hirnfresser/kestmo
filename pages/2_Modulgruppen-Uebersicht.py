@@ -1,10 +1,6 @@
 import streamlit as st
-from functions.notenrechner import manage_pruefungen
-from functions.design import trennlinie_duenn
-from functions.design import trennlinie_stark
-from functions.design import sidebar_anzeige
-from functions.notenrechner import schnitt_modul_berechnen
-from functions.notenrechner import schnitt_modulgruppe_berechnen
+from functions.notenrechner import manage_pruefungen, schnitt_modul_berechnen, schnitt_modulgruppe_berechnen, grundlagenpraktikum
+from functions.design import trennlinie_duenn, trennlinie_stark, sidebar_anzeige
 
 # ====== Seiten-Setup =====
 st.set_page_config(
@@ -141,8 +137,8 @@ if semester == 'Herbstsemester 1':
 
 
 
-    #with tab4:
-     #   grundlagenpraktikum(grundlagenpraktika_dict, 'Grundlagenpraktikum 1')
+    with tab4:
+        grundlagenpraktikum('Grundlagenpraktikum 1')
 
 
 elif semester == 'Fruehlingssemester 1':
@@ -255,8 +251,8 @@ elif semester == 'Fruehlingssemester 1':
             session_state_key='pruefungen_gks2',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
 
-    #with tab3:
-     #   grundlagenpraktikum(grundlagenpraktika_dict, 'Grundlagenpraktikum 2')
+    with tab3:
+        grundlagenpraktikum('Grundlagenpraktikum 2')
 
 
 if semester == 'Herbstsemester 2':
@@ -333,8 +329,8 @@ if semester == 'Herbstsemester 2':
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
             
     
-#    with tab3:
- #       grundlagenpraktikum(grundlagenpraktika_dict, 'Externes Praktikum Fachbereich A')
+    with tab3:
+        grundlagenpraktikum('Externes Praktikum Fachbereich A')
 
 
 if semester == 'Fruehlingssemester 2':
@@ -377,10 +373,10 @@ if semester == 'Fruehlingssemester 2':
             session_state_key='pruefungen_endo',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
-  #  with tab2:
-   #     grundlagenpraktikum(grundlagenpraktika_dict, 'Externes Praktikum Fachbereich B')
-    #    grundlagenpraktikum(grundlagenpraktika_dict, 'Externes Praktikum Fachbereich C')
-     #   grundlagenpraktikum(grundlagenpraktika_dict, 'Praxisreflexion und interprofessionelles Handeln')
+    with tab2:
+        grundlagenpraktikum('Externes Praktikum Fachbereich B')
+        grundlagenpraktikum('Externes Praktikum Fachbereich C')
+        grundlagenpraktikum('Praxisreflexion und interprofessionelles Handeln')
 
 
 if semester == 'Herbstsemester 3':
@@ -485,9 +481,9 @@ if semester == 'Herbstsemester 3':
             session_state_key='pruefungen_fors1',
             spalten=['Pruefung', 'Datum', 'Gewichtung', 'Note'])
         
-    #with tab4:
-     #   grundlagenpraktikum(grundlagenpraktika_dict, 'Gesellschaft, Kultur und Gesundheit')
-      #  st.markdown('*Einzelne Module nicht bekannt!*')
+    with tab4:
+        grundlagenpraktikum('Gesellschaft, Kultur und Gesundheit')
+        st.markdown('*Einzelne Module nicht bekannt!*')
         
 if semester == 'Fruehlingssemester 3':
     tab1, tab2, tab3 = st.tabs(['Gesundheitssystem', 'Kommunikation & Management 2', 'Bachelorarbeit'])

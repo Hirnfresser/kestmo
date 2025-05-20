@@ -26,7 +26,7 @@ login_manager.login_register()
 data_manager.load_user_data(
     session_state_key="Pruefungen",
     file_name="Pruefungen.csv",
-    initial_value=pd.DataFrame()
+    initial_value=pd.DataFrame(columns=["username", "semester", "Modul", "Pruefung", "Datum", "Gewichtung", "Note", "timestamp"])
     )
 
 data_manager.load_user_data(
