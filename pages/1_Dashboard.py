@@ -34,6 +34,7 @@ if semester != st.session_state.semester:
     st.rerun()
 
 
+# ====== Anzeige Motivationsspruch ======
 semesterschnitt = semesterschnitt_berechnen(semester)
 
 col1, = st.columns(1, border=True, vertical_alignment='center')
@@ -44,8 +45,10 @@ with col1:
         st.warning("Der bequemste Weg geht immer bergab. ~Jochen Simbrig ")
     elif semesterschnitt >= 4.0:
         st.success("Je härter ich arbeite, umso mehr Glück scheine ich zu haben. ~Thomas Jefferson")
+# ====== Anzeige Motivationsspruch ======
 
 
+# ====== Anzeige Semesternote & bestes Modul ======
 bestes_modul, beste_note = bestes_modul_anzeigen(semester)
 
 farbe_semesterschnitt = 'red' if semesterschnitt is not None and semesterschnitt < 4 else 'black'
@@ -93,7 +96,9 @@ with col2:
             </div>
             """, unsafe_allow_html=True
         )
+# ====== Anzeige Semesternote & bestes Modul ======
 
+# ====== Fortschritt ECTS ======
 with col3:
     total_ects = 180
     current_ects =  berechne_gesamt_ects() 
@@ -126,7 +131,7 @@ with col3:
             unsafe_allow_html=True
         )
         time.sleep(0.02)  # Geschwindigkeit der Animation
-
+# ====== Fortschritt ECTS ======
             
 
 noten_verteilung(semester)

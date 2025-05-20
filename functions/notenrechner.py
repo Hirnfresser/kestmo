@@ -454,71 +454,86 @@ def schnitt_modulgruppe_berechnen(modulgruppe):
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
         return
 
-    st.header(modulgruppe)  # Titel anzeigen
+    # Überschrift mit dem Namen der Modulgruppe anzeigen
+    st.header(modulgruppe)
 
+    # Aktuelles Semester und gespeicherte Prüfungen laden
     aktuelles_semester = st.session_state['semester']
     df_pruefungen = st.session_state['Pruefungen']
     
-    # Modulgruppen-Daten abrufen
+    # Abrufen der Konfigurationsdaten zur Modulgruppe
     gruppe = modulgruppen.get(modulgruppe)
     if not gruppe or 'faecher' not in gruppe:
         st.info("Keine Fächer in dieser Modulgruppe hinterlegt.")
         return
 
-    faecher = gruppe['faecher']
-    gesamt_gewichtete_note = 0
-    gesamt_gewichtete_ects = 0
-    gesamt_ects = 0
+    faecher = gruppe['faecher']  # Alle Fächer der Modulgruppe
+    gesamt_gewichtete_note = 0  
+    gesamt_gewichtete_ects = 0  
+    gesamt_ects = 0  # Gesamte ECTS der Modulgruppe
 
-    module_vollstaendig = []
-    module_ects = {}
-    module_schnitte = {}
+    # Zwischenspeicher
+    module_vollstaendig = []  # Module mit vollständig erfassten Prüfungen
+    module_ects = {}          # ECTS pro Modul
+    module_schnitte = {}      # Durchschnittsnoten pro Modul
 
-    # Über alle Fächer der Modulgruppe iterieren
+    # Iteration über alle Fächer der Modulgruppe
     for fach_name, infos in faecher.items():
-        key = infos['key']
         ects = infos['ects']
-        gesamt_ects += ects
+        gesamt_ects += ects  # Gesamte ECTS der Gruppe summieren
 
+        # Alle Prüfungen für das Fach im aktuellen Semester filtern
         df_fach = df_pruefungen[
             (df_pruefungen['Modul'] == fach_name) & 
             (df_pruefungen['semester'] == aktuelles_semester)
         ]
 
+        # Wenn für das Fach bereits Prüfungen existieren
         if not df_fach.empty:
             gesamt_gewichtung = df_fach['Gewichtung'].sum()
             if gesamt_gewichtung == 100:
+                # Notendurchschnitt (gewichtetes Mittel) berechnen
                 schnitt = (df_fach['Note'] * df_fach['Gewichtung']).sum() / gesamt_gewichtung
+                
+                # Modul als vollständig erfassen
                 module_vollstaendig.append(fach_name)
                 module_schnitte[fach_name] = schnitt
                 module_ects[fach_name] = ects
-                # Für Gruppenschnitt
+
+                # Für die Gesamtnote der Modulgruppe aufsummieren
                 gesamt_gewichtete_note += schnitt * ects
                 gesamt_gewichtete_ects += ects
 
+    # Prüfen, ob alle Module vollständig sind
     alle_module_vollstaendig = len(module_vollstaendig) == len(faecher)
-    modulgruppe_schnitt = (gesamt_gewichtete_note / gesamt_gewichtete_ects) if gesamt_gewichtete_ects > 0 else None
 
-    # ECTS-Anzeige-Logik
+    # Gesamtschnitt der Modulgruppe berechnen (gewichteter Durchschnitt)
+    modulgruppe_schnitt = (
+        gesamt_gewichtete_note / gesamt_gewichtete_ects
+    ) if gesamt_gewichtete_ects > 0 else None
+
+    # Berechnung der erreichten ECTS in der Modulgruppe
     ects_anzeigen = 0
     for fach_name in module_vollstaendig:
         schnitt = module_schnitte[fach_name]
+        
         if schnitt >= 4.0:
+            # Wenn Modul bestanden, ECTS zählen
             ects_anzeigen += module_ects[fach_name]
         elif alle_module_vollstaendig and modulgruppe_schnitt is not None and modulgruppe_schnitt >= 4.0:
+            # Wenn alle Module vollständig, aber einzelne knapp nicht bestanden, zählt die Gruppennote (Kulanzregel)
             ects_anzeigen += module_ects[fach_name]
-        # sonst keine ECTS für dieses Modul
+            # Sonst: keine ECTS für dieses Modul
 
-    # Farblogik für Darstellung
+    # Farbe der Anzeige abhängig vom Ergebnis
     farbe = 'green' if modulgruppe_schnitt is not None and modulgruppe_schnitt >= 4 else 'red'
-    if modulgruppe_schnitt is None:
-        ects_farbe = 'gray'
-    else:
-        ects_farbe = 'green' if ects_anzeigen > 0 else 'red'
+    ects_farbe = 'gray' if modulgruppe_schnitt is None else ('green' if ects_anzeigen > 0 else 'red')
 
-    # Darstellung in zwei Spalten
+    # Darstellung der Ergebnisse in drei Spalten
     col1, col2, col3 = st.columns(3)
+
     with col1:
+        # Durchschnitt der Modulgruppe anzeigen
         st.markdown("**Notendurchschnitt der Modulgruppe**")
         if modulgruppe_schnitt is not None:
             st.markdown(
@@ -526,119 +541,175 @@ def schnitt_modulgruppe_berechnen(modulgruppe):
                 unsafe_allow_html=True
             )
         else:
+            # Noch kein Schnitt vorhanden
             st.markdown("<span style='font-size:1.5em; color:gray; font-weight:bold;'>-</span>", unsafe_allow_html=True)
+
     with col2:
+        # Erreichte ECTS anzeigen
         st.markdown("**Erreichte ECTS**")
         st.markdown(
             f"<span style='font-size:1.5em; color:{ects_farbe}; font-weight:bold;'>{ects_anzeigen} / {gesamt_ects}</span>",
             unsafe_allow_html=True
         )
+
     with col3:
+        # Hinweis anzeigen, wenn keine ECTS erreicht wurden
         if ects_anzeigen == 0:
-            st.markdown("&nbsp;") # leerer Platzhalter
+            st.markdown("&nbsp;")  # Leerzeile
             st.markdown(
-                f"<span style='font-size:1.0em; color:gray; font-weight:bold; '>Verfügbar, wenn für mind. ein Modul alle Prüfungen erfasst wurden.</span>",
+                f"<span style='font-size:1.0em; color:gray; font-weight:bold;'>Verfügbar, wenn für mind. ein Modul alle Prüfungen erfasst wurden.</span>",
                 unsafe_allow_html=True
             )
-    
 
 
 def semesterschnitt_berechnen(semester):
+    # DataFrame mit Prüfungen aus dem Session-State laden
     df_pruefungen = st.session_state['Pruefungen']
 
+    # Initialisierung von Variablen für die gewichtete Notensumme und die Summe der ECTS
     gesamtgewichtete_note = 0
     gesamtsumme_ects = 0
 
+    # Über alle Modulgruppen iterieren, die im globalen dict 'modulgruppen' definiert sind
     for modulgruppe_name, gruppe in modulgruppen.items():
+        # Nur Modulgruppen berücksichtigen, die zum gewünschten Semester gehören
         if gruppe.get('semester') != semester:
             continue
 
+        # Fächer (Module) der Modulgruppe auslesen
         faecher = gruppe.get('faecher')
         if not faecher:
+            # Wenn keine Fächer definiert sind, Modulgruppe überspringen
             continue
 
+        # Maximale ECTS-Punkte der gesamten Modulgruppe abfragen
         max_ects = gruppe.get('ects', 0)
 
-        # Berechne gewichteten Schnitt der Modulgruppe
+        # Listen zum Sammeln der Noten und der jeweiligen ECTS-Gewichtungen
         noten = []
         gewichtungen = []
+
+        # Für jedes Fach/Modul in der Modulgruppe
         for fach_name, infos in faecher.items():
+            # Prüfungsdaten filtern nach aktuellem Fach und Semester
             df_modul = df_pruefungen[
                 (df_pruefungen['Modul'] == fach_name) &
                 (df_pruefungen['semester'] == semester)
             ]
+
             if not df_modul.empty:
+                # Summe der Gewichtungen (Prozent) der einzelnen Prüfungen im Fach berechnen
                 gewichtung_summe = df_modul['Gewichtung'].sum()
+
+                # Nur berechnen, wenn Gewichtung > 0 (d.h. gültige Prüfungen vorhanden)
                 if gewichtung_summe > 0:
+                    # Gewichteter Notendurchschnitt für das Fach berechnen
                     schnitt = (df_modul['Note'] * df_modul['Gewichtung']).sum() / gewichtung_summe
-                    noten.append(schnitt)
-                    gewichtungen.append(infos.get('ects', 0))
-        # Modulgruppen-Schnitt berechnen (nur wenn Noten vorhanden)
+                    noten.append(schnitt)  # Note hinzufügen
+                    gewichtungen.append(infos.get('ects', 0))  # ECTS als Gewichtung hinzufügen
+
+        # Wenn Noten und Gewichtungen vorhanden sind, berechne den gewichteten Modulgruppen-Schnitt
         if noten and gewichtungen and sum(gewichtungen) > 0:
             modulgruppen_schnitt = sum([n * e for n, e in zip(noten, gewichtungen)]) / sum(gewichtungen)
-            gesamtgewichtete_note += modulgruppen_schnitt * max_ects
-            gesamtsumme_ects += max_ects
-        # Falls keine Noten vorhanden, ignoriere die Modulgruppe
 
+            # Zur Gesamtnote des Semesters addieren, gewichtet mit der ECTS-Gesamtzahl der Modulgruppe
+            gesamtgewichtete_note += modulgruppen_schnitt * max_ects
+
+            # ECTS-Summe für das Semester aktualisieren
+            gesamtsumme_ects += max_ects
+
+        # Wenn keine Noten vorhanden, wird die Modulgruppe ignoriert
+
+    # Am Ende: Falls Gesamt-ECTS > 0, berechne den Semesterschnitt als gewichteten Durchschnitt
     if gesamtsumme_ects > 0:
         semesterschnitt = round(gesamtgewichtete_note / gesamtsumme_ects, 2)
         return semesterschnitt
     else:
+        # Wenn keine ECTS gesammelt wurden (keine Noten), gib None zurück
         return None
 
 
 def bestes_modul_anzeigen(semester):
+    # Lade alle Prüfungen aus dem Session-State
     df_pruefungen = st.session_state['Pruefungen']
+    # Filtere die Prüfungen für das angegebene Semester
     df_semester = df_pruefungen[df_pruefungen['semester'] == semester]
 
+    # Wenn es keine Prüfungen in diesem Semester gibt, gib None zurück
     if df_semester.empty:
         return None, None
+
+    # Gruppiere die Daten nach 'Modul' und berechne für jede Gruppe den gewichteten Notendurchschnitt
     gruppieren = df_semester.groupby('Modul').apply(
         lambda x: (x['Note'] * x['Gewichtung']).sum() / x['Gewichtung'].sum())
+
+    # Bestimme das Modul mit dem besten (höchsten) Durchschnitt
     bestes_modul = gruppieren.idxmax()
+
+    # Rundet die beste Note auf zwei Nachkommastellen
     beste_note = round(gruppieren.max(), 2)
+
+    # Rückgabe des besten Moduls und der besten Note
     return(bestes_modul, beste_note)
 
 
 def noten_verteilung(semester):
+    # Lade alle Prüfungen aus dem Session-State
     df_pruefungen = st.session_state['Pruefungen']
+    # Filtere die Prüfungen für das angegebene Semester
     df_semester = df_pruefungen[df_pruefungen['semester'] == semester]
 
+    # Falls keine Notendaten vorhanden sind, Info ausgeben und Funktion beenden
     if df_semester.empty:
         st.info("Keine Notendaten für dieses Semester vorhanden.")
         return
 
-    # Noten in 0.5er-Bins einsortieren
+    # Definiere Notenklassen (Bins) in 0.5er Schritten von 1.0 bis 6.0
     bins = np.arange(1.0, 6.5, 0.5)
+
+    # Erstelle Beschriftungen für diese Bins (z.B. "1.0–1.5", "1.5–2.0", ...)
     bereiche = [f"{bins[i]:.1f}–{bins[i+1]:.1f}" for i in range(len(bins)-1)]
+
+    # Weise jeder Note eine Notenklasse zu, abhängig davon, in welchen Bin sie fällt
     df_semester['Notenklasse'] = pd.cut(df_semester['Note'], bins=bins, labels=bereiche, include_lowest=True, right=False)
 
-    # Gruppiere nach Notenklasse und Modul
+    # Gruppiere nach Notenklasse und Modul und berechne:
+    # - Anzahl der Noten in der jeweiligen Klasse
+    # - Tatsächliche Noten als sortierte Liste als String (für Tooltip)
     grouped = df_semester.groupby(['Notenklasse', 'Modul'])['Note'].agg([
         ('Anzahl', 'count'),
         ('Tatsaechliche_Noten', lambda x: ', '.join(f"{n:.2f}" for n in sorted(x)))
     ]).reset_index()
 
-    # Alle Kombinationen von Notenklasse und Modul sicherstellen (auch 0en)
+    # Erzeuge alle möglichen Kombinationen von Notenklasse und Modul (auch wenn keine Noten vorhanden sind)
     alle_modul = df_semester['Modul'].unique()
     alle_kombis = pd.MultiIndex.from_product([bereiche, alle_modul], names=['Notenklasse', 'Modul'])
+
+    # Setze den Index auf Notenklasse und Modul und ergänze fehlende Kombinationen mit 0
     grouped = grouped.set_index(['Notenklasse', 'Modul']).reindex(alle_kombis, fill_value=0).reset_index()
 
-    # --- Farben zuordnen ---
-    # Mapping Modulname -> Farbe anhand der Modulgruppe
+    # --- Farben für Module zuordnen ---
     modul_farbe = {}
     for gruppenname, gruppe in modulgruppen.items():
+        # Nur Modulgruppen für das aktuelle Semester verwenden
         if gruppe.get('semester') == semester:
             faecher = list(gruppe.get('faecher', {}).keys())
             farben = modulgruppen_farben.get(gruppenname, [])
+            # Jedem Fach der Gruppe eine Farbe zuordnen
             for i, fach in enumerate(faecher):
                 if i < len(farben):
                     modul_farbe[fach] = farben[i]
 
-    # Füge das Feld für die Legende hinzu
+    # Spalte für die Legende hinzufügen (Modulname)
     grouped["Modul_Legende"] = grouped["Modul"]
 
     import altair as alt
+
+    # Erstelle ein Altair-Balkendiagramm:
+    # X-Achse: Notenklasse (ordinal)
+    # Y-Achse: Anzahl der Noten
+    # Farbe: Modul (mit den definierten Farben)
+    # Tooltip zeigt detaillierte Infos an
     chart = alt.Chart(grouped).mark_bar().encode(
         x=alt.X('Notenklasse:O', title="Note", sort=bereiche),
         y=alt.Y('Anzahl:Q', title="Anzahl Noten", axis=alt.Axis(format='d')),
@@ -654,71 +725,83 @@ def noten_verteilung(semester):
         height=400
     )
 
+    # Diagramm in einem Container anzeigen
     with st.container(border=True):
         st.altair_chart(chart, use_container_width=True)
+
         
 
 
  
 def grundlagenpraktikum(grundlagenpraktika_name):
+    # 1. Sicherstellen, dass ein Benutzer eingeloggt ist
     if "username" not in st.session_state:
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
-        return
+        return  # Funktion abbrechen, wenn kein Benutzer
 
-    # Werte vorbereiten
+    # 2. Werte vorbereiten:
+    # - ECTS-Punkte für das angegebene Grundlagenpraktikum aus einem Dictionary holen
     ects = grundlagenpraktika_dict.get(grundlagenpraktika_name, {}).get('ects')
+    # - DataFrame mit allen Grundlagenpraktika aus dem Session-State holen (oder leerer DataFrame, falls nicht vorhanden)
     df = st.session_state.get("Grundlagenpraktika", pd.DataFrame())
 
+    # 3. Überschrift für das Grundlagenpraktikum anzeigen
     st.subheader(grundlagenpraktika_name)
 
-    # Prüfen, ob Eintrag schon vorhanden ist
+    # 4. Prüfen, ob für den aktuellen Benutzer bereits ein Eintrag für dieses Praktikum existiert
     eintrag_vorhanden = not df.empty and any(
         (df["Modul"] == grundlagenpraktika_name) & (df["username"] == st.session_state["username"])
     )
 
     if eintrag_vorhanden:
+        # 5. Wenn ja, den bestehenden Eintrag laden (Filtern nach Modul und Benutzername)
         eintrag = df[(df["Modul"] == grundlagenpraktika_name) & (df["username"] == st.session_state["username"])]
-        aktueller_status = eintrag.iloc[0]["Status"]
-        index = eintrag.index[0]
+        aktueller_status = eintrag.iloc[0]["Status"]  # aktuellen Status (Bestanden/Nein) auslesen
+        index = eintrag.index[0]  # Index des Eintrags im DataFrame
 
+        # 6. Funktion zum Aktualisieren des Status definieren
         def update_status():
+            # neuen Status aus dem Session-State holen (z.B. aus Radio-Button)
             neuer_status = st.session_state.get(f"{grundlagenpraktika_name}_status", aktueller_status)
-            timestamp = pd.Timestamp.now()
+            timestamp = pd.Timestamp.now()  # Zeitstempel der Änderung setzen
 
+            # Status und Zeitstempel im DataFrame aktualisieren
             st.session_state["Grundlagenpraktika"].loc[index, "Status"] = neuer_status
             st.session_state["Grundlagenpraktika"].loc[index, "timestamp"] = timestamp
 
-            # Änderungen speichern
+            # Änderungen persistent speichern
             DataManager().save_data(session_state_key="Grundlagenpraktika")
 
-        # Auswahlfeld mit aktuellem Status
-        status = st.radio(
+        # 7. Radio-Auswahlfeld anzeigen mit dem aktuellen Status vorausgewählt
+        st.radio(
             "**Bestanden?**",
             ["Ja", "Nein"],
-            index=0 if aktueller_status == "Ja" else 1,
+            index=0 if aktueller_status == "Ja" else 1,  # Position des vorausgewählten Radio-Buttons
             key=f"{grundlagenpraktika_name}_status",
-            on_change=update_status
+            on_change=update_status  # bei Änderung update_status ausführen
         )
 
     else:
-        # Neuen Eintrag anlegen
+        # 8. Wenn noch kein Eintrag vorhanden ist, neuen Eintrag anlegen
         neuer_eintrag = {
-            "username": st.session_state["username"],
-            "semester": st.session_state.get("semester"),
-            "Modul": grundlagenpraktika_name,
-            "Status": "Nein",  # Standard: nicht bestanden
-            "timestamp": pd.Timestamp.now()
+            "username": st.session_state["username"],  # Benutzername
+            "semester": st.session_state.get("semester"),  # aktuelles Semester
+            "Modul": grundlagenpraktika_name,  # Name des Praktikums
+            "Status": "Nein",  # Standardwert: nicht bestanden
+            "timestamp": pd.Timestamp.now()  # aktueller Zeitstempel
         }
 
+        # 9. Neuen Eintrag anhängen und Daten speichern
         DataManager().append_record(session_state_key="Grundlagenpraktika", record_dict=neuer_eintrag)
-        st.rerun()
+        st.rerun()  # Seite neu laden, um den neuen Eintrag anzuzeigen
 
-    # Feedback anzeigen
+    # 10. Feedback für den Nutzer anzeigen, je nachdem ob bestanden oder nicht
     final_status = st.session_state.get(f"{grundlagenpraktika_name}_status", "Nein")
     if final_status == "Ja":
         st.success(f"{grundlagenpraktika_name} bestanden (+ {ects} ECTS)")
     else:
         st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {ects} ECTS)")
+
 
 
 def berechne_gesamt_ects(): #für die ECTS-Anzeige auf dem Dashboard

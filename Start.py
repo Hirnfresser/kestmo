@@ -1,5 +1,5 @@
 import streamlit as st
-from functions.design import sidebar_anzeige
+from functions.design import sidebar_anzeige, login_reg_button
 
 # ======= Seiten-Setup =====
 st.set_page_config(
@@ -7,24 +7,9 @@ st.set_page_config(
     page_icon="🏠",
     layout="wide"
     )
-
 sidebar_anzeige()
+login_reg_button()
 # ======= Seiten-Setup =====
-
-col1, col3 = st.columns([4, 1])
-with col1:
-    st.title("Notenrechner - kestmo")
-with col3:
-    st.markdown(
-        """
-        <div style='border:2px solid #79085E; border-radius:8px; padding:6px; display:inline-block; margin-top: 24px;'>
-            <a href='?page=pages/Login.py' style='text-decoration:none; color:#79085E; font-weight:bold;'>
-                🔑 Login & Registrierung
-            </a>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
 
 
 st.markdown('''Die clevere Noten-App für BMLD-Studierende!
