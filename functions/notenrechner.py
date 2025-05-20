@@ -667,3 +667,44 @@ def grundlagenpraktikum(grundlagenpraktika_name):
         st.success(f"{grundlagenpraktika_name} bestanden (+ {ects} ECTS)")
     else:
         st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {ects} ECTS)")
+
+
+def berechne_gesamt_ects():
+    df_pruefungen = st.session_state["Pruefungen"]
+    df_grundlagen = st.session_state.get("Grundlagenpraktika", None)
+    ects_summe = 0
+
+    # 1. Modulgruppen-ECTS (wenn alle Noten erfasst und Schnitt >= 4.0)
+    for gruppenname, gruppe in modulgruppen.items():
+        faecher = gruppe.get("faecher", {})
+        ects_modulgruppe = gruppe.get("ects", 0)
+        alle_faecher_vollstaendig = True
+        noten = []
+        gewichtungen = []
+        for fach_name, infos in faecher.items():
+            df_modul = df_pruefungen[
+                (df_pruefungen["Modul"] == fach_name)]
+            gewichtung_summe = df_modul["Gewichtung"].sum()
+            if gewichtung_summe < 100:
+                alle_faecher_vollstaendig = False
+                break
+            # Schnitt pro Fach
+            if gewichtung_summe > 0:
+                schnitt = (df_modul["Note"] * df_modul["Gewichtung"]).sum() / gewichtung_summe
+                noten.append(schnitt)
+                gewichtungen.append(infos.get("ects", 0))
+        # Modulgruppen-Schnitt berechnen (nur wenn Noten vorhanden)
+        if alle_faecher_vollstaendig and noten and sum(gewichtungen) > 0:
+            modulgruppen_schnitt = sum([n * e for n, e in zip(noten, gewichtungen)]) / sum(gewichtungen)
+            if modulgruppen_schnitt >= 4.0:
+                ects_summe += ects_modulgruppe
+
+    # 2. Bestandene Grundlagenpraktika-ECTS (über alle Semester)
+    if df_grundlagen is not None and not df_grundlagen.empty:
+        for idx, row in df_grundlagen.iterrows():
+            if str(row.get("Status", "")).strip().lower() == "ja":
+                ects = grundlagenpraktika_dict.get(row["Modul"], {}).get("ects", 0)
+                if ects > 0:
+                    ects_summe += ects
+
+    return ects_summe

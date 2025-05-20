@@ -1,6 +1,6 @@
 import streamlit as st
 from functions.design import sidebar_anzeige
-from functions.notenrechner import semesterschnitt_berechnen, bestes_modul_anzeigen, noten_verteilung
+from functions.notenrechner import semesterschnitt_berechnen, bestes_modul_anzeigen, noten_verteilung, berechne_gesamt_ects
 import time
 
 # ====== Seiten-Setup =====
@@ -67,7 +67,7 @@ with col1:
     else:
         st.markdown(
             f"""
-            <div style='text-align:center; font-size: 1.2em; font-weight: bold; color: {farbe_semesterschnitt}; margin-top: 8px;'>
+            <div style='text-align:center; font-size: 1.2em; font-weight: bold; color: {farbe_semesterschnitt}'>
                 Ø {semesterschnitt}
             </div>
             """, unsafe_allow_html=True
@@ -78,17 +78,17 @@ with col2:
         """
         <div style='text-align:center;'>
             <div style='font-size: 1.3em; font-weight: bold; color: #000;'>Bestes Modul des Semesters</div>
-            <div style='font-size: 1.2em; color: #000;'></div>
         </div>
         """, unsafe_allow_html=True
     )
     
+
     if bestes_modul is None or beste_note is None:
         st.info("Für dieses Semester sind noch keine Noten vorhanden.")
     else:
         st.markdown(
             f"""
-            <div style='text-align:center; margin-top: 8px;'>
+            <div style='text-align:center'>
                 <div style='font-size: 1.2em; color: #000;'>{bestes_modul}</div>
                 <div style='font-size: 1.2em; font-weight: bold; color: #000;'>Mit der Note {beste_note}</div>
             </div>
@@ -97,8 +97,15 @@ with col2:
 
 with col3:
     total_ects = 180
-    current_ects = 120  # Beispielwert ANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    current_ects =  berechne_gesamt_ects() # Beispielwert ANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+    st.markdown(
+        """
+        <div style='text-align:center;'>
+            <div style='font-size: 1.3em; font-weight: bold; color: #000;'>Aktueller ECTS-Stand</div>
+        </div>
+        """, unsafe_allow_html=True
+    )
     # Fortschrittsbalken grün einfärben
     st.markdown("""
         <style>
@@ -115,7 +122,10 @@ with col3:
     for i in range(current_ects + 1):
         progress = i / total_ects
         progress_bar.progress(progress)
-        text_placeholder.markdown(f"**{i} von {total_ects} ECTS erreicht**")
+        text_placeholder.markdown(
+            f"<div style='text-align:center; font-weight:bold;'>{i} von {total_ects} ECTS erreicht</div>",
+            unsafe_allow_html=True
+        )
         time.sleep(0.02)  # Geschwindigkeit der Animation
 
             
