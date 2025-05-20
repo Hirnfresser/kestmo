@@ -61,8 +61,7 @@ def login_reg_button():
         st.title("Login & Registrierung")
     with col3:
         if st.button("🔑 Login & Registrierung", key="login_btn"):
-            st.session_state.clear()  # Session zurücksetzen, z.B. um vorherige Nutzerinfos zu löschen
-            st.rerun()  # Seite neu laden
+            st.switch_page("Login.py")
         # Gleiche Button-Styling wie beim Logout-Button
         st.markdown(
             """
