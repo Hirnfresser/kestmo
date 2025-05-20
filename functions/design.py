@@ -58,7 +58,7 @@ def login_reg_button():
     # Ähnlich wie logout_button: zeigt einen Titel und rechts einen Button für Login & Registrierung an
     col1, col3 = st.columns([4, 1])
     with col1:
-        st.title("Login & Registrierung")
+        st.title("Startseite")
     with col3:
         if st.button("🔑 Login & Registrierung", key="login_btn"):
             st.switch_page("pages/Login.py")
