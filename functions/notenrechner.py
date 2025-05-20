@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import time
-import pandas as pd
 from utils.data_manager import DataManager
 import matplotlib.pyplot as plt
 import altair as alt
@@ -223,7 +222,7 @@ grundlagenpraktika_dict = {
         'ects': 3}}
 
 
-def manage_pruefungen(fach_name, session_state_key, spalten
+def manage_pruefungen(fach_name, session_state_key
                       ):
     if "username" not in st.session_state:
         st.error("Kein Benutzer eingeloggt. Bitte melden Sie sich an.")
@@ -366,7 +365,7 @@ def schnitt_modul_berechnen(fach_name):
                 erreichte_ects = ects if schnitt_modul >= 4 else 0
                 ects_farbe = 'green' if erreichte_ects > 0 else 'red'
                 st.markdown(
-                    f"<span style='color:{ects_farbe}; font-size:1.2em'>{erreichte_ects} / {ects}</span>",
+                    f"<span style='color:{ects_farbe}; font-size:1.2em; font-weight:bold;'>{erreichte_ects} / {ects}</span>",
                     unsafe_allow_html=True
                 )
             else:
@@ -669,7 +668,7 @@ def grundlagenpraktikum(grundlagenpraktika_name):
         st.error(f"{grundlagenpraktika_name} nicht bestanden (0 von {ects} ECTS)")
 
 
-def berechne_gesamt_ects():
+def berechne_gesamt_ects(): #für die ECTS-Anzeige auf dem Dashboard
     df_pruefungen = st.session_state["Pruefungen"]
     df_grundlagen = st.session_state.get("Grundlagenpraktika", None)
     ects_summe = 0

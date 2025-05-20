@@ -9,12 +9,12 @@ from functions.design import sidebar_anzeige
 st.set_page_config(
     page_title="Login & Registrierung",
     page_icon="🔑",
-    layout="wide")
+    layout="wide"
+    )
+sidebar_anzeige()
 # ====== Seiten-Setup =====
 
 st.title('Login & Registrierung')
-
-sidebar_anzeige()
 
 data_manager = DataManager(fs_protocol='webdav', fs_root_folder="Institution/kestmo_App")  # Switchdrive
 

@@ -23,3 +23,27 @@ def trennlinie_stark(farbe="#888", hoehe="3px", abstand="30px"):
         </div>
         """,
         unsafe_allow_html=True)
+    
+def logout_button(title):
+    col1, col3 = st.columns([4, 1])
+    with col1:
+        st.title(title)
+    with col3:
+        if st.button("🔒 Logout", key="logout_btn"):
+            st.session_state.clear()
+            st.rerun()
+        st.markdown(
+            """
+            <style>
+            div[data-testid="stButton"] button {
+                border:2px solid #79085E;
+                color:#79085E;
+                font-weight:bold;
+                border-radius:8px;
+                background: none;
+                margin-top: 26px            
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )

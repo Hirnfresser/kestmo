@@ -143,5 +143,5 @@ class LoginManager:
         """
         if st.session_state.get("authentication_status") is not True:
             st.switch_page(login_page_py_file)
-        else:
-            self.authenticator.logout()  # Erstellt die Logout-Schaltfläche
+        #else:
+         #   self.authenticator.logout()  # Erstellt die Logout-Schaltfläche

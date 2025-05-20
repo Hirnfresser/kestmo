@@ -1,5 +1,5 @@
 import streamlit as st
-from functions.design import sidebar_anzeige
+from functions.design import sidebar_anzeige, logout_button
 from functions.notenrechner import semesterschnitt_berechnen, bestes_modul_anzeigen, noten_verteilung, berechne_gesamt_ects
 import time
 
@@ -7,7 +7,10 @@ import time
 st.set_page_config(
     page_title="Kestmo - Dashboard",
     page_icon="📚",
-    layout="wide")
+    layout="wide"
+    )
+sidebar_anzeige()
+logout_button('Dashboard')
 # ====== Seiten-Setup =====
 
 
@@ -15,10 +18,6 @@ st.set_page_config(
 from utils.login_manager import LoginManager
 LoginManager().go_to_login('pages/Login.py') 
 # ====== End Login Block ======
-
-sidebar_anzeige()
-
-st.title('Dashboard')
 
 
 semesters = ['Herbstsemester 1', 'Fruehlingssemester 1',
@@ -97,7 +96,7 @@ with col2:
 
 with col3:
     total_ects = 180
-    current_ects =  berechne_gesamt_ects() # Beispielwert ANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    current_ects =  berechne_gesamt_ects() 
 
     st.markdown(
         """
